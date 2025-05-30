@@ -1,10 +1,8 @@
 # Airtable Clone – Project Tracker
 
-✅ = Done 🚧 = In Progress ⬜ = To Do
-
 ---
 
-## ✅ Day 1
+## Day 1
 1. Set up and connect Prisma to Supabase
    - Created a new Supabase project  
    - Defined initial Prisma schema for `User`, `Session`, `Account`, and `VerificationToken` for NextAuth
