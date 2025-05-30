@@ -4,6 +4,7 @@
 import { useState } from 'react'
 import type { Session } from 'next-auth'
 import Header from './Header'
+import SideBar from './SideBar';
 
 export default function Dashboard({
   children,
@@ -12,18 +13,20 @@ export default function Dashboard({
   children: React.ReactNode;
   session: Session;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [menuSidebarOpen, setMenuSidebarOpen] = useState(false)
 
   return (
     <div className="flex h-screen w-full overflow-hidden">
       <div className="flex-1 flex flex-col">
         {/* Top bar */}
-        <Header session={session}/>
-
+        <Header session={session} setMenuSidebarOpen={setMenuSidebarOpen} menuSidebarOpen={menuSidebarOpen}/>
+      <div className="flex-1 flex flex-row">
+        <SideBar menuSidebarOpen={menuSidebarOpen}/>
         {/* Main children content */}
         <main className="flex-1 overflow-auto bg-gray-50 p-6">
           {children}
         </main>
+      </div>
       </div>
     </div>
   )

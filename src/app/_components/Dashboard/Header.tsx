@@ -1,22 +1,25 @@
 'use client'
 
 import { Menu, Search, Bell, HelpCircle} from 'lucide-react'
-import { useState } from 'react'
 import Image from 'next/image'
 import type { Session } from 'next-auth'
 import UserMenu from './UserMenu'
 
-const Header = ({session}: {session: Session}) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+type SideBarProps = {
+  session: Session;
+  menuSidebarOpen: boolean;
+  setMenuSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
+const Header = ({ session, menuSidebarOpen, setMenuSidebarOpen }: SideBarProps) => {
   return (
-    <header className="z-10 flex items-center justify-between px-4 py-0 bg-white shadow-xs h-14">
+    <header className="z-10 flex items-center justify-between px-4 py-0 bg-white shadow-xs border-b border-gray-200 h-14">
       {/* Left */}
       <div className="flex items-center gap-4 min-w-30">
         <div className="hidden md:block">
-          <Menu className="w-5 h-5 cursor-pointer text-gray-400" onClick={() => setSidebarOpen(!sidebarOpen)} />
+          <Menu className="w-5 h-5 cursor-pointer text-gray-400 hover:text-gray-800" onClick={() => setMenuSidebarOpen(!menuSidebarOpen)} />
         </div>
-        <Image src="/airtable-logo.png" alt="Airtable" width={100} height={32} />
+        <Image src="/airtable-logo.png" alt="Airtable" width={100} height={32} style={{ height: 'auto', width: '100%' }} priority/>
       </div>
 
       {/* Center */}
