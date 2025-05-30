@@ -1,6 +1,8 @@
-import { type LucideIcon , House, Users, BookOpen, ShoppingBag, Upload, SquarePlus } from 'lucide-react'
+import { type LucideIcon , House, BookOpen, ShoppingBag, Upload, SquarePlus } from 'lucide-react'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
+import Image from 'next/image';
+import CreateBaseButton from './CreateBaseButton';
 
 type SideBarProps = {
   menuSidebarOpen: boolean;
@@ -12,9 +14,7 @@ const SideBar = ({ menuSidebarOpen }: SideBarProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(menuSidebarOpen)
 
   useEffect(() => {
-    if (menuSidebarOpen) {
-      setSidebarOpen(true);
-    }
+    setSidebarOpen(menuSidebarOpen);
   }, [menuSidebarOpen]);
   
   const trySetSidebarOpen = (open: boolean) => {
@@ -37,7 +37,14 @@ const SideBar = ({ menuSidebarOpen }: SideBarProps) => {
         </Link>
         <Link href="/" className="flex items-center gap-2 p-2 hover:bg-slate-100 rounded text-sm">
           
-          {sidebarOpen ? noWrapText("All workspaces") : <Users className="w-5 h-5" />}
+          {sidebarOpen ? noWrapText("All workspaces") : 
+          <Image
+            src="/users-three.svg"
+            alt="Users icon"
+            width={30}
+            height={20}
+            className="cursor-pointer"
+          />}
         </Link>
       </nav>
       {/* Bottom */}
@@ -51,12 +58,7 @@ const SideBar = ({ menuSidebarOpen }: SideBarProps) => {
         {/* Create button */}
         <div className="mt-4">
         { sidebarOpen ?
-          <Link
-            href={`/base/`}
-            className="block text-xs w-full max-h-[265px] text-center bg-blue-500 text-white rounded py-2 font-semibold hover:bg-blue-600 shadow-sm"
-          >
-          {noWrapText("+ Create")}
-          </Link>
+          <CreateBaseButton/>
         :
           <SquarePlus className="w-7 h-7 text-gray-400 mb-4" strokeWidth={1} />
         }
@@ -78,4 +80,5 @@ const noWrapText = (text: string) => (
     {text}
   </span>
 )
+
 export default SideBar

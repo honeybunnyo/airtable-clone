@@ -13,4 +13,5 @@
    - Configured Google provider &rarr; verified successful login flow with session persistence  
    - Tested login/logout states in `Session` table
 
-3. Pushed to github
+3. Dashboard UI
+    - Header, sidebar, logout, create button

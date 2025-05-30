@@ -40,12 +40,7 @@ export default async function Home() {
           :
           // if logged in
           <>
-            <Dashboard session={session}>
-              <p className="text-center text-2xl text-black">
-                {session && <span>Logged in as {session.user?.name}</span>}
-              </p>
-              User in session :D
-            </Dashboard>
+            <Dashboard session={session}/>
           </>
         }
       </main>

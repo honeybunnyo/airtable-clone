@@ -15,7 +15,7 @@ const Header = ({ session, menuSidebarOpen, setMenuSidebarOpen }: SideBarProps) 
   return (
     <header className="z-10 flex items-center justify-between px-4 py-0 bg-white shadow-xs border-b border-gray-200 h-14">
       {/* Left */}
-      <div className="flex items-center gap-4 min-w-30">
+      <div className="flex items-center gap-4 min-w-30 no-highlight">
         <div className="hidden md:block">
           <Menu className="w-5 h-5 cursor-pointer text-gray-400 hover:text-gray-800" onClick={() => setMenuSidebarOpen(!menuSidebarOpen)} />
         </div>
