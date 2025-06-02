@@ -9,8 +9,8 @@ const CreateBaseButton = () => {
 
   const handleCreate = async () => {
     try {
-      const newBaseId: string = await createBase.mutateAsync();
-      router.push(`/base/${newBaseId}`);
+      const {baseId, tableId} = await createBase.mutateAsync();
+      router.push(`/base/${baseId}/${tableId}`);
     } catch (err: unknown) {
       console.error("Error creating base", err);
     }
