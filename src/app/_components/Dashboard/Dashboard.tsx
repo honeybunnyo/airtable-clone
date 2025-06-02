@@ -5,6 +5,7 @@ import { useState } from 'react'
 import type { Session } from 'next-auth'
 import Header from './Header'
 import SideBar from './SideBar';
+import Cards from './Cards';
 
 export default function Dashboard({
   session,
@@ -25,6 +26,7 @@ export default function Dashboard({
           <h1 className='font-bold text-3xl'>
             Home
           </h1>
+          <Cards/>
         </main>
       </div>
       </div>

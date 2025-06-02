@@ -13,3 +13,6 @@
 
 3. Dashboard UI
     - Header, sidebar, logout, create button
+
+### Day 2
+1. UI for existing bases on dashboard
