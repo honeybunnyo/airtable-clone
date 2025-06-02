@@ -15,4 +15,15 @@
     - Header, sidebar, logout, create button
 
 ### Day 2
-1. UI for existing bases on dashboard
+1. Display Bases on Dashboard
+    - Fetched all bases for logged-in user using tRPC
+    - Rendered each base as a card with styling and navigation to its first table
+
+2. tRPC Queries and Mutations
+    - getAllBases to list user’s bases
+    - updateBaseName mutation to support renaming
+
+3. Explored TanStack Table
+    - Skimmed official documentation
+    - Experimented with basic configuration and rendering dummy data
+

@@ -30,7 +30,7 @@ export default async function Home() {
 
                 <Link
                   href={session ? "/api/auth/signout" : "/api/auth/signin"}
-                  className="rounded-full bg-blue-100 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+                  className="rounded-full bg-blue-100 px-10 py-3 font-semibold no-underline transition hover:bg-blue-200"
                 >
                   {session ? "Sign out" : "Sign in"}
                 </Link>
