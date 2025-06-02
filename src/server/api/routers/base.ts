@@ -11,7 +11,7 @@ export const baseRouter = createTRPCRouter({
    .mutation(async ({ ctx }) => {
       const newBase = await ctx.db.base.create({
         data: {
-          name: 'Test Base',
+          name: 'Untitled',
           user: { connect: { id: ctx.session.user.id } },
           tables: {
             create: {

@@ -1,7 +1,6 @@
 // types/schema.ts
 
 import type { ColumnType } from "@prisma/client"
-import type { JsonValue } from "@prisma/client/runtime/library"
 
 export type Base = {
   id: string
@@ -30,5 +29,5 @@ export type Column = {
 export type Row = {
   id: string
   tableId: string
-  data: JsonValue
+  data: Record<string, string>
 }
