@@ -3,8 +3,13 @@ import React, {useState} from 'react'
 import type { Base } from '~/app/types/schema';
 import { api } from '~/trpc/react';
 import { Trash } from 'lucide-react';
+
 type CardProps = {
-  base: Base;
+  base: {
+    id: string;
+    name: string;
+    tables: { id: string }[];
+  };
 };
 
 const Card = ({ base }: CardProps) => {
