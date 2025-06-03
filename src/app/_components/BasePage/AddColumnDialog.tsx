@@ -1,0 +1,97 @@
+import { ChevronDown } from 'lucide-react';
+import React, { useRef, useState } from 'react'
+import { api } from '~/trpc/react';
+import { Button } from "../../../components/ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../../../components/ui/dialog"
+import { Input } from "../../../components/ui/input"
+import { Label } from "../../../components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../components/ui/select"
+
+type AddColumnDialogProps = {
+  tableId: string;
+};
+
+const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
+  const [newColumnName, setNewColumnName] = useState("")
+  const [newColumnType, setNewColumnType] = useState<"TEXT" | "NUMBER">("TEXT")
+  const [addingColumn, setAddingColumn] = useState(false)
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const createColumn = api.table.addColumn.useMutation();
+  
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setAddingColumn(true)
+    e.preventDefault()
+    if (!newColumnName) return
+
+    await createColumn.mutateAsync({
+      tableId,
+      name: newColumnName,
+      type: newColumnType,
+    })
+    setAddingColumn(false)
+    setNewColumnName("")
+    setNewColumnType("TEXT")
+    closeRef.current?.click();
+  }
+  
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <button
+          className="h-[32px] w-30 text-gray-600 border border-gray-200 bg-gray-100 hover:bg-gray-200 text-lg"
+        >
+          ＋
+        </button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <form onSubmit={handleSubmit}>
+          <DialogHeader>
+            <DialogTitle>Add column</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4">
+            <div className="grid gap-3">
+              <Label htmlFor="column-name-1">Column Name</Label>
+              <Input id="column-name-1" name="name" defaultValue=""/>
+            </div>
+              <Label htmlFor="type-1">Select Type</Label>
+            <Select>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Value type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="TEXT">Text</SelectItem>
+                <SelectItem value="NUMBER">Number</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            {addingColumn ?
+            <Button disabled>Adding... </Button>
+            :
+            <Button type="submit">Add Column</Button>
+          }
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+export default AddColumnDialog

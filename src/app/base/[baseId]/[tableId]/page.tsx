@@ -20,10 +20,7 @@ const BasePage = () => {
     <div>
       <TopBar/>
       { base && <>
-        {/* <h1 className="text-xl font-bold">Welcome to {base.name}!</h1>
-        <p>Base ID: {base.id}</p>
-        <p>Owner: {base.user.name}</p> */}
-        
+
         <DataTable tableId={tableId as string}/>
       </>
       }

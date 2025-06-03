@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import type { Column, Row, Table } from '~/app/types/schema';
 import {
   createColumnHelper,
@@ -8,32 +8,34 @@ import {
   type ColumnDef,
 } from '@tanstack/react-table'
 import { api } from '~/trpc/react';
+import AddColumnDialog from './AddColumnDialog';
 
 type DataTableProps = { tableId: string }
 
 const DataTable = ({ tableId }: DataTableProps ) => {
   const { data, isLoading } = api.table.getTableById.useQuery({ id: tableId })
-  const columns = useMemo<ColumnDef<Row>[]>(() => {
-  return (data?.columns ?? []).map(col => ({
-    accessorFn: (row: Row) => row.data?.[col.name] ?? '',
-    id: col.name,
-    header: () => col.name,
-    cell: info => info.getValue(),
-  }))
-}, [data?.columns]);
 
-const paddedRows = useMemo(() => {
-  const baseRows = (data?.rows as Row[]) ?? [];
-  const result = [...baseRows];
-  while (result.length < 3) {
-    result.push({
-      id: `empty-${result.length}`,
-      tableId,
-      data: {},
-    });
-  }
-  return result;
-}, [data?.rows, tableId]);
+  const columns = useMemo<ColumnDef<Row>[]>(() => {
+    return (data?.columns ?? []).map(col => ({
+      accessorFn: (row: Row) => row.data?.[col.name] ?? '',
+      id: col.name,
+      header: () => col.name,
+      cell: info => info.getValue(),
+    }))
+  }, [data?.columns]);
+
+  const paddedRows = useMemo(() => {
+    const baseRows = (data?.rows as Row[]) ?? [];
+    const result = [...baseRows];
+    while (result.length < 3) {
+      result.push({
+        id: `empty-${result.length}`,
+        tableId,
+        data: {},
+      });
+    }
+    return result;
+  }, [data?.rows, tableId]);
 
   const table = useReactTable<Row>({
     data: paddedRows,
@@ -43,10 +45,6 @@ const paddedRows = useMemo(() => {
   
   const handleAddRow = () => {
     console.log('add row')
-  }
-
-  const handleAddColumn = () => {
-    console.log('add col')
   }
 
   if (isLoading) return <div>Loading...</div>
@@ -119,14 +117,8 @@ const paddedRows = useMemo(() => {
           </tr>
         </tfoot>
       </table>
-      <button
-        onClick={handleAddColumn}
-        className="h-[32px] w-30 text-gray-600 border border-gray-200 bg-gray-100 hover:bg-gray-200 text-lg"
-      >
-        ＋
-      </button>
+      <AddColumnDialog tableId={tableId}/>
       </div>
-  
     </>
   )
 }
