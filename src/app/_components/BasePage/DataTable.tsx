@@ -53,8 +53,9 @@ const DataTable = ({ tableId }: DataTableProps ) => {
   const updateCell = (rowId: string, columnKey: string, value: string) => {
     console.log('Update cell!')
   }
+
   return (
-     <>
+    <>
       <div className='flex flex-row'>
       <table className='border border-gray-200'>
         <thead>

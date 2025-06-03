@@ -29,3 +29,20 @@
     - Enabled tabbing between input cells (with keyboard support).
 4. Added a button to return to the main page.
 
+## Day 2
+1. Deployed on vercel
+
+2. Add Column Dialog
+    - Integrated shadcn/ui components into a form
+    - Connected form submission to addColumn mutation
+
+3. Context Menu for Columns
+    - Context menu for each column header in the table (enabled /w right-click)
+
+4. more tRPC queries & mutations
+    - Confirmed that column creation logic belonged in tableRouter since columns are part of tables.
+
+
+5. Add table button
+    - Button to create a new table under a base
+    - Table name is hardcoded for now

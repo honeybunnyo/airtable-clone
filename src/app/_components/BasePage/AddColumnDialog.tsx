@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { api } from '~/trpc/react';
 import { Button } from "../../../components/ui/button"
 import {
@@ -28,9 +28,9 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
   const [newColumnName, setNewColumnName] = useState("")
   const [newColumnType, setNewColumnType] = useState<"TEXT" | "NUMBER">("TEXT")
   const [addingColumn, setAddingColumn] = useState(false)
-  const closeRef = useRef<HTMLButtonElement>(null);
   const createColumn = api.column.create.useMutation();
   const { refetch } = api.table.getTableById.useQuery({ id: tableId });
+  const [open, setOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setAddingColumn(true)
@@ -48,14 +48,15 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
     setAddingColumn(false)
     setNewColumnName("")
     setNewColumnType("TEXT")
+    setOpen(false);
+
     await refetch()
-    closeRef.current?.click();
   }
   
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button
+        <button onClick={() => setOpen(true)}
           className="h-[32px] w-30 text-gray-600 border border-gray-200 bg-gray-100 hover:bg-gray-200 text-lg"
         >
           ＋
