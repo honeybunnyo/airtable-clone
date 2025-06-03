@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import React, {useState} from 'react'
-import type { Base } from '~/app/types/schema';
 import { api } from '~/trpc/react';
 import { Trash } from 'lucide-react';
 
@@ -19,14 +18,14 @@ const Card = ({ base }: CardProps) => {
   const href = firstTableId ? `/base/${base.id}/${firstTableId}` : `/base/${base.id}`
 
   const utils = api.useUtils()
-  const deleteBase = api.base.deleteBase.useMutation({
+  const deleteBase = api.base.delete.useMutation({
     onSuccess: async () => {
       await utils.base.getAllBases.invalidate()
     }
   })
 
   const handleDelete = (e: React.MouseEvent) => {
-    e.preventDefault() // prevent navigation
+    e.preventDefault() 
     e.stopPropagation()
     deleteBase.mutate({ id: base.id })
   }

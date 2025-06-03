@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { api } from '~/trpc/react'
 import { useRouter } from 'next/navigation';
-
+import CreateTableButton from './CreateTableButton';
 
 const TopBar = () => {
   const [isHoveringBackButton, setIsHoveringBackButton] = useState(false)
@@ -114,8 +114,8 @@ const TopBar = () => {
                 }`}>{table.name}</div>
               </Link>
             ))}
+          <CreateTableButton baseId={baseId} />
         </div>
-
         {/* Second panel */}
         <div className='flex flex-row bg-[#396f42] h-full rounded-tl-md'>
           <button onClick={openExtensionOptions} className='px-3 content-center'>
@@ -127,7 +127,6 @@ const TopBar = () => {
           </button>
         </div>
       </div>
-
     </div>
   )
 }

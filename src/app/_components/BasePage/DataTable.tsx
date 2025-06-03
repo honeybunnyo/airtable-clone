@@ -1,7 +1,6 @@
-import React, { useMemo, useState } from 'react'
-import type { Column, Row, Table } from '~/app/types/schema';
+import React, { useMemo } from 'react'
+import type { Row } from '~/app/types/schema';
 import {
-  createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,

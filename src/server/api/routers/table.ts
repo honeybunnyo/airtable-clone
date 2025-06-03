@@ -7,6 +7,41 @@ import {
 } from "~/server/api/trpc";
 
 export const tableRouter = createTRPCRouter({
+  create: protectedProcedure
+    .input(z.object({ 
+      baseId: z.string(),
+      name: z.string(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      return ctx.db.table.create({
+        data: {
+          name: input.name,
+          base: { connect: { id: input.baseId } },
+          columns: {
+            create: [
+              { name: 'name', type: 'TEXT' },
+              { name: 'email', type: 'TEXT' },
+            ],
+          },
+          rows: {
+            create: [
+              {
+                data: {
+                  name: 'Alice2',
+                  email: 'alice@example.com',
+                },
+              },
+              {
+                data: {
+                  name: 'Bob2',
+                  email: 'bob@example.com',
+                },
+              },
+            ],
+          },
+        },
+      });
+    }),
   getTableById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {

@@ -5,7 +5,7 @@ import { api } from '~/trpc/react';
 
 const CreateBaseButton = () => {
   const router = useRouter();
-  const createBase = api.base.createBase.useMutation();
+  const createBase = api.base.create.useMutation();
 
   const handleCreate = async () => {
     try {
