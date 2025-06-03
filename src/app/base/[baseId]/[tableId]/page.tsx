@@ -20,7 +20,6 @@ const BasePage = () => {
     <div>
       <TopBar/>
       { base && <>
-
         <DataTable tableId={tableId as string}/>
       </>
       }

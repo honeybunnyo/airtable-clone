@@ -1,4 +1,3 @@
-import { ChevronDown } from 'lucide-react';
 import React, { useRef, useState } from 'react'
 import { api } from '~/trpc/react';
 import { Button } from "../../../components/ui/button"
@@ -30,12 +29,16 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
   const [newColumnType, setNewColumnType] = useState<"TEXT" | "NUMBER">("TEXT")
   const [addingColumn, setAddingColumn] = useState(false)
   const closeRef = useRef<HTMLButtonElement>(null);
-  const createColumn = api.table.addColumn.useMutation();
-  
+  const createColumn = api.column.create.useMutation();
+  const { refetch } = api.table.getTableById.useQuery({ id: tableId });
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setAddingColumn(true)
     e.preventDefault()
-    if (!newColumnName) return
+    if (!newColumnName) {
+      setAddingColumn(false)
+      return
+    }
 
     await createColumn.mutateAsync({
       tableId,
@@ -45,6 +48,7 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
     setAddingColumn(false)
     setNewColumnName("")
     setNewColumnType("TEXT")
+    await refetch()
     closeRef.current?.click();
   }
   
@@ -65,7 +69,10 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
           <div className="grid gap-4">
             <div className="grid gap-3">
               <Label htmlFor="column-name-1">Column Name</Label>
-              <Input id="column-name-1" name="name" defaultValue=""/>
+              <Input 
+                id="column-name-1" name="name" defaultValue=""
+                onChange={(e) => setNewColumnName(e.target.value)}
+              />
             </div>
               <Label htmlFor="type-1">Select Type</Label>
             <Select>

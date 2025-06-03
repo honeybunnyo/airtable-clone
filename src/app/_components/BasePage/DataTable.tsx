@@ -9,12 +9,13 @@ import {
 } from '@tanstack/react-table'
 import { api } from '~/trpc/react';
 import AddColumnDialog from './AddColumnDialog';
+import { ChevronDown } from 'lucide-react';
+import ColumnContextMenu from './ColumnContextMenu';
 
 type DataTableProps = { tableId: string }
 
 const DataTable = ({ tableId }: DataTableProps ) => {
   const { data, isLoading } = api.table.getTableById.useQuery({ id: tableId })
-
   const columns = useMemo<ColumnDef<Row>[]>(() => {
     return (data?.columns ?? []).map(col => ({
       accessorFn: (row: Row) => row.data?.[col.name] ?? '',
@@ -62,12 +63,14 @@ const DataTable = ({ tableId }: DataTableProps ) => {
             <tr key={headerGroup.id} className='h-[32px]'>
               {headerGroup.headers.map(header => (
                 <th key={header.id} className='border border-gray-200 w-[180px] font-light bg-[#f4f4f4] text-sm'>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                  <ColumnContextMenu columnId={header.column.id}>
+                    <div className='flex flex-row justify-between items-center px-2 cursor-context-menu'>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext())}
+                      <ChevronDown className='w-4 h-4 text-gray-400 hover:text-gray-600' />
+                    </div>
+                  </ColumnContextMenu>
                 </th>
               ))}
             </tr>

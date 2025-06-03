@@ -18,21 +18,6 @@ export const tableRouter = createTRPCRouter({
         },
       });
     }),
-  addColumn: protectedProcedure
-    .input(z.object({
-      tableId: z.string(),
-      name: z.string(),
-      type: z.enum(["TEXT", "NUMBER"]),
-    }))
-    .mutation(async ({ input, ctx }) => {
-      return ctx.db.column.create({
-        data: {
-          tableId: input.tableId,
-          name: input.name,
-          type: input.type,
-        },
-      });
-    }),
   addRow: protectedProcedure
     .input(z.object({
       tableId: z.string(),
