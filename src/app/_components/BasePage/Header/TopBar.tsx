@@ -1,14 +1,18 @@
 'use client';
 import React, { useState, useEffect } from 'react'
-import { ChevronDown, ArrowLeft } from 'lucide-react'
+import { ChevronDown, ArrowLeft, Check } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { api } from '~/trpc/react'
 import { useRouter } from 'next/navigation';
-import CreateTableButton from './CreateTableButton';
+import CreateTableButton from '../CreateTableButton';
+import { useGlobalSaving } from '~/lib/stores/useGlobalSaving';
+import LoadingSpinner from './LoadingSpinner';
+import WithToolTip from '../../Ui/WithToolTip';
 
 const TopBar = () => {
+  const { isSaving } = useGlobalSaving();
   const [isHoveringBackButton, setIsHoveringBackButton] = useState(false)
   const params = useParams()
   const router = useRouter();
@@ -95,7 +99,16 @@ const TopBar = () => {
         </div>
 
         {/* Right */}
-        <div>
+        <div className='flex flex-row items-center'>
+          {isSaving ? 
+            <LoadingSpinner/>
+            : 
+            <p className='flex px-2 flex-row text-xs text-[#c0d5c3]'>
+              <WithToolTip content="All changes saved">
+                <Check className='w-4 h-4'/>
+              </WithToolTip>
+            </p>
+          }
           {topNav("Help")}
           {topNav("Share")}
           {topNav("Notification")}

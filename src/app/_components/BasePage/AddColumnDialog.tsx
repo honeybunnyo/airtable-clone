@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../components/ui/select"
+import WithToolTip from '../Ui/WithToolTip';
 
 type AddColumnDialogProps = {
   tableId: string;
@@ -56,18 +57,20 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button onClick={() => setOpen(true)}
-          className="h-[32px] w-30 text-gray-600 border border-gray-200 bg-gray-100 hover:bg-gray-200 text-lg"
-        >
-          ＋
-        </button>
+        <WithToolTip content='Add field'>
+          <button onClick={() => setOpen(true)}
+            className="h-[32px] w-30 text-gray-600 border border-gray-200 bg-gray-100 hover:bg-gray-200 text-lg"
+            >
+            ＋
+          </button>
+        </WithToolTip>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Add column</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4">
+          <div className="my-4 grid gap-4">
             <div className="grid gap-3">
               <Label htmlFor="column-name-1">Column Name</Label>
               <Input 

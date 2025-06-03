@@ -1,10 +1,6 @@
 import React from 'react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "../../../components/ui/tooltip"
 import { api } from '~/trpc/react';
+import WithToolTip from '../Ui/WithToolTip';
 
 const CreateTableButton = ({ baseId }: { baseId: string } ) => {
   const utils = api.useUtils();
@@ -21,16 +17,11 @@ const CreateTableButton = ({ baseId }: { baseId: string } ) => {
     });
   };
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <button onClick={createNewTable} className='px-2 hover:text-gray-50 text-lg'>
-          +
-        </button>
-      </TooltipTrigger>
-      <TooltipContent>
-        <p>Add or import table</p>
-      </TooltipContent>
-    </Tooltip>
+    <WithToolTip content="Add or import table">
+      <button onClick={createNewTable} className='px-2 hover:text-gray-50 text-lg'>
+        +
+      </button>
+    </WithToolTip>
   )
 }
 

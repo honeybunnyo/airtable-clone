@@ -10,6 +10,7 @@ import { api } from '~/trpc/react';
 import AddColumnDialog from './AddColumnDialog';
 import { ChevronDown } from 'lucide-react';
 import ColumnContextMenu from './ColumnContextMenu';
+import DataTableCell from './DataTableCell';
 
 type DataTableProps = { tableId: string }
 
@@ -50,10 +51,6 @@ const DataTable = ({ tableId }: DataTableProps ) => {
   if (isLoading) return <div>Loading...</div>
   if (!data) return <div>No data found</div>
 
-  const updateCell = (rowId: string, columnKey: string, value: string) => {
-    console.log('Update cell!')
-  }
-
   return (
     <>
       <div className='flex flex-row'>
@@ -81,29 +78,11 @@ const DataTable = ({ tableId }: DataTableProps ) => {
             <tr key={row.id} className='h-[32px]'>
               {row.getVisibleCells().map(cell => (
                 <td key={cell.id} className='border border-gray-200 p-0'>
-                    <input
-                      type="text"
-                      value={String(cell.getValue()) ?? ''}
-                      onChange={(e) => {
-                        const newValue = e.target.value
-                        const rowId = row.original.id
-                        const columnKey = cell.column.id
-                        updateCell(rowId, columnKey, newValue)
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Tab') {
-                          e.preventDefault()
-                          const current = e.currentTarget as HTMLInputElement
-                          const inputs = Array.from(document.querySelectorAll('td input')).filter(
-                            (e): e is HTMLInputElement => e instanceof HTMLInputElement
-                          );
-                          const index = inputs.indexOf(current)
-                          const next = e.shiftKey ? inputs[index - 1] : inputs[index + 1]
-                          next?.focus()
-                        }
-                      }}
-                      className="w-full h-full bg-transparent focus:outline-blue-500 p-1"
-                    />
+                  <DataTableCell
+                    initialValue={String(cell.getValue()) ?? ' '}
+                    rowId={row.original.id}
+                    columnKey={cell.column.id}
+                  />
                 </td>
               ))}
             </tr>
