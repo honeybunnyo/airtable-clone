@@ -1,6 +1,6 @@
 import React from 'react'
 import { api } from '~/trpc/react';
-import WithToolTip from '../Ui/WithToolTip';
+import WithToolTip from '../../Ui/WithToolTip';
 
 const CreateTableButton = ({ baseId }: { baseId: string } ) => {
   const utils = api.useUtils();

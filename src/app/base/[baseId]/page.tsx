@@ -3,7 +3,7 @@
 import React from 'react'
 import { useParams } from 'next/navigation'
 import { api } from '~/trpc/react';
-import TopBar from '../../_components/BasePage/Header/TopBar';
+import TopBar from '../../_components/BasePage/Header';
 
 const BasePage = () => {
   const { baseId } = useParams()
