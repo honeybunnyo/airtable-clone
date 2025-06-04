@@ -34,13 +34,12 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
   const [open, setOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setAddingColumn(true)
     e.preventDefault()
     if (!newColumnName) {
-      setAddingColumn(false)
       return
     }
-
+    
+    setAddingColumn(true)
     await createColumn.mutateAsync({
       tableId,
       name: newColumnName,

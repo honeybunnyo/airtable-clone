@@ -17,9 +17,9 @@ type DataTableProps = { tableId: string }
 const DataTable = ({ tableId }: DataTableProps ) => {
   const { data, isLoading } = api.table.getTableById.useQuery({ id: tableId })
   const columns = useMemo<ColumnDef<Row>[]>(() => {
-    return (data?.columns ?? []).map(col => ({
+    return (data?.columns ?? []).map((col, index) => ({
       accessorFn: (row: Row) => row.data?.[col.name] ?? '',
-      id: col.name,
+      id: `${col.name}-${index}`,
       header: () => col.name,
       cell: info => info.getValue(),
     }))
@@ -59,7 +59,7 @@ const DataTable = ({ tableId }: DataTableProps ) => {
           {table.getHeaderGroups().map(headerGroup => (
             <tr key={headerGroup.id} className='h-[32px]'>
               {headerGroup.headers.map(header => (
-                <th key={header.id} className='border border-gray-200 w-[180px] font-light bg-[#f4f4f4] text-sm'>
+                <th key={`${headerGroup.id}-${header.id}`} className='border border-gray-200 w-[180px] font-light bg-[#f4f4f4] text-sm'>
                   <ColumnContextMenu columnId={header.column.id}>
                     <div className='flex flex-row justify-between items-center px-2 cursor-context-menu'>
                       {header.isPlaceholder
@@ -77,7 +77,7 @@ const DataTable = ({ tableId }: DataTableProps ) => {
           {table.getRowModel().rows.map(row => (
             <tr key={row.id} className='h-[32px]'>
               {row.getVisibleCells().map(cell => (
-                <td key={cell.id} className='border border-gray-200 p-0'>
+                <td key={`${row.id}-${cell.column.id}`} className='border border-gray-200 p-0'>
                   <DataTableCell
                     initialValue={String(cell.getValue()) ?? ' '}
                     rowId={row.original.id}

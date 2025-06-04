@@ -29,7 +29,7 @@
     - Enabled tabbing between input cells (with keyboard support).
 4. Added a button to return to the main page.
 
-## Day 2
+## Day 3
 1. Deployed on vercel
 
 2. Add Column Dialog
@@ -46,3 +46,9 @@
 5. Add table button
     - Button to create a new table under a base
     - Table name is hardcoded for now
+
+### Day 4
+1. Add spinner to show when saving to database
+2. Broke down header into smaller components
+
+
