@@ -37,6 +37,10 @@ export const tableRouter = createTRPCRouter({
                   email: 'bob@example.com',
                 },
               },
+              {
+                data: {
+                },
+              },
             ],
           },
         },
@@ -95,4 +99,18 @@ export const tableRouter = createTRPCRouter({
         data: { data: updatedData },
       });
     }),
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+    const tableId = input.id;
+    await ctx.db.row.deleteMany({
+      where: { tableId },
+    });
+    await ctx.db.column.deleteMany({
+      where: { tableId },
+    });
+    return ctx.db.table.delete({
+      where: { id: tableId },
+    });
+  }),
 });

@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation'
 import { api } from '~/trpc/react'
 import TopBar from './TopBar';
 import CreateTableButton from './CreateTableButton';
+import TableContextMenu from './TableContextMenu';
 
 const Page = () => {
   const params = useParams()
@@ -32,11 +33,13 @@ const Page = () => {
         {/* First panel */}
         <div className='flex flex-row bg-[#396f42] h-full w-full rounded-t-md content-center pl-3'>
             {base && base.tables.map((table) => (
-              <Link key={`${baseId}/${table.id}`} href={`/base/${baseId}/${table.id}`}>
-                <div key={table.id} className={`w-full h-full text-left px-4 py-2 text-sm rounded-t-sm ${
-                  table.id === tableId ? 'font-semibold bg-white text-black' : 'font-light hover:bg-[#34643b] text-white'
-                }`}>{table.name}</div>
-              </Link>
+              <TableContextMenu key={`context-menu-${baseId}-${table.id}`} tableId={table.id}>
+                <Link key={`${baseId}-${table.id}`} href={`/base/${baseId}/${table.id}`}>
+                  <div key={table.id} className={`w-full h-full text-left px-4 py-2 text-sm rounded-t-sm ${
+                    table.id === tableId ? 'font-semibold bg-white text-black' : 'font-light hover:bg-[#34643b] text-white'
+                  }`}>{table.name}</div>
+                </Link>
+              </TableContextMenu>
             ))}
           <CreateTableButton baseId={baseId} />
         </div>

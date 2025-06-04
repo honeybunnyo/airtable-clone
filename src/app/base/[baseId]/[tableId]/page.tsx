@@ -3,8 +3,8 @@
 import React from 'react'
 import { useParams } from 'next/navigation'
 import { api } from '~/trpc/react';
-import TopBar from '../../../_components/BasePage/Header';
-import DataTable from '../../../_components/BasePage/DataTable';
+import Header from '../../../_components/BasePage/Header';
+import DataTable from '../../../_components/BasePage/Table/DataTable';
 
 const BasePage = () => {
   const { baseId, tableId } = useParams()
@@ -18,7 +18,7 @@ const BasePage = () => {
 
   return (
     <div>
-      <TopBar/>
+      <Header/>
       { base && <>
         <DataTable tableId={tableId as string}/>
       </>

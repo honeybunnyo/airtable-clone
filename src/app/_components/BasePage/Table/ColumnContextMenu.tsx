@@ -5,7 +5,7 @@ import {
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuTrigger,
-} from "../../../components/ui/context-menu"
+} from "../../../../components/ui/context-menu"
 
 type ColumnContextMenuProps = {
   children: React.ReactNode

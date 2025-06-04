@@ -42,10 +42,20 @@ const DataTable = ({ tableId }: DataTableProps ) => {
     data: paddedRows,
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
-  });  
+  });
+
+  const utils = api.useUtils()
+  const addRow = api.table.addRow.useMutation({
+    onSuccess: async () => {
+      await utils.table.getTableById.invalidate({ id: tableId })
+    }
+  })
   
   const handleAddRow = () => {
-    console.log('add row')
+    addRow.mutate({
+      tableId: tableId,
+      data: {}
+    })
   }
 
   if (isLoading) return <div>Loading...</div>

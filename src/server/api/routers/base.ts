@@ -36,6 +36,9 @@ export const baseRouter = createTRPCRouter({
                       email: 'bob@example.com',
                     },
                   },
+                  {
+                    data: {},
+                  },
                 ],
               },
             },
