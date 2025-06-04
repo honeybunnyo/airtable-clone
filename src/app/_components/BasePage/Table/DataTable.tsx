@@ -17,9 +17,9 @@ type DataTableProps = { tableId: string }
 const DataTable = ({ tableId }: DataTableProps ) => {
   const { data, isLoading } = api.table.getTableById.useQuery({ id: tableId })
   const columns = useMemo<ColumnDef<Row>[]>(() => {
-    return (data?.columns ?? []).map((col, index) => ({
+    return (data?.columns ?? []).map(col => ({
       accessorFn: (row: Row) => row.data?.[col.name] ?? '',
-      id: `${col.name}-${index}`,
+      id: col.id,
       header: () => col.name,
       cell: info => info.getValue(),
     }))
@@ -28,20 +28,14 @@ const DataTable = ({ tableId }: DataTableProps ) => {
   const paddedRows = useMemo(() => {
     const baseRows = (data?.rows as Row[]) ?? [];
     const result = [...baseRows];
-    while (result.length < 3) {
-      result.push({
-        id: `empty-${result.length}`,
-        tableId,
-        data: {},
-      });
-    }
     return result;
-  }, [data?.rows, tableId]);
+  }, [data?.rows]);
 
   const table = useReactTable<Row>({
     data: paddedRows,
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
+    manualSorting: true, 
   });
 
   const utils = api.useUtils()

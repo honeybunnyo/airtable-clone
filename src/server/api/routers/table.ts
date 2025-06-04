@@ -26,20 +26,16 @@ export const tableRouter = createTRPCRouter({
           rows: {
             create: [
               {
-                data: {
-                  name: 'Alice2',
-                  email: 'alice@example.com',
-                },
+                data: { name: 'Alice2', email: 'alice@example.com' },
+                order: 0,
               },
               {
-                data: {
-                  name: 'Bob2',
-                  email: 'bob@example.com',
-                },
+                data: { name: 'Bob2', email: 'bob@example.com' },
+                order: 1,
               },
               {
-                data: {
-                },
+                data: {},
+                order: 2,
               },
             ],
           },
@@ -53,7 +49,7 @@ export const tableRouter = createTRPCRouter({
         where: { id: input.id },
         include: {
           columns: true,
-          rows: true
+          rows: true,
         },
       });
     }),
@@ -63,10 +59,18 @@ export const tableRouter = createTRPCRouter({
       data: z.record(z.any()),
     }))
     .mutation(async ({ input, ctx }) => {
+      const maxOrderRow = await ctx.db.row.findFirst({
+        where: { tableId: input.tableId },
+        orderBy: { order: 'desc' },
+        select: { order: true },
+      });
+      const nextOrder = (maxOrderRow?.order ?? -1) + 1;
+
       return ctx.db.row.create({
         data: {
           tableId: input.tableId,
           data: input.data,
+          order: nextOrder,
         },
       });
     }),

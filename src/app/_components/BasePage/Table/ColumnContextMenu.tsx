@@ -6,6 +6,8 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "../../../../components/ui/context-menu"
+import { api } from '~/trpc/react'
+import { useParams } from 'next/navigation'
 
 type ColumnContextMenuProps = {
   children: React.ReactNode
@@ -13,6 +15,20 @@ type ColumnContextMenuProps = {
 }
 
 const ColumnContextMenu: React.FC<ColumnContextMenuProps> = ({ children, columnId }) => {
+  const utils = api.useUtils()
+  const params = useParams()
+  const tableId = typeof params?.tableId === 'string' ? params.tableId : undefined
+
+  const deleteTable = api.column.delete.useMutation({
+    onSuccess: async () => {
+      await utils.table.getTableById.invalidate({ id: tableId })
+    }
+  })
+  
+  const handleDelete = () => {
+    deleteTable.mutate({ columnId })
+  }
+
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>
@@ -33,7 +49,7 @@ const ColumnContextMenu: React.FC<ColumnContextMenuProps> = ({ children, columnI
         <ContextMenuItem inset>
           Hide field
         </ContextMenuItem>
-        <ContextMenuItem inset className="text-red-500">
+        <ContextMenuItem inset className="text-red-500" onClick={handleDelete}>
           Delete field
         </ContextMenuItem>
       </ContextMenuContent>
