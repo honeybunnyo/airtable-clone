@@ -13,7 +13,7 @@ export const tableRouter = createTRPCRouter({
       name: z.string(),
     }))
     .mutation(async ({ input, ctx }) => {
-      return ctx.db.table.create({
+      const table = await ctx.db.table.create({
         data: {
           name: input.name,
           base: { connect: { id: input.baseId } },
@@ -23,24 +23,40 @@ export const tableRouter = createTRPCRouter({
               { name: 'email', type: 'TEXT' },
             ],
           },
-          rows: {
-            create: [
-              {
-                data: { name: 'Alice2', email: 'alice@example.com' },
-                order: 0,
-              },
-              {
-                data: { name: 'Bob2', email: 'bob@example.com' },
-                order: 1,
-              },
-              {
-                data: {},
-                order: 2,
-              },
-            ],
-          },
         },
+        include: { columns: true }
       });
+
+      const initialRows = [
+        { name: 'Alice', email: 'alice@example.com' },
+        { name: 'Bob', email: 'bob@example.com' },
+        { name: 'Charlie', email: 'charlie@example.com' },
+      ];
+
+      for (const [index, row] of initialRows.entries()) {
+        const newRow = await ctx.db.row.create({
+          data: {
+            tableId: table.id,
+            order: index,
+          },
+        });
+
+        const cellData = Object.entries(row);
+        for (const [columnName, value] of cellData) {
+          if (typeof value !== "string" && typeof value !== "number") continue;
+          const column = table.columns.find((c) => c.name === columnName);
+          if (column) {
+            await ctx.db.cell.create({
+              data: {
+                rowId: newRow.id,
+                columnId: column.id,
+                value,
+              },
+            });
+          }
+        }
+      }
+      return { tableId: table.id }
     }),
   getTableById: publicProcedure
     .input(z.object({ id: z.string() }))
@@ -49,16 +65,23 @@ export const tableRouter = createTRPCRouter({
         where: { id: input.id },
         include: {
           columns: true,
-          rows: true,
+          rows: {
+            include: {
+              cells: true,
+            },
+          },
         },
       });
     }),
   addRow: protectedProcedure
     .input(z.object({
       tableId: z.string(),
-      data: z.record(z.any()),
     }))
     .mutation(async ({ input, ctx }) => {
+      const columns = await ctx.db.column.findMany({
+        where: { tableId: input.tableId },
+      });
+
       const maxOrderRow = await ctx.db.row.findFirst({
         where: { tableId: input.tableId },
         orderBy: { order: 'desc' },
@@ -66,55 +89,47 @@ export const tableRouter = createTRPCRouter({
       });
       const nextOrder = (maxOrderRow?.order ?? -1) + 1;
 
-      return ctx.db.row.create({
+      const newRow = await ctx.db.row.create({
         data: {
           tableId: input.tableId,
-          data: input.data,
           order: nextOrder,
         },
       });
+
+      await ctx.db.cell.createMany({
+        data: columns.map(col => ({
+          rowId: newRow.id,
+          columnId: col.id,
+          value: '',
+        })),
+      });
+
+      return newRow;
     }),
   updateCell: protectedProcedure
     .input(z.object({
-      rowId: z.string(),
-      columnKey: z.string(),
-      value: z.union([z.string(), z.number()])
+      cellId: z.string(),
+      value: z.union([z.string(), z.number()]),
     }))
     .mutation(async ({ input, ctx }) => {
-      const existingRow = await ctx.db.row.findUnique({
-        where: { id: input.rowId },
-      });
-
-      if (!existingRow) {
-        throw new Error('Row not found');
-      }
-      
-      if (typeof existingRow.data !== 'object' || existingRow.data === null || Array.isArray(existingRow.data)) {
-        throw new Error('Row data is not a valid object');
-      }
-
-      const updatedData = {
-        ...existingRow.data,
-        [input.columnKey]: input.value,
-      };
-
-      return ctx.db.row.update({
-        where: { id: input.rowId },
-        data: { data: updatedData },
+      return ctx.db.cell.update({
+        where: { id: input.cellId },
+        data: { value: input.value },
       });
     }),
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
-      .mutation(async ({ ctx, input }) => {
-    const tableId = input.id;
-    await ctx.db.row.deleteMany({
-      where: { tableId },
-    });
-    await ctx.db.column.deleteMany({
-      where: { tableId },
-    });
-    return ctx.db.table.delete({
-      where: { id: tableId },
-    });
-  }),
+    .mutation(async ({ ctx, input }) => {
+      const tableId = input.id;
+      const rows = await ctx.db.row.findMany({ where: { tableId } });
+      const rowIds = rows.map(row => row.id);
+
+      await ctx.db.cell.deleteMany({
+        where: { rowId: { in: rowIds } },
+      });
+      await ctx.db.row.deleteMany({ where: { tableId } });
+      await ctx.db.column.deleteMany({ where: { tableId } });
+
+      return ctx.db.table.delete({ where: { id: tableId } });
+    }),
 });

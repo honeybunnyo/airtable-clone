@@ -18,22 +18,63 @@ const DataTable = ({ tableId }: DataTableProps ) => {
   const { data, isLoading } = api.table.getTableById.useQuery({ id: tableId })
   const columns = useMemo<ColumnDef<Row>[]>(() => {
     return (data?.columns ?? []).map(col => ({
-      accessorFn: (row: Row) => row.data?.[col.name] ?? '',
+      accessorFn: (row: Row) => {
+        return row.data[col.name] ?? { value: '', cellId: '' };
+      },
       id: col.id,
       header: () => col.name,
-      cell: info => info.getValue(),
-    }))
+      cell: info => {
+        const cellValue = info.getValue() as { value: string | number; cellId: string };
+        return (
+          <DataTableCell
+            initialValue={String(cellValue.value)}
+            cellId={cellValue.cellId}
+            columnType={col.type}
+          />
+        );
+      }
+    }));
   }, [data?.columns]);
 
-  const paddedRows = useMemo(() => {
-    const baseRows = (data?.rows as Row[]) ?? [];
-    const result = [...baseRows];
-    return result;
-  }, [data?.rows]);
+  const tableData: Row[] = useMemo(() => {
+    if (!data?.rows || !data.columns) return [];
+
+    return data.rows.map(row => {
+      const cellMap: Record<string, { value: string | number; cellId: string }> = {};
+
+      for (const cell of row.cells) {
+        const col = data.columns.find(col => col.id === cell.columnId);
+        if (col) {
+          cellMap[col.name] = {
+          value: typeof cell.value === 'string' || typeof cell.value === 'number'
+            ? cell.value
+            : '',
+          cellId: cell.id,
+        };
+        }
+      }
+
+      const normalizedCells = row.cells
+        .filter(c => typeof c.value === 'string' || typeof c.value === 'number')
+        .map(c => ({
+          id: c.id,
+          rowId: c.rowId,
+          columnId: c.columnId,
+          value: c.value as string | number,
+        }));
+      return {
+        id: row.id,
+        tableId: row.tableId,
+        order: row.order,
+        data: cellMap,
+        cells: normalizedCells
+      };
+    });
+  }, [data?.rows, data?.columns]);
 
   const table = useReactTable<Row>({
-    data: paddedRows,
-    columns: columns,
+    data: tableData,
+    columns,
     getCoreRowModel: getCoreRowModel(),
     manualSorting: true, 
   });
@@ -47,8 +88,7 @@ const DataTable = ({ tableId }: DataTableProps ) => {
   
   const handleAddRow = () => {
     addRow.mutate({
-      tableId: tableId,
-      data: {}
+      tableId,
     })
   }
 
@@ -80,15 +120,19 @@ const DataTable = ({ tableId }: DataTableProps ) => {
         <tbody>
           {table.getRowModel().rows.map(row => (
             <tr key={row.id} className='h-[32px]'>
-              {row.getVisibleCells().map(cell => (
-                <td key={`${row.id}-${cell.column.id}`} className='border border-gray-200 p-0'>
-                  <DataTableCell
-                    initialValue={String(cell.getValue()) ?? ' '}
-                    rowId={row.original.id}
-                    columnKey={cell.column.id}
-                  />
-                </td>
-              ))}
+              {row.getVisibleCells().map(cell => {
+                const cellData = cell.getValue() as { value: string | number; cellId: string };
+                const columnDef = data?.columns?.find(col => col.id === cell.column.id);
+                return (
+                  <td key={`${row.id}-${cell.column.id}`} className='border border-gray-200 p-0'>
+                    <DataTableCell
+                      initialValue={String(cellData.value) ?? ' '}
+                      cellId={cellData.cellId}
+                      columnType={columnDef?.type ?? 'TEXT'} 
+                    />
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>

@@ -78,7 +78,7 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
               />
             </div>
               <Label htmlFor="type-1">Select Type</Label>
-            <Select>
+            <Select value={newColumnType} onValueChange={(val) => setNewColumnType(val as "TEXT" | "NUMBER")}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Value type" />
               </SelectTrigger>

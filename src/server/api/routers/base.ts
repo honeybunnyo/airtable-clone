@@ -9,81 +9,18 @@ import {
 export const baseRouter = createTRPCRouter({
   create: protectedProcedure
    .mutation(async ({ ctx }) => {
-      const newBase = await ctx.db.base.create({
-        data: {
-          name: 'Untitled',
-          user: { connect: { id: ctx.session.user.id } },
-          tables: {
-            create: {
-              name: 'Table 1',
-              columns: {
-                create: [
-                  { name: 'name', type: 'TEXT' },
-                  { name: 'email', type: 'TEXT' },
-                ],
-              },
-              rows: {
-                create: [
-                  {
-                    data: {
-                      name: 'Alice',
-                      email: 'alice@example.com',
-                    },
-                  },
-                  {
-                    data: {
-                      name: 'Bob',
-                      email: 'bob@example.com',
-                    },
-                  },
-                  {
-                    data: {},
-                  },
-                ],
-              },
-            },
-          },
-        },
-        include: {
-          tables: {
-            select: {
-              id: true,
-            },
-          },
-        },
-      });
-      return {
-        baseId: newBase.id,
-        tableId: newBase.tables[0]?.id ?? null,
-      };
-    }),
+     const base = await ctx.db.base.create({
+      data: {
+        name: 'Untitled',
+        user: { connect: { id: ctx.session.user.id } },
+      },
+      select: { id: true },
+    });
 
-    // .mutation(async ({ ctx }) => {
-    //   const newBase = await ctx.db.base.create({
-    //     data: {
-    //       name: 'Untitled Base',
-    //       user: { connect: { id: ctx.session.user.id } },
-    //       tables: {
-    //         create: {
-    //           name: 'Table 1',
-    //           columns: {
-    //             create: [
-    //               {
-    //                 name: 'name',
-    //                 type: 'TEXT',
-    //               },
-    //               {
-    //                 name: 'email',
-    //                 type: 'TEXT',
-    //               },
-    //             ],
-    //           },
-    //         },
-    //       },
-    //     },
-    //   });
-    //   return newBase.id;
-    // }),
+    return {
+      baseId: base.id,
+    };
+  }),
   getBaseById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
@@ -126,7 +63,11 @@ export const baseRouter = createTRPCRouter({
           tables: {
             include: {
               columns: true,
-              rows: true,
+              rows: {
+                include: {
+                  cells: true,
+                },
+              },
             },
           },
         },
@@ -137,6 +78,8 @@ export const baseRouter = createTRPCRouter({
       }
 
       for (const table of base.tables) {
+        const rowIds = table.rows.map(r => r.id);
+        await ctx.db.cell.deleteMany({ where: { rowId: { in: rowIds }, } });
         await ctx.db.column.deleteMany({ where: { tableId: table.id } });
         await ctx.db.row.deleteMany({ where: { tableId: table.id } });
       }

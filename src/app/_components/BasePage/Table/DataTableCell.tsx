@@ -3,33 +3,47 @@ import { api } from '~/trpc/react';
 import { withGlobalSaving } from '~/lib/utils';
 const DataTableCell = ({
   initialValue,
-  rowId,
-  columnKey,
+  cellId,
+  columnType
 }: {
   initialValue: string;
-  rowId: string;
-  columnKey: string;
+  cellId: string;
+  columnType: 'TEXT' | 'NUMBER';
 }) => {
   const [value, setValue] = useState(initialValue);
   const updateCellMutation = api.table.updateCell.useMutation();
 
-  const updateCell = async (rowId: string, columnKey: string, value: string) => {
+  const updateCell = async (value: string | number) => {
     await withGlobalSaving(() => updateCellMutation.mutateAsync({
-        rowId,
-        columnKey,
+        cellId,
         value,
       })
     );
   }
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+
+    if (columnType === 'NUMBER') {
+      if (
+        inputValue === '' ||
+        /^-?\d*\.?\d*$/.test(inputValue)
+      ) {
+        setValue(inputValue);
+      }
+    } else {
+      setValue(inputValue);
+    }
+  };
+  
   return (
     <input
       type="text"
       value={value}
-      onChange={(e) => setValue(e.target.value)}
+      onChange={handleChange}
       onBlur={() => {
         if (value !== initialValue) {
-          void updateCell(rowId, columnKey, value);
+          void updateCell(value);
         }
       }}
       onKeyDown={(e) => {

@@ -24,10 +24,19 @@ export type Column = {
   name: string
   type: ColumnType
   tableId: string
+  cells: Cell[]
 }
 
 export type Row = {
   id: string
   tableId: string
-  data: Record<string, string>
+  data: Record<string, { value: string | number; cellId: string }>
+  cells: Cell[]
+}
+
+export type Cell = {
+  id: string
+  rowId: string
+  columnId: string
+  value: string | number
 }

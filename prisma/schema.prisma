@@ -75,6 +75,7 @@ model Table {
   base     Base     @relation(fields: [baseId], references: [id])
   columns  Column[]
   rows     Row[]
+	sortConfig Json?
 }
 
 model Column {
@@ -84,14 +85,24 @@ model Column {
   tableId  String
   table    Table    @relation(fields: [tableId], references: [id])
   order    Int      @default(0)
+  cells    Cell[]
 }
 
 model Row {
 	id       String   @id @default(cuid())
 	tableId  String
 	table    Table    @relation(fields: [tableId], references: [id])
-	data     Json
-	order    Int   @default(0)
+	order    Int   		@default(0)
+  cells    Cell[]
+}
+
+model Cell {
+  id        String   @id @default(cuid())
+  rowId     String
+  columnId  String
+  value     Json
+  row       Row      @relation(fields: [rowId], references: [id])
+  column    Column   @relation(fields: [columnId], references: [id])
 }
 
 enum ColumnType {

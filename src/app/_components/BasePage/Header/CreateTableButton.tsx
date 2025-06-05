@@ -36,7 +36,7 @@ const CreateTableButton = ({ baseId }: { baseId: string } ) => {
     setAddingTable(true)
     await withGlobalSaving(() => createTable.mutateAsync({
       baseId: baseId,
-      name: tableName ?? 'Table',
+      name: tableName ?? 'Table X',
     })
     )
     setOpen(false);

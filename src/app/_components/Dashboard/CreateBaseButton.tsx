@@ -6,10 +6,13 @@ import { api } from '~/trpc/react';
 const CreateBaseButton = () => {
   const router = useRouter();
   const createBase = api.base.create.useMutation();
+  const createTable = api.table.create.useMutation();
 
   const handleCreate = async () => {
     try {
-      const {baseId, tableId} = await createBase.mutateAsync();
+      const { baseId } = await createBase.mutateAsync();
+      const { tableId } = await createTable.mutateAsync({ baseId, name: "Table 1" });
+
       router.push(`/base/${baseId}/${tableId}`);
     } catch (err: unknown) {
       console.error("Error creating base", err);
