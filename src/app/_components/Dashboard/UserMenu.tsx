@@ -25,7 +25,7 @@ export default function UserMenu({ session }: { session: Session }) {
     <div className="relative" ref={menuRef}>
       {session?.user?.image && (
         <div
-          className="w-7 h-7 rounded-full overflow-hidden cursor-pointer"
+          className="w-7 h-7 rounded-full overflow-hidden cursor-pointer outline-1 outline-white"
           onClick={() => setMenuOpen(!menuOpen)}
         >
           <Image

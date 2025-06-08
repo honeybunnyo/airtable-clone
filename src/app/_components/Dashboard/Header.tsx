@@ -2,16 +2,16 @@
 
 import { Menu, Search, Bell, HelpCircle} from 'lucide-react'
 import Image from 'next/image'
-import type { Session } from 'next-auth'
 import UserMenu from './UserMenu'
+import { useSession } from 'next-auth/react'
 
 type SideBarProps = {
-  session: Session;
   menuSidebarOpen: boolean;
   setMenuSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Header = ({ session, menuSidebarOpen, setMenuSidebarOpen }: SideBarProps) => {
+const Header = ({ menuSidebarOpen, setMenuSidebarOpen }: SideBarProps) => {
+  const { data: session } = useSession()
   return (
     <header className="z-10 flex items-center justify-between px-4 py-0 bg-white shadow-xs border-b border-gray-200 h-14">
       {/* Left */}

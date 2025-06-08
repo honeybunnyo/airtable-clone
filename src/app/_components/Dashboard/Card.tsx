@@ -14,7 +14,6 @@ type CardProps = {
 const Card = ({ base }: CardProps) => {
   const firstTableId = base.tables?.[0]?.id
   const [hovering, setHovering] = useState(false)
-
   const href = firstTableId ? `/base/${base.id}/${firstTableId}` : `/base/${base.id}`
 
   const utils = api.useUtils()
@@ -39,17 +38,16 @@ const Card = ({ base }: CardProps) => {
         href={href}
         className="block w-full h-full bg-white text-black rounded-md outline-1 outline-gray-300 py-2 font-semibold hover:shadow-md shadow-sm"
       >
-        <div className="flex flex-row justify-start p-3 gap-5 h-full">
-          <div className="w-14 h-14 bg-green-800 rounded-lg flex items-center justify-center text-white text-xl font-medium">
+        <div className="flex flex-row justify-start p-3 gap-5 h-full max-w-full overflow-hidden">
+          <div className="min-w-14 min-h-14 bg-green-800 rounded-lg flex items-center justify-center text-white text-xl font-medium">
             {base.name.slice(0, 2)}
           </div>
-          <div className="flex flex-col items-start font-medium">
-            <h2>{base.name}</h2>
+          <div className="flex flex-col items-start font-medium max-w-3/4">
+            <h2 className='truncate overflow-hidden whitespace-nowrap w-full'>{base.name}</h2>
             <p className="text-xs text-gray-500 font-light">Base</p>
           </div>
         </div>
       </Link>
-
       {hovering && (
         <button
           onClick={handleDelete}
