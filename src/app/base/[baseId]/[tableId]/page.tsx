@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation'
 import { api } from '~/trpc/react';
 import Header from '../../../_components/BasePage/Header';
 import DataTable from '../../../_components/BasePage/Table/DataTable';
+import ViewSideBar from '~/app/_components/BasePage/ViewSidebar';
 
 const BasePage = () => {
   const { baseId, tableId } = useParams()
@@ -17,12 +18,15 @@ const BasePage = () => {
   if (isError || !base) return <div>Error loading base data.</div>
 
   return (
-    <div>
+    <div className='flex flex-col h-dvh'>
       <Header/>
-      { base && <>
-        <DataTable tableId={tableId as string}/>
-      </>
-      }
+      <div className='flex flex-row flex-1 overflow-hidden'>
+        <ViewSideBar/>
+        { base && <>
+          <DataTable tableId={tableId as string}/>
+        </>
+        }
+      </div>
     </div>
   )
 }

@@ -4,10 +4,28 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
+  --sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
+.bg-greentheme-light {
+  background-color: #7fa181;
+}
+.bg-greentheme {
+  background-color: #407c49;
+}
+.bg-greentheme-dark {
+  background-color: #396f42;
+}
 
+.text-greentheme-light {
+  color: #7fa181;
+}
+.text-greentheme {
+  color: #407c49;
+}
+.text-greentheme-dark {
+  color: #396f42;
+}
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

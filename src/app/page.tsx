@@ -27,7 +27,6 @@ export default async function Home() {
               </p>
 
               <div className="flex flex-col items-center justify-center gap-4">
-
                 <Link
                   href={session ? "/api/auth/signout" : "/api/auth/signin"}
                   className="rounded-full bg-blue-100 px-10 py-3 font-semibold no-underline transition hover:bg-blue-200"
@@ -38,10 +37,7 @@ export default async function Home() {
             </div>
           </div>
           :
-          // if logged in
-          <>
-            <Dashboard session={session}/>
-          </>
+          <Dashboard/>
         }
       </main>
     </HydrateClient>

@@ -46,7 +46,6 @@ export const columnRouter = createTRPCRouter({
         where: { id: input.columnId },
       });
       
-      console.log("columnid", input.columnId)
       if (!column) throw new Error('Column not found');
 
       await ctx.db.cell.deleteMany({
