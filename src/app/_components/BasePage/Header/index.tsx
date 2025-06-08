@@ -7,6 +7,7 @@ import { api } from '~/trpc/react'
 import TopBar from './TopBar';
 import CreateTableButton from './CreateTableButton';
 import TableContextMenu from './TableContextMenu';
+import ViewBar from './ViewBar';
 
 const Page = () => {
   const params = useParams()
@@ -29,22 +30,25 @@ const Page = () => {
     <div className='text-white'>
       <TopBar/>
       {/* Bottom */}
-      <div className='flex items-center justify-between flex-auto bg-[#407c49] h-[32px] gap-2 text-sm font-light'>
+      <div className='flex items-center justify-between flex-auto bg-greentheme h-[32px] gap-2 text-sm font-light'>
         {/* First panel */}
-        <div className='flex flex-row bg-[#396f42] h-full w-full rounded-t-md content-center pl-3'>
+        <div className='flex flex-row items-center bg-greentheme-dark h-full w-full rounded-tr-sm content-center pl-3'>
             {base && base.tables.map((table) => (
               <TableContextMenu key={`context-menu-${baseId}-${table.id}`} tableId={table.id}>
                 <Link key={`${baseId}-${table.id}`} href={`/base/${baseId}/${table.id}`}>
-                  <div key={table.id} className={`w-full h-full text-left px-4 py-2 text-sm rounded-t-sm ${
-                    table.id === tableId ? 'font-semibold bg-white text-black' : 'font-light hover:bg-[#34643b] text-white'
+                  <div key={table.id} className={`w-full text-left px-4 py-2 text-sm rounded-t-xs ${
+                    table.id === tableId ? 'font-semibold bg-white text-black' : 'font-light hover:bg-greentheme-dark text-white'
                   }`}>{table.name}</div>
                 </Link>
               </TableContextMenu>
             ))}
+            <div className="flex flex-row justify-center items-center text-gray-300 gap-2">
+              | <ChevronDown className="w-4 h-4"/> |
+            </div>
           <CreateTableButton baseId={baseId} />
         </div>
         {/* Second panel */}
-        <div className='flex flex-row bg-[#396f42] h-full rounded-tl-md'>
+        <div className='flex flex-row bg-greentheme-dark h-full rounded-tl-sm'>
           <button onClick={openExtensionOptions} className='px-3 content-center'>
             Extensions
           </button>
@@ -54,6 +58,7 @@ const Page = () => {
           </button>
         </div>
       </div>
+      <ViewBar/>
     </div>
   )
 }

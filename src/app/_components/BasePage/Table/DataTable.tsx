@@ -96,60 +96,60 @@ const DataTable = ({ tableId }: DataTableProps ) => {
   if (!data) return <div>No data found</div>
 
   return (
-    <>
+    <div>
       <div className='flex flex-row'>
-      <table className='border border-gray-200'>
-        <thead>
-          {table.getHeaderGroups().map(headerGroup => (
-            <tr key={headerGroup.id} className='h-[32px]'>
-              {headerGroup.headers.map(header => (
-                <th key={`${headerGroup.id}-${header.id}`} className='border border-gray-200 w-[180px] font-light bg-[#f4f4f4] text-sm'>
-                  <ColumnContextMenu columnId={header.column.id}>
-                    <div className='flex flex-row justify-between items-center px-2 cursor-context-menu'>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
-                      <ChevronDown className='w-4 h-4 text-gray-400 hover:text-gray-600' />
-                    </div>
-                  </ColumnContextMenu>
-                </th>
-              ))}
+        <table className='max-h-screen overflow-auto w-full table-auto'>
+          <thead>
+            {table.getHeaderGroups().map(headerGroup => (
+              <tr key={headerGroup.id} className='h-[32px]'>
+                {headerGroup.headers.map(header => (
+                  <th key={`${headerGroup.id}-${header.id}`} className='border border-gray-200 w-[180px] font-light bg-[#f4f4f4] text-sm'>
+                    <ColumnContextMenu columnId={header.column.id}>
+                      <div className='flex flex-row justify-between items-center px-2 cursor-context-menu'>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(header.column.columnDef.header, header.getContext())}
+                        <ChevronDown className='w-4 h-4 text-gray-400 hover:text-gray-600' />
+                      </div>
+                    </ColumnContextMenu>
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map(row => (
+              <tr key={row.id} className='h-[32px]'>
+                {row.getVisibleCells().map(cell => {
+                  const cellData = cell.getValue() as { value: string | number; cellId: string };
+                  const columnDef = data?.columns?.find(col => col.id === cell.column.id);
+                  return (
+                    <td key={`${row.id}-${cell.column.id}`} className='border border-gray-200 p-0'>
+                      <DataTableCell
+                        initialValue={String(cellData.value) ?? ' '}
+                        cellId={cellData.cellId}
+                        columnType={columnDef?.type ?? 'TEXT'} 
+                      />
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr
+              className="h-[32px] cursor-pointer hover:bg-gray-100"
+              onClick={handleAddRow}
+            >
+              <td colSpan={columns.length} className="text-left text-gray-400 text-xl px-2">
+                +
+              </td>
             </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map(row => (
-            <tr key={row.id} className='h-[32px]'>
-              {row.getVisibleCells().map(cell => {
-                const cellData = cell.getValue() as { value: string | number; cellId: string };
-                const columnDef = data?.columns?.find(col => col.id === cell.column.id);
-                return (
-                  <td key={`${row.id}-${cell.column.id}`} className='border border-gray-200 p-0'>
-                    <DataTableCell
-                      initialValue={String(cellData.value) ?? ' '}
-                      cellId={cellData.cellId}
-                      columnType={columnDef?.type ?? 'TEXT'} 
-                    />
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr
-            className="h-[32px] cursor-pointer hover:bg-gray-100"
-            onClick={handleAddRow}
-          >
-            <td colSpan={columns.length} className="text-left text-gray-400 text-xl px-2">
-              +
-            </td>
-          </tr>
-        </tfoot>
-      </table>
-      <AddColumnDialog tableId={tableId}/>
+          </tfoot>
+        </table>
+        <AddColumnDialog tableId={tableId}/>
       </div>
-    </>
+    </div>
   )
 }
 
