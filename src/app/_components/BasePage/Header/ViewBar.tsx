@@ -1,15 +1,36 @@
 import { ArrowDownUp, ChevronDown, EyeOff, List, ListFilter, Menu, PaintBucket, Search, Sparkle, TableCellsSplit } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
 import FormatIcon from '../../Ui/FormatIcon'
 import { Button } from '~/components/ui/button'
 
-const ViewBar = () => {
+
+type PageProps = {
+  sideBarOpen: boolean;
+  setSideBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const ViewBar = ({ sideBarOpen, setSideBarOpen }: PageProps) => {
+  const [ wasManuallyOpened, setWasManuallyOpened ] = useState(false)
+
   return (
     <div className='h-[44px] text-black flex flex-row justify-between items-center px-3 outline-1'>
       <div className='flex flex-row items-center font-medium text-sm gap-2'>
-        <ButtonFormat>
+        <Button
+          onClick={() => setWasManuallyOpened(prev => !prev)}
+          onMouseEnter={() => {
+            if (!wasManuallyOpened) {
+              setSideBarOpen(true);
+            }
+          }}
+          onMouseLeave={() => {
+            if (!wasManuallyOpened) {
+              setSideBarOpen(false);
+            }
+          }}
+          variant="ghost" 
+          className={`${sideBarOpen ? 'bg-gray-100 hover:outline-solid outline-2 outline-gray-300' :'bg-white'} flex items-center justify-center gap-1 flex-row h-6 p-0 rounded-xs`}>
           <FormatIcon icon={Menu} /> Views
-        </ButtonFormat>
+        </Button>
         <div className='w-[1px] h-4 bg-gray-300'/>
         <ButtonFormat>
           <TableCellsSplit className="w-4 h-4 text-blue-800" strokeWidth={1}/>

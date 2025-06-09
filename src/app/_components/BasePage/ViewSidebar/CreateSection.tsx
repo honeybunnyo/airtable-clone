@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { 
   Calendar1,
   ChartBarStacked,
+  ChevronDown,
+  ChevronUp,
   Kanban, 
   ListChecks, 
   Plus, 
@@ -22,8 +24,9 @@ const CreateSection = () => {
     <Collapsible open={open} onOpenChange={setOpen} className="w-full">
       <div className='h-[1px] w-full bg-gray-200 mb-2'/>
       <CollapsibleTrigger asChild>
-        <Button variant="ghost" className="w-full justify-start hover:bg-white text-md py-4">
+        <Button variant="ghost" className="w-full justify-between hover:bg-white text-md py-4">
           Create...
+          {open ? <ChevronDown/> : <ChevronUp/>}
         </Button>
       </CollapsibleTrigger>
       <CollapsibleContent className="space-y-2 mt-2">

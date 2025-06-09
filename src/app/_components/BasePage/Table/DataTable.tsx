@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-table'
 import { api } from '~/trpc/react';
 import AddColumnDialog from './AddColumnDialog';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Plus } from 'lucide-react';
 import ColumnContextMenu from './ColumnContextMenu';
 import DataTableCell from './DataTableCell';
 
@@ -98,7 +98,7 @@ const DataTable = ({ tableId }: DataTableProps ) => {
   return (
     <div>
       <div className='flex flex-row'>
-        <table className='max-h-screen overflow-auto w-full table-auto'>
+        <table className='max-h-screen overflow-auto w-auto table-auto'>
           <thead>
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id} className='h-[32px]'>
@@ -141,8 +141,8 @@ const DataTable = ({ tableId }: DataTableProps ) => {
               className="h-[32px] cursor-pointer hover:bg-gray-100"
               onClick={handleAddRow}
             >
-              <td colSpan={columns.length} className="text-left text-gray-400 text-xl px-2">
-                +
+              <td colSpan={columns.length} className="border border-gray-200 text-left text-gray-400 text-xl px-2">
+                <Plus/>
               </td>
             </tr>
           </tfoot>

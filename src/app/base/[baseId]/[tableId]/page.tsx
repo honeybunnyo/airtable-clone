@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useParams } from 'next/navigation'
 import { api } from '~/trpc/react';
 import Header from '../../../_components/BasePage/Header';
@@ -8,7 +8,8 @@ import DataTable from '../../../_components/BasePage/Table/DataTable';
 import ViewSideBar from '~/app/_components/BasePage/ViewSidebar';
 
 const BasePage = () => {
-  const { baseId, tableId } = useParams()
+  const { baseId, tableId } = useParams();
+  const [ sideBarOpen, setSideBarOpen ] = useState(false);
   const { data: base, isLoading, isError } = api.base.getBaseById.useQuery(
     { id: baseId as string },
     { enabled: !!baseId }
@@ -19,13 +20,13 @@ const BasePage = () => {
 
   return (
     <div className='flex flex-col h-dvh'>
-      <Header/>
-      <div className='flex flex-row flex-1 overflow-hidden'>
-        <ViewSideBar/>
-        { base && <>
+      <Header sideBarOpen={sideBarOpen} setSideBarOpen={setSideBarOpen} />
+
+      <div className="flex h-full">
+        {sideBarOpen && <ViewSideBar sideBarOpen={sideBarOpen} /> }
+        <div className="flex-1">
           <DataTable tableId={tableId as string}/>
-        </>
-        }
+        </div>
       </div>
     </div>
   )

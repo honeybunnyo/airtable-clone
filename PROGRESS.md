@@ -49,6 +49,17 @@
 
 ### Day 4
 1. Add spinner to show when saving to database
+ - used zustand to keep track of it gobally
 2. Broke down header into smaller components
+3. Add table button opens dialog
+4. Starting reading up on TanStack Infinite Scroll example, and 
 
+### Day 5
+1. Grabbing rows wasnt actually working yestyerday in the prototype and was just giving an infinite cycle of the same thirty rows
+    - spent quite a bit of time fixing that up since getting the data was different to the example
+        - the example they gave on tanstack was offset-based pagination
+    - used curosr based pagination -> using cursor to fetch the next set of rows
+    - created a tRPC method that gets x amount of rows,
+2. Updated prisma schema since JSON wont scale well
+ - old: Row with data as JSON
 

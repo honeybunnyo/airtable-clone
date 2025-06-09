@@ -9,7 +9,11 @@ import CreateTableButton from './CreateTableButton';
 import TableContextMenu from './TableContextMenu';
 import ViewBar from './ViewBar';
 
-const Page = () => {
+type PageProps = {
+  sideBarOpen: boolean;
+  setSideBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+const Page = ({ sideBarOpen, setSideBarOpen }: PageProps) => {
   const params = useParams()
 
   const baseId = typeof params?.baseId === 'string' ? params.baseId : undefined
@@ -58,7 +62,7 @@ const Page = () => {
           </button>
         </div>
       </div>
-      <ViewBar/>
+      <ViewBar sideBarOpen={sideBarOpen} setSideBarOpen={setSideBarOpen}/>
     </div>
   )
 }

@@ -73,7 +73,7 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
             <div className="grid gap-3">
               <Label htmlFor="column-name-1">Column Name</Label>
               <Input 
-                id="column-name-1" name="name" defaultValue=""
+                id="column-name-1" name="name" defaultValue="" autoComplete='off'
                 onChange={(e) => setNewColumnName(e.target.value)}
               />
             </div>
