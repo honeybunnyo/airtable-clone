@@ -15,7 +15,7 @@ import DataTableCell from './DataTableCell';
 type DataTableProps = { tableId: string }
 
 const DataTable = ({ tableId }: DataTableProps ) => {
-  const { data, isLoading } = api.table.getTableById.useQuery({ id: tableId })
+  const { data, isLoading } = api.table.getTableById.useQuery({ tableId })
   const columns = useMemo<ColumnDef<Row>[]>(() => {
     return (data?.columns ?? []).map(col => ({
       accessorFn: (row: Row) => {
@@ -82,7 +82,7 @@ const DataTable = ({ tableId }: DataTableProps ) => {
   const utils = api.useUtils()
   const addRow = api.table.addRow.useMutation({
     onSuccess: async () => {
-      await utils.table.getTableById.invalidate({ id: tableId })
+      await utils.table.getTableById.invalidate({ tableId })
     }
   })
   

@@ -2,6 +2,7 @@ import { ArrowDownUp, ChevronDown, EyeOff, List, ListFilter, Menu, PaintBucket, 
 import React, { useState } from 'react'
 import FormatIcon from '../../Ui/FormatIcon'
 import { Button } from '~/components/ui/button'
+import AddManyRowsButton from './AddManyRowsButton'
 
 
 type PageProps = {
@@ -64,6 +65,7 @@ const ViewBar = ({ sideBarOpen, setSideBarOpen }: PageProps) => {
             Create Ai Fields
           </p>
         </ButtonFormat>
+        <AddManyRowsButton/>
       </div>
       <Search className='h-4 w-4' strokeWidth={1}/>
     </div>

@@ -21,7 +21,7 @@ const ColumnContextMenu: React.FC<ColumnContextMenuProps> = ({ children, columnI
 
   const deleteTable = api.column.delete.useMutation({
     onSuccess: async () => {
-      await utils.table.getTableById.invalidate({ id: tableId })
+      await utils.table.getTableById.invalidate({ tableId })
     }
   })
   

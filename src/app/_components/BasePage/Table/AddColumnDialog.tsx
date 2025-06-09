@@ -30,7 +30,7 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
   const [newColumnType, setNewColumnType] = useState<"TEXT" | "NUMBER">("TEXT")
   const [addingColumn, setAddingColumn] = useState(false)
   const createColumn = api.column.create.useMutation();
-  const { refetch } = api.table.getTableById.useQuery({ id: tableId });
+  const { refetch } = api.table.getTableById.useQuery({ tableId });
   const [open, setOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

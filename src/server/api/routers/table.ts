@@ -59,13 +59,16 @@ export const tableRouter = createTRPCRouter({
       return { tableId: table.id }
     }),
   getTableById: publicProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ tableId: z.string() }))
     .query(async ({ input, ctx }) => {
       return ctx.db.table.findUnique({
-        where: { id: input.id },
+        where: { id: input.tableId },
         include: {
           columns: true,
           rows: {
+            orderBy: {
+              order: 'asc',
+            },
             include: {
               cells: true,
             },
@@ -131,5 +134,49 @@ export const tableRouter = createTRPCRouter({
       await ctx.db.column.deleteMany({ where: { tableId } });
 
       return ctx.db.table.delete({ where: { id: tableId } });
+    }),
+  addManyRows: protectedProcedure
+    .input(z.object({
+      tableId: z.string(),
+      rows: z.array(z.object({
+        data: z.record(z.string(), z.union([z.string(), z.number()])),
+      })),
+    }))
+      .mutation(async ({ ctx, input }) => {
+      const columns = await ctx.db.column.findMany({
+        where: { tableId: input.tableId },
+      });
+
+      const maxOrderRow = await ctx.db.row.findFirst({
+        where: { tableId: input.tableId },
+        orderBy: { order: 'desc' },
+        select: { order: true },
+      });
+
+      let nextOrder = (maxOrderRow?.order ?? -1) + 1;
+
+      for (const row of input.rows) {
+        const newRow = await ctx.db.row.create({
+          data: {
+            tableId: input.tableId,
+            order: nextOrder++,
+          },
+        });
+
+        const cellsToCreate = columns.map((col) => {
+          const value = row.data[col.name] ?? "";
+          return {
+            rowId: newRow.id,
+            columnId: col.id,
+            value: typeof value === 'string' ? value : String(value),
+          };
+        });
+
+        await ctx.db.cell.createMany({
+          data: cellsToCreate,
+        });
+      }
+
+      return { success: true };
     }),
 });
