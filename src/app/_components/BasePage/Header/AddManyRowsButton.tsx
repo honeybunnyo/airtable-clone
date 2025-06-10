@@ -16,9 +16,8 @@ const AddManyRowsButton = () => {
     }
   })
 
-  if (!tableId) {
-    return
-  }
+  if (!tableId) return
+  
   const handleImportRows = () => {
     const rows = Array.from({ length: 100 }, () => ({
       data: {

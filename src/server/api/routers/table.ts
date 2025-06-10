@@ -28,9 +28,9 @@ export const tableRouter = createTRPCRouter({
       });
 
       const initialRows = [
-        { name: 'Alice', email: 'alice@example.com' },
+        { name: 'Alice', email: 'alice@example.com', order: 0 },
         { name: 'Bob', email: 'bob@example.com' },
-        { name: 'Charlie', email: 'charlie@example.com' },
+        { name: 'Charlie', email: 'charlie@example.com', order: 1 },
       ];
 
       for (const [index, row] of initialRows.entries()) {
@@ -179,4 +179,55 @@ export const tableRouter = createTRPCRouter({
 
       return { success: true };
     }),
+  getPaginatedRows: publicProcedure
+  .input(
+    z.object({
+      tableId: z.string(),
+      limit: z.number(),
+      cursor: z.number().optional(),
+    })
+  )
+  .query(async ({ input, ctx }) => {
+    const { tableId, limit, cursor } = input
+    
+    const rows = await ctx.db.row.findMany({
+      where: { 
+        tableId,
+        ...(cursor !== undefined ? { order: { gt: cursor } } : {})
+      },
+      orderBy: { order: 'asc' },
+      include: {
+      cells: {
+        orderBy: {
+          column: {
+            order: 'asc',
+          },
+        },
+        include: {
+          column: true,
+        },
+      },
+    },
+      take: limit,
+    })
+    const lastRow = rows[rows.length - 1]
+
+    return {
+      rows,
+      hasMore: rows.length === limit,
+      nextCursor: lastRow?.order,
+    }
+  }),
+  getTableColumns: publicProcedure
+  .input(z.object({ tableId: z.string() }))
+  .query(async ({ input, ctx }) => {
+    const { tableId } = input
+
+    const columns = await ctx.db.column.findMany({
+      where: { tableId },
+      orderBy: { order: 'asc' },
+    })
+
+    return columns
+  })
 });

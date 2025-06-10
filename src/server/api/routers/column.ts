@@ -15,11 +15,16 @@ export const columnRouter = createTRPCRouter({
       type: z.enum(["TEXT", "NUMBER"]),
     }))
     .mutation(async ({ input, ctx }) => {
+      const columnCount = await ctx.db.column.count({
+        where: { tableId: input.tableId },
+      })
+
       const newColumn = await ctx.db.column.create({
         data: {
           tableId: input.tableId,
           name: input.name,
           type: input.type,
+          order: columnCount,
         },
       });
 
