@@ -1,84 +1,63 @@
-import React, { useMemo } from 'react'
-import type { Row } from '~/app/types/schema';
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  type ColumnDef,
-} from '@tanstack/react-table'
+import React from 'react'
 import { api } from '~/trpc/react';
 import AddColumnDialog from './AddColumnDialog';
 import { ChevronDown, Plus } from 'lucide-react';
 import ColumnContextMenu from './ColumnContextMenu';
 import DataTableCell from './DataTableCell';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import LoadingSpinner from '../Header/LoadingSpinner';
 
 type DataTableProps = { tableId: string }
 
 const DataTable = ({ tableId }: DataTableProps ) => {
-  const { data, isLoading } = api.table.getTableById.useQuery({ tableId })
-  const columns = useMemo<ColumnDef<Row>[]>(() => {
-    return (data?.columns ?? []).map(col => ({
-      accessorFn: (row: Row) => {
-        return row.data[col.name] ?? { value: '', cellId: '' };
-      },
-      id: col.id,
-      header: () => col.name,
-      cell: info => {
-        const cellValue = info.getValue() as { value: string | number; cellId: string };
-        return (
-          <DataTableCell
-            initialValue={String(cellValue.value)}
-            cellId={cellValue.cellId}
-            columnType={col.type}
-          />
-        );
-      }
-    }));
-  }, [data?.columns]);
+  const {
+    data,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = api.table.getPaginatedRows.useInfiniteQuery(
+    {
+      tableId,
+      limit: 200,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    }
+  )
+  
+  const allRows = data ? data.pages.flatMap((d) => d.rows) : []
 
-  const tableData: Row[] = useMemo(() => {
-    if (!data?.rows || !data.columns) return [];
+  const parentRef = React.useRef<HTMLDivElement>(null)
 
-    return data.rows.map(row => {
-      const cellMap: Record<string, { value: string | number; cellId: string }> = {};
+  const rowVirtualizer = useVirtualizer({
+    count: hasNextPage ? allRows.length + 1 : allRows.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 30,
+    overscan: 5,
+  })
 
-      for (const cell of row.cells) {
-        const col = data.columns.find(col => col.id === cell.columnId);
-        if (col) {
-          cellMap[col.name] = {
-          value: typeof cell.value === 'string' || typeof cell.value === 'number'
-            ? cell.value
-            : '',
-          cellId: cell.id,
-        };
-        }
-      }
+  React.useEffect(() => {
+    const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse()
 
-      const normalizedCells = row.cells
-        .filter(c => typeof c.value === 'string' || typeof c.value === 'number')
-        .map(c => ({
-          id: c.id,
-          rowId: c.rowId,
-          columnId: c.columnId,
-          value: c.value as string | number,
-        }));
-      return {
-        id: row.id,
-        tableId: row.tableId,
-        order: row.order,
-        data: cellMap,
-        cells: normalizedCells
-      };
-    });
-  }, [data?.rows, data?.columns]);
+    if (!lastItem) {
+      return
+    }
 
-  const table = useReactTable<Row>({
-    data: tableData,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    manualSorting: true, 
-  });
-
+    if (
+      lastItem.index >= allRows.length - 1 &&
+      hasNextPage &&
+      !isFetchingNextPage
+    ) {
+      void fetchNextPage()
+    }
+  }, [
+    hasNextPage,
+    fetchNextPage,
+    allRows.length,
+    isFetchingNextPage,
+    rowVirtualizer.getVirtualItems(),
+  ])
+  
   const utils = api.useUtils()
   const addRow = api.table.addRow.useMutation({
     onSuccess: async () => {
@@ -92,56 +71,73 @@ const DataTable = ({ tableId }: DataTableProps ) => {
     })
   }
 
-  if (isLoading) return <div>Loading...</div>
-  if (!data) return <div>No data found</div>
+  const { data: columns, isLoading: isColumnsLoading } = api.table.getTableColumns.useQuery({ tableId })
+  if (isColumnsLoading || !columns) {
+    return <div className="p-4 text-gray-500">Loading table...</div>
+  }
+  const length = columns.length
 
   return (
     <div>
-      <div className='flex flex-row'>
-        <table className='max-h-screen overflow-auto w-auto table-auto'>
+      <div ref={parentRef} className="overflow-auto relative h-full w-full flex flex-row">
+        <table className='max-h-full overflow-auto w-auto table-auto'>
           <thead>
-            {table.getHeaderGroups().map(headerGroup => (
-              <tr key={headerGroup.id} className='h-[32px]'>
-                {headerGroup.headers.map(header => (
-                  <th key={`${headerGroup.id}-${header.id}`} className='border border-gray-200 w-[180px] font-light bg-[#f4f4f4] text-sm'>
-                    <ColumnContextMenu columnId={header.column.id}>
+            <tr className='h-[32px]'>
+              <th className='w-[32px] border border-gray-200 font-light bg-[#f4f4f4] text-sm'>
+                <input type="checkbox" value="" className="w-3 h-3 text-blue-600 bg-gray-100 border-gray-300 rounded-sm"/>
+              </th>
+              {columns?.map(col => (
+                <th key={`col-${col.id}`} className='border border-gray-200 w-[180px] font-light bg-[#f4f4f4] text-sm'>
+                    <ColumnContextMenu columnId={col.id}>
                       <div className='flex flex-row justify-between items-center px-2 cursor-context-menu'>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(header.column.columnDef.header, header.getContext())}
+                        {col.name}
                         <ChevronDown className='w-4 h-4 text-gray-400 hover:text-gray-600' />
                       </div>
                     </ColumnContextMenu>
                   </th>
-                ))}
-              </tr>
-            ))}
+              ))}
+            </tr>
           </thead>
-          <tbody>
-            {table.getRowModel().rows.map(row => (
-              <tr key={row.id} className='h-[32px]'>
-                {row.getVisibleCells().map(cell => {
-                  const cellData = cell.getValue() as { value: string | number; cellId: string };
-                  const columnDef = data?.columns?.find(col => col.id === cell.column.id);
-                  return (
-                    <td key={`${row.id}-${cell.column.id}`} className='border border-gray-200 p-0'>
-                      <DataTableCell
-                        initialValue={String(cellData.value) ?? ' '}
-                        cellId={cellData.cellId}
-                        columnType={columnDef?.type ?? 'TEXT'} 
-                      />
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
+       <tbody>
+        {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+          const isLoaderRow = virtualRow.index > allRows.length - 1
+          const rowData = allRows[virtualRow.index]
+          return (
+            <tr
+              key={virtualRow.index}
+              className="h-[40px]"
+            >
+              <td className="w-[32px] border-y border-gray-200 font-light text-sm">
+                <div className="flex items-center justify-center h-full">
+                  {virtualRow.index + 1}
+                </div>
+              </td>
+              {isLoaderRow ? (
+                <td colSpan={columns?.length ?? 1} className="border-y border-r border-gray-200 px-2">
+                {hasNextPage && allRows.length > 0 ? <LoadingSpinner/> : null}
+                </td>
+              ) : (
+                rowData && rowData.cells.map((cell) => (
+                  <td key={cell.id} className="border-y border-r border-gray-200 px-2">
+                    <DataTableCell
+                      initialValue={cell.value == null ? ' ' :
+                        typeof cell.value === 'object' ? JSON.stringify(cell.value) : String(cell.value)}
+                      cellId={cell.id}
+                      columnType={cell.column.type ?? 'TEXT'}
+                    />
+                  </td>
+                ))
+              )}
+            </tr>
+          )
+        })}
+      </tbody>
           <tfoot>
             <tr
               className="h-[32px] cursor-pointer hover:bg-gray-100"
               onClick={handleAddRow}
             >
-              <td colSpan={columns.length} className="border border-gray-200 text-left text-gray-400 text-xl px-2">
+              <td colSpan={length} className="border border-gray-200 text-left text-gray-400 text-xl px-2">
                 <Plus/>
               </td>
             </tr>

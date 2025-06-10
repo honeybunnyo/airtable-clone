@@ -6,7 +6,6 @@ import { api } from '~/trpc/react';
 import Header from '../../../_components/BasePage/Header';
 import DataTable from '../../../_components/BasePage/Table/DataTable';
 import ViewSideBar from '~/app/_components/BasePage/ViewSidebar';
-import DataTable1 from '~/app/_components/BasePage/Table/DataTable1';
 
 const BasePage = () => {
   const { baseId, tableId } = useParams();
@@ -27,11 +26,8 @@ const BasePage = () => {
       {sideBarOpen && <ViewSideBar sideBarOpen={sideBarOpen} />}
 
       <div className="flex-1 overflow-hidden">
-        {/* This allows the table section to scroll internally */}
         <div className="h-full overflow-auto">
-          <DataTable1 tableId={tableId as string} />
-          {/* <DataTable tableId={tableId as string} /> */}
-
+          <DataTable tableId={tableId as string} />
         </div>
       </div>
     </div>

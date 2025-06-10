@@ -1,11 +1,10 @@
 import Link from "next/link";
 
 import { auth } from "~/server/auth";
-import { api, HydrateClient } from "~/trpc/server";
+import { HydrateClient } from "~/trpc/server";
 import Dashboard from "./_components/Dashboard/Dashboard";
 
 export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" });
   const session = await auth();
 
   return (
@@ -18,10 +17,6 @@ export default async function Home() {
               Airtable clone
             </h1>
             <div className="flex flex-col items-center gap-2">
-              <p className="text-2xl text-white">
-                {hello ? hello.greeting : "Loading tRPC query..."}
-              </p>
-
               <div className="flex flex-col items-center justify-center gap-4">
                 <Link
                   href={session ? "/api/auth/signout" : "/api/auth/signin"}
