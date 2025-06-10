@@ -1,15 +1,19 @@
-import Link from "next/link";
-
 import { auth } from "~/server/auth";
 import { HydrateClient } from "~/trpc/server";
 import Dashboard from "./_components/Dashboard/Dashboard";
+import SignInButton from "./_components/Ui/SignInButton";
 
 export default async function Home() {
   const session = await auth();
+  console.log("Session in production:", session);
 
   return (
     <HydrateClient>
       <main className="flex min-h-screen flex-col items-center justify-center text-black">
+        <div className="fixed top-0 left-0 bg-red-100 p-2 text-xs">
+          Session: {session ? 'EXISTS' : 'NULL'}
+        </div>
+        
         {!session ? 
           // if not logged in
           <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
@@ -18,12 +22,7 @@ export default async function Home() {
             </h1>
             <div className="flex flex-col items-center gap-2">
               <div className="flex flex-col items-center justify-center gap-4">
-                <Link
-                  href={session ? "/api/auth/signout" : "/api/auth/signin"}
-                  className="rounded-full bg-blue-100 px-10 py-3 font-semibold no-underline transition hover:bg-blue-200"
-                >
-                  {session ? "Sign out" : "Sign in"}
-                </Link>
+                <SignInButton/>
               </div>
             </div>
           </div>
