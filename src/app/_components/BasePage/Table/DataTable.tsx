@@ -6,6 +6,7 @@ import ColumnContextMenu from './ColumnContextMenu';
 import DataTableCell from './DataTableCell';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import LoadingSpinner from '../Header/LoadingSpinner';
+import Image from 'next/image';
 
 type DataTableProps = { tableId: string }
 
@@ -90,7 +91,21 @@ const DataTable = ({ tableId }: DataTableProps ) => {
                 <th key={`col-${col.id}`} className='border border-gray-200 w-[180px] font-light bg-[#f4f4f4] text-sm'>
                     <ColumnContextMenu columnId={col.id}>
                       <div className='flex flex-row justify-between items-center px-2 cursor-context-menu'>
-                        {col.name}
+                        <div className='flex flex-row'>
+                          {
+                            col.type == 'NUMBER' ?
+                            <Image
+                              src="/straight-hash.svg"
+                              alt="Number icon"
+                              width={18}
+                              height={18}
+                              className="mr-1"
+                            />
+                            :
+                            <p className='px-2 font-light text-gray-600'>A</p>
+                          }
+                          {col.name}
+                        </div>
                         <ChevronDown className='w-4 h-4 text-gray-400 hover:text-gray-600' />
                       </div>
                     </ColumnContextMenu>

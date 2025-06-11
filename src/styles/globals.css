@@ -16,7 +16,9 @@
 .bg-greentheme-dark {
   background-color: #396f42;
 }
-
+.bg-greentheme-darker {
+  background-color: #34643a;
+}
 .text-greentheme-light {
   color: #7fa181;
 }
@@ -26,6 +28,7 @@
 .text-greentheme-dark {
   color: #396f42;
 }
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

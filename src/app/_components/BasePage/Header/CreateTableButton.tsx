@@ -15,7 +15,7 @@ const CreateTableButton = ({ baseId }: { baseId: string } ) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className='px-2 hover:text-gray-50 text-lg flex flex-row justify-center items-center gap-2'>
+        <button className='px-2 hover:text-gray-50 text-lg flex flex-row justify-center items-center gap-2 cursor-pointer'>
           <Plus className='h-4 w-4 text-gray-300'/> 
           <p className='hidden sm:block text-sm text-white'>
             Add or import

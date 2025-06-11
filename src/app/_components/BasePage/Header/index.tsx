@@ -8,6 +8,7 @@ import TopBar from './TopBar';
 import CreateTableButton from './CreateTableButton';
 import TableContextMenu from './TableContextMenu';
 import ViewBar from './ViewBar';
+import VerticalSeparator from '../../Ui/VerticalSeparator';
 
 type PageProps = {
   sideBarOpen: boolean;
@@ -40,14 +41,18 @@ const Page = ({ sideBarOpen, setSideBarOpen }: PageProps) => {
             {base && base.tables.map((table) => (
               <TableContextMenu key={`context-menu-${baseId}-${table.id}`} tableId={table.id}>
                 <Link key={`${baseId}-${table.id}`} href={`/base/${baseId}/${table.id}`}>
-                  <div key={table.id} className={`w-full text-left px-4 py-2 text-sm rounded-t-xs ${
-                    table.id === tableId ? 'font-semibold bg-white text-black' : 'font-light hover:bg-greentheme-dark text-white'
+                  <div key={table.id} className={`w-full text-left px-4 py-2 h-full text-sm rounded-t-xs text-overflow ${
+                    table.id === tableId ? 'font-semibold bg-white text-black' : 'font-light text-white'
                   }`}>{table.name}</div>
                 </Link>
               </TableContextMenu>
             ))}
             <div className="flex flex-row justify-center items-center text-gray-300 gap-2">
-              | <ChevronDown className="w-4 h-4"/> |
+              <VerticalSeparator/>
+              <button className='cursor-pointer'>
+                <ChevronDown className="w-4 h-4"/>
+              </button>
+              <VerticalSeparator/>
             </div>
           <CreateTableButton baseId={baseId} />
         </div>

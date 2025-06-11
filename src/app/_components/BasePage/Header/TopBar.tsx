@@ -11,6 +11,7 @@ import LoadingSpinner from './LoadingSpinner';
 import WithToolTip from '../../Ui/WithToolTip';
 import { useSession } from 'next-auth/react'
 import UserMenu from '../../Dashboard/UserMenu';
+import VerticalSeparator from '../../Ui/VerticalSeparator';
 
 const TopBar = () => {
   const { data: session } = useSession()
@@ -89,7 +90,7 @@ const TopBar = () => {
           </button>
           {topNav("Automations")}
           {topNav("Interfaces")}
-          <div className='h-5 w-[1px] bg-white opacity-15'></div>
+          <VerticalSeparator/>
           {topNav("Forms")}
         </div>
 
