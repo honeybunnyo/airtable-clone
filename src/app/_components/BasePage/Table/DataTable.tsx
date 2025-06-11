@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useEffect } from 'react'
 import { api } from '~/trpc/react';
 import AddColumnDialog from './AddColumnDialog';
@@ -25,7 +26,7 @@ const DataTable = ({ tableId }: DataTableProps ) => {
     }
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const { ref, inView } = useInView();
 
   useEffect(() => {
