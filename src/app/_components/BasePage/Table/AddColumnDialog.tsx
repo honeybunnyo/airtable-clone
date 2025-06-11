@@ -29,8 +29,15 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
   const [newColumnName, setNewColumnName] = useState("")
   const [newColumnType, setNewColumnType] = useState<"TEXT" | "NUMBER">("TEXT")
   const [addingColumn, setAddingColumn] = useState(false)
-  const createColumn = api.column.create.useMutation();
-  const { refetch } = api.table.getTableById.useQuery({ tableId });
+
+  const utils = api.useUtils()
+  const createColumn = api.column.create.useMutation({
+    onSuccess: async () => {
+      await utils.table.getPaginatedRows.invalidate({ tableId })
+      await utils.table.getTableColumns.invalidate({ tableId })
+    }
+  })
+
   const [open, setOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -49,8 +56,6 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
     setNewColumnName("")
     setNewColumnType("TEXT")
     setOpen(false);
-
-    await refetch()
   }
   
   return (
@@ -58,7 +63,7 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
       <DialogTrigger asChild>
         <WithToolTip content='Add field'>
           <button onClick={() => setOpen(true)}
-            className="h-[33px] w-30 text-gray-600 border border-gray-200 bg-gray-100 hover:bg-gray-200 text-lg"
+            className="h-[33px] min-w-30 text-gray-600 border border-gray-200 bg-gray-100 hover:bg-gray-200 text-lg"
             >
             ＋
           </button>

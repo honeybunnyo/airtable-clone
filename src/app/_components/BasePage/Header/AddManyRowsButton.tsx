@@ -12,7 +12,7 @@ const AddManyRowsButton = () => {
   const utils = api.useUtils()
   const addManyRows = api.table.addManyRows.useMutation({
     onSuccess: async () => {
-      await utils.table.getTableById.invalidate({ tableId })
+      await utils.table.getPaginatedRows.invalidate({ tableId })
     }
   })
 

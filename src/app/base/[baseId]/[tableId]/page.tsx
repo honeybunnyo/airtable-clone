@@ -5,6 +5,8 @@ import { useParams } from 'next/navigation'
 import { api } from '~/trpc/react';
 import Header from '../../../_components/BasePage/Header';
 import DataTable from '../../../_components/BasePage/Table/DataTable';
+import DataTable1 from '../../../_components/BasePage/Table/DataTable1';
+
 import ViewSideBar from '~/app/_components/BasePage/ViewSidebar';
 
 const BasePage = () => {
@@ -27,7 +29,7 @@ const BasePage = () => {
 
       <div className="flex-1 overflow-hidden">
         <div className="h-full overflow-auto">
-          <DataTable tableId={tableId as string} />
+          <DataTable1 tableId={tableId as string} />
         </div>
       </div>
     </div>

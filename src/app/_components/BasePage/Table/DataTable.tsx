@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { api } from '~/trpc/react';
 import AddColumnDialog from './AddColumnDialog';
 import { ChevronDown, Plus } from 'lucide-react';
@@ -19,7 +19,7 @@ const DataTable = ({ tableId }: DataTableProps ) => {
   } = api.table.getPaginatedRows.useInfiniteQuery(
     {
       tableId,
-      limit: 200,
+      limit: 30,
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -27,19 +27,17 @@ const DataTable = ({ tableId }: DataTableProps ) => {
   )
   
   const allRows = data ? data.pages.flatMap((d) => d.rows) : []
-
-  const parentRef = React.useRef<HTMLDivElement>(null)
+  const parentRef = useRef<HTMLDivElement>(null)
 
   const rowVirtualizer = useVirtualizer({
     count: hasNextPage ? allRows.length + 1 : allRows.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 30,
+    estimateSize: () => 40,
     overscan: 5,
   })
 
-  React.useEffect(() => {
+  useEffect(() => {
     const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse()
-
     if (!lastItem) {
       return
     }
@@ -62,7 +60,7 @@ const DataTable = ({ tableId }: DataTableProps ) => {
   const utils = api.useUtils()
   const addRow = api.table.addRow.useMutation({
     onSuccess: async () => {
-      await utils.table.getTableById.invalidate({ tableId })
+      await utils.table.getPaginatedRows.invalidate({ tableId })
     }
   })
   
@@ -89,27 +87,27 @@ const DataTable = ({ tableId }: DataTableProps ) => {
               </th>
               {columns?.map(col => (
                 <th key={`col-${col.id}`} className='border border-gray-200 w-[180px] font-light bg-[#f4f4f4] text-sm'>
-                    <ColumnContextMenu columnId={col.id}>
-                      <div className='flex flex-row justify-between items-center px-2 cursor-context-menu'>
-                        <div className='flex flex-row'>
-                          {
-                            col.type == 'NUMBER' ?
-                            <Image
-                              src="/straight-hash.svg"
-                              alt="Number icon"
-                              width={18}
-                              height={18}
-                              className="mr-1"
-                            />
-                            :
-                            <p className='px-2 font-light text-gray-600'>A</p>
-                          }
-                          {col.name}
-                        </div>
-                        <ChevronDown className='w-4 h-4 text-gray-400 hover:text-gray-600' />
+                  <ColumnContextMenu columnId={col.id}>
+                    <div className='flex flex-row justify-between items-center px-2 cursor-context-menu'>
+                      <div className='flex flex-row'>
+                        {
+                          col.type == 'NUMBER' ?
+                          <Image
+                            src="/straight-hash.svg"
+                            alt="Number icon"
+                            width={18}
+                            height={18}
+                            className="mr-1"
+                          />
+                          :
+                          <p className='px-2 font-light text-gray-600'>A</p>
+                        }
+                        {col.name}
                       </div>
-                    </ColumnContextMenu>
-                  </th>
+                      <ChevronDown className='w-4 h-4 text-gray-400 hover:text-gray-600' />
+                    </div>
+                  </ColumnContextMenu>
+                </th>
               ))}
             </tr>
           </thead>
