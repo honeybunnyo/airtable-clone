@@ -48,17 +48,14 @@ const SideBar = ({ menuSidebarOpen }: SideBarProps) => {
         </Link>
       </nav>
       {/* Bottom */}
-
         <div className={`${!sidebarOpen ? "items-center" : "p-3"} flex flex-col justify-center`}>
- 
           {bottomNav(BookOpen, "Templates and apps", sidebarOpen)}
           {bottomNav(ShoppingBag, "Marketplace", sidebarOpen)}
           {bottomNav(Upload, "Import", sidebarOpen)}
 
         {/* Create button */}
         <div className="mt-4">
-        { sidebarOpen ?
-          <CreateBaseButton/>
+        { sidebarOpen ? <CreateBaseButton/>
         :
           <SquarePlus className="w-7 h-7 text-gray-400 mb-4" strokeWidth={1} />
         }

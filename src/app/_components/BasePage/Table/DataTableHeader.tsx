@@ -17,7 +17,7 @@ type DataTableHeaderProps = {
 
 const DataTableHeader = ({ columns }: DataTableHeaderProps) => {
   return (
-    <thead>
+    <thead className="sticky -top-px border">
       <tr className="h-[32px]">
         <th className="w-[50px] font-light bg-[#f4f4f4] text-sm border border-gray-200">
           <div className="flex justify-center items-center">

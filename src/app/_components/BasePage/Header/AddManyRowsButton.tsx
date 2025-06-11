@@ -25,7 +25,6 @@ const AddManyRowsButton = () => {
         email: faker.internet.email(),
       }
     }))
-    console.log("rows", rows)
     addManyRows.mutate({
       tableId,
       rows,
@@ -33,7 +32,7 @@ const AddManyRowsButton = () => {
   }
 
   return (
-    <Button variant="ghost" className='w-30' onClick={handleImportRows}>
+    <Button variant="ghost" className="w-30" onClick={handleImportRows}>
       add 100 rows
     </Button>
   )

@@ -9,7 +9,7 @@ const Cards = () => {
 
   return (
     <div>
-      <div className='mt-10 grid gap-4 grid-cols-[repeat(auto-fit,_minmax(250px,_1fr))]'>
+      <div className="mt-10 grid gap-4 grid-cols-[repeat(auto-fit,_minmax(250px,_1fr))]">
         {bases?.map((base) => (
           <Card key={base.id} base={base}/>
         ))}

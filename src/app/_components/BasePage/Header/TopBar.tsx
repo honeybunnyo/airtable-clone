@@ -49,10 +49,10 @@ const TopBar = () => {
   };
 
   return (
-    <div className='text-white'>
-      <div className='flex items-center justify-between px-2 flex-auto bg-greentheme h-[56px] pl-3'>
+    <div className="text-white">
+      <div className="flex items-center justify-between px-2 flex-auto bg-greentheme h-[56px] pl-3">
         {/* Left */}
-        <div className='flex flex-row items-center justify-between gap-3'>
+        <div className="flex flex-row items-center justify-between gap-3">
           <button
             onClick={goHome}
             onMouseEnter={() => setIsHoveringBackButton(true)}
@@ -73,7 +73,7 @@ const TopBar = () => {
               />
             )}
           </button>
-          <input className='truncate overflow-hidden whitespace-nowrap max-w-100 w-1/2 min-w-10 outline-none px-2 text-lg font-bold' value={name} onChange={(e) => setName(e.target.value)}
+          <input className="truncate overflow-hidden whitespace-nowrap max-w-100 w-1/2 min-w-10 outline-none px-2 text-lg font-bold" value={name} onChange={(e) => setName(e.target.value)}
             size={name.length || 1}
             onBlur={async () => {
               if (name !== base?.name) {
@@ -81,11 +81,11 @@ const TopBar = () => {
               }
             }}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === "Enter") {
                 e.currentTarget.blur();
               }
           }}/>
-          <button className='rounded-3xl px-3 py-1 bg-greentheme-dark text-sm inset-shadow-sm inset-shadow-black/20'>
+          <button className="rounded-3xl px-3 py-1 bg-greentheme-dark text-sm inset-shadow-sm inset-shadow-black/20">
             Data
           </button>
           {topNav("Automations")}
@@ -95,13 +95,13 @@ const TopBar = () => {
         </div>
 
         {/* Right */}
-        <div className='flex flex-row items-center gap-5 pl-5'>
+        <div className="flex flex-row items-center gap-5 pl-5">
           {isSaving ? 
             <LoadingSpinner/>
             : 
-            <p className='flex px-2 flex-row text-xs text-[#c0d5c3]'>
+            <p className="flex px-2 flex-row text-xs text-[#c0d5c3]">
               <WithToolTip content="All changes saved">
-                <Check className='w-4 h-4'/>
+                <Check className="w-4 h-4"/>
               </WithToolTip>
             </p>
           }
@@ -110,13 +110,13 @@ const TopBar = () => {
           </div>
           <div className="flex flex-row justify-center h-7 items-center cursor-pointer gap-1">
             <CircleHelp className="w-4 h-4 text-white"/>
-            <p className='text-xs'>
+            <p className="text-xs">
               Help 
             </p>
           </div>
           <div className="flex flex-row bg-white justify-center h-7 px-3 items-center text-greentheme rounded-full cursor-pointer inset-ring-1 inset-ring-gray-100">
             <UsersRound className="w-5 h-3 text-greentheme"/> 
-            <p className='hidden md:block text-sm'>
+            <p className="hidden md:block text-sm">
               Share 
             </p>
           </div>
@@ -139,7 +139,7 @@ const TopBar = () => {
 }
 
 const topNav = (text:string) => (
-  <button className='rounded-3xl px-3 py-1 hover:bg-[#396f42] text-sm'>
+  <button className="rounded-3xl px-3 py-1 hover:bg-[#396f42] text-sm">
     {text}
   </button>
 )

@@ -14,7 +14,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "../../../../components/ui/collapsible"
+} from '../../../../components/ui/collapsible'
 import { Button } from '~/components/ui/button'
 
 const CreateSection = () => {
@@ -22,7 +22,7 @@ const CreateSection = () => {
 
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="w-full">
-      <div className='h-[1px] w-full bg-gray-200 mb-2'/>
+      <div className="h-[1px] w-full bg-gray-200 mb-2"/>
       <CollapsibleTrigger asChild>
         <Button variant="ghost" className="w-full justify-between hover:bg-white text-md py-4">
           Create...
@@ -31,11 +31,11 @@ const CreateSection = () => {
       </CollapsibleTrigger>
       <CollapsibleContent className="space-y-2 mt-2">
       <ButtonFormat>
-        <TableCellsSplit className='text-blue-600' strokeWidth={1.25}/>
+        <TableCellsSplit className="text-blue-600" strokeWidth={1.25}/>
         Grid
       </ButtonFormat>
       <ButtonFormat>
-        <Calendar1 className='text-orange-600' strokeWidth={1.25}/>
+        <Calendar1 className="text-orange-600" strokeWidth={1.25}/>
         Calendar
       </ButtonFormat>
       <ButtonFormat>
@@ -46,16 +46,16 @@ const CreateSection = () => {
       </ButtonFormat>
 
       <ButtonFormat>
-        <Kanban className='text-green-600' strokeWidth={1.25}/>
+        <Kanban className="text-green-600" strokeWidth={1.25}/>
         Kanban
       </ButtonFormat>
       <ButtonFormat>
-        <ChartBarStacked className='text-red-600' strokeWidth={1.25}/>
+        <ChartBarStacked className="text-red-600" strokeWidth={1.25}/>
         Timeline
       </ButtonFormat>
 
       <ButtonFormat>
-        <ListChecks className='text-blue-800' strokeWidth={1.25}/>
+        <ListChecks className="text-blue-800" strokeWidth={1.25}/>
         List
       </ButtonFormat>
        <ButtonFormat>
@@ -63,9 +63,9 @@ const CreateSection = () => {
       </ButtonFormat>
 
 
-      <div className='h-[1px] w-full bg-gray-200 my-3' />
+      <div className="h-[1px] w-full bg-gray-200 my-3" />
       <ButtonFormat>
-        <SquareGanttChart className='text-fuchsia-600' strokeWidth={1.25}/>
+        <SquareGanttChart className="text-fuchsia-600" strokeWidth={1.25}/>
         Form
       </ButtonFormat>
 
@@ -76,11 +76,11 @@ const CreateSection = () => {
 
 const ButtonFormat = ({ children }: { children: React.ReactNode }) => (
   <Button variant="ghost" className="w-full justify-start text-sm rounded-xs m-0">
-    <div className='flex justify-between items-center w-full'>
-      <div className='flex flex-row items-center gap-2'>
+    <div className="flex justify-between items-center w-full">
+      <div className="flex flex-row items-center gap-2">
         {children}
       </div>
-      <Plus className='text-gray-800' strokeWidth={1.25}/>
+      <Plus className="text-gray-800" strokeWidth={1.25}/>
     </div>
   </Button>
 )

@@ -21,8 +21,8 @@ const ViewBar = ({ sideBarOpen, setSideBarOpen }: PageProps) => {
   ];
 
   return (
-    <div className='h-[44px] text-black z-10 flex flex-row justify-between items-center px-3 outline-1'>
-      <div className='flex flex-row items-center font-medium text-sm gap-2'>
+    <div className="h-[44px] text-black z-10 flex flex-row justify-between items-center px-3 outline-1">
+      <div className="flex flex-row items-center font-medium text-sm gap-2">
         <Button
           onClick={() => setWasManuallyOpened(prev => !prev)}
           onMouseEnter={() => {
@@ -32,10 +32,10 @@ const ViewBar = ({ sideBarOpen, setSideBarOpen }: PageProps) => {
             if (!wasManuallyOpened)  setSideBarOpen(false);
           }}
           variant="ghost" 
-          className={`${sideBarOpen ? 'bg-gray-100 hover:outline-solid outline-2 outline-gray-300' :'bg-white'} flex items-center justify-center gap-1 flex-row h-6 p-0 rounded-xs`}>
+          className={`${sideBarOpen ? "bg-gray-100 hover:outline-solid outline-2 outline-gray-300" :"bg-white"} flex items-center justify-center gap-1 flex-row h-6 p-0 rounded-xs`}>
           <FormatIcon icon={Menu} /> Views
         </Button>
-        <div className='w-[1px] h-4 bg-gray-300'/>
+        <div className="w-[1px] h-4 bg-gray-300"/>
         <ButtonFormat>
           <TableCellsSplit className="w-4 h-4 text-blue-800" strokeWidth={1}/>
           Grid View
@@ -52,13 +52,13 @@ const ViewBar = ({ sideBarOpen, setSideBarOpen }: PageProps) => {
 
         <AddManyRowsButton/>
       </div>
-      <Search className='h-4 w-4' strokeWidth={1}/>
+      <Search className="h-4 w-4" strokeWidth={1}/>
     </div>
   )
 }
 
 const ButtonFormat = ({ children }: { children: React.ReactNode }) => (
-  <Button variant="ghost" className='flex items-center justify-center gap-1 flex-row h-6 p-0 rounded-xs'>
+  <Button variant="ghost" className="flex items-center justify-center gap-1 flex-row h-6 p-0 rounded-xs">
     {children}
   </Button>
 )

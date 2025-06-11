@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState, useRef, useEffect } from "react";
-import { signOut } from "next-auth/react";
-import Image from "next/image";
+import { useState, useRef, useEffect } from 'react';
+import { signOut } from 'next-auth/react';
+import Image from 'next/image';
 import type { Session } from 'next-auth'
 
 export default function UserMenu({ session }: { session: Session }) {

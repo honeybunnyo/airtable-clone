@@ -1,12 +1,10 @@
-"use client"
+'use client'
 
 import React, { useState } from 'react'
 import { useParams } from 'next/navigation'
 import { api } from '~/trpc/react';
 import Header from '../../../_components/BasePage/Header';
 import DataTable from '../../../_components/BasePage/Table/DataTable';
-import DataTable1 from '../../../_components/BasePage/Table/DataTable1';
-
 import ViewSideBar from '~/app/_components/BasePage/ViewSidebar';
 
 const BasePage = () => {
@@ -21,18 +19,16 @@ const BasePage = () => {
   if (isError || !base) return <div>Error loading base data.</div>
 
   return (
-    <div className='flex flex-col h-dvh'>
+    <div className="flex flex-col h-dvh">
       <Header sideBarOpen={sideBarOpen} setSideBarOpen={setSideBarOpen} />
-
-     <div className="flex flex-1 overflow-hidden">
-      {sideBarOpen && <ViewSideBar sideBarOpen={sideBarOpen} />}
-
-      <div className="flex-1 overflow-hidden">
-        <div className="h-full overflow-auto">
-          <DataTable1 tableId={tableId as string} />
+      <div className="flex flex-1 overflow-hidden">
+        {sideBarOpen && <ViewSideBar sideBarOpen={sideBarOpen} />}
+        <div className="flex-1 overflow-hidden">
+          <div className="h-full overflow-auto">
+            <DataTable tableId={tableId as string} />
+          </div>
         </div>
       </div>
-    </div>
     </div>
   )
 }

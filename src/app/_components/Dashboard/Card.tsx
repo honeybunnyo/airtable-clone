@@ -43,7 +43,7 @@ const Card = ({ base }: CardProps) => {
             {base.name.slice(0, 2)}
           </div>
           <div className="flex flex-col items-start font-medium max-w-3/4">
-            <h2 className='truncate overflow-hidden whitespace-nowrap w-full'>{base.name}</h2>
+            <h2 className="truncate overflow-hidden whitespace-nowrap w-full">{base.name}</h2>
             <p className="text-xs text-gray-500 font-light">Base</p>
           </div>
         </div>

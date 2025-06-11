@@ -9,16 +9,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../../../components/ui/dialog"
-import { Input } from "../../../../components/ui/input"
-import { Label } from "../../../../components/ui/label"
+} from '../../../../components/ui/dialog'
+import { Input } from '../../../../components/ui/input'
+import { Label } from '../../../../components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../../../components/ui/select"
+} from '../../../../components/ui/select'
 import WithToolTip from '../../Ui/WithToolTip';
 
 type AddColumnDialogProps = {
@@ -78,7 +78,7 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
             <div className="grid gap-3">
               <Label htmlFor="column-name-1">Column Name</Label>
               <Input 
-                id="column-name-1" name="name" defaultValue="" autoComplete='off'
+                id="column-name-1" name="name" defaultValue="" autoComplete="off"
                 onChange={(e) => setNewColumnName(e.target.value)}
               />
             </div>
