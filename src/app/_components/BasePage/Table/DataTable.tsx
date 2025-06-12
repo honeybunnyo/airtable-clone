@@ -11,11 +11,11 @@ import DataTableHeader from './DataTableHeader';
 type DataTableProps = { tableId: string }
 
 const DataTable = ({ tableId }: DataTableProps ) => {
- const { 
-    data, 
-    fetchNextPage, 
+ const {
+    data,
+    fetchNextPage,
     isFetchingNextPage,
-    hasNextPage 
+    hasNextPage
   } = api.table.getPaginatedRows.useInfiniteQuery(
     {
       tableId,
@@ -41,15 +41,15 @@ const DataTable = ({ tableId }: DataTableProps ) => {
       await utils.table.getPaginatedRows.invalidate({ tableId })
     }
   })
-  
+
   const handleAddRow = () => addRow.mutate({ tableId })
   const { data: columns, isLoading: isColumnsLoading } = api.table.getTableColumns.useQuery({ tableId })
-  
+
   if (isColumnsLoading || !columns) {
-    return <div className="p-4 text-gray-500">Loading table...</div>
+    return <div className="p-4 text-gray-500">Loading table columns...</div>
   }
 
-  if (!data) return <div>Loading...</div>;
+  if (!data) return <div>Loading Table data...</div>;
 
   const allRows = data.pages.flatMap((page, pageIndex) => 
     page.rows.map((row, rowIndex) => ({

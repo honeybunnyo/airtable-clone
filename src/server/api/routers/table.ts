@@ -224,5 +224,5 @@ export const tableRouter = createTRPCRouter({
     })
 
     return columns
-  })
+  }),
 });

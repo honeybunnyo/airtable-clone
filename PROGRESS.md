@@ -76,3 +76,10 @@ Fixes:
 - Redid a bit of the table formatting (borders, update add row & button UI)
 New:
 - Sticky table header
+
+
+### Day 8
+
+plan;
+- tRPC method for search; return cell.id
+- highlight matching ids

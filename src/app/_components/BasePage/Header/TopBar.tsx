@@ -35,7 +35,7 @@ const TopBar = () => {
   }, [base?.name]);
 
   if (!baseId || typeof baseId !== 'string') return null;
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return <div>Loading Topbar...</div>
 
   const utils = api.useUtils();
   const updateBaseNameMutation = api.base.updateBaseName.useMutation({

@@ -1,4 +1,5 @@
 'use client';
+
 import React  from 'react'
 import { ChevronDown } from 'lucide-react'
 import Link from 'next/link'
@@ -26,7 +27,7 @@ const Page = ({ sideBarOpen, setSideBarOpen }: PageProps) => {
   )
 
   if (!baseId || typeof baseId !== 'string') return null;
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return <div>Loading Header...</div>
 
   const openExtensionOptions = () => { console.log('Opening Extension options') }
   const openToolsOptions = () => { console.log('Opening Tools options') }
@@ -62,7 +63,7 @@ const Page = ({ sideBarOpen, setSideBarOpen }: PageProps) => {
             Extensions
           </button>
           <button onClick={openToolsOptions} className="flex flex-row px-3 items-center gap-1">
-              Tools
+            Tools
             <ChevronDown className="w-4 h-4" strokeWidth={1}/>
           </button>
         </div>
