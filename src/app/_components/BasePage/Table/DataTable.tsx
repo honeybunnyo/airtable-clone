@@ -7,6 +7,7 @@ import DataTableCell from './DataTableCell';
 import LoadingSpinner from '../Header/LoadingSpinner';
 import { useInView } from 'react-intersection-observer';
 import DataTableHeader from './DataTableHeader';
+import TableSkeleton from '../Skeletons/TableSkeleton';
 
 type DataTableProps = { tableId: string }
 
@@ -19,11 +20,9 @@ const DataTable = ({ tableId }: DataTableProps ) => {
   } = api.table.getPaginatedRows.useInfiniteQuery(
     {
       tableId,
-      limit: 30,
+      limit: 250,
     },
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    }
+    { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -46,7 +45,7 @@ const DataTable = ({ tableId }: DataTableProps ) => {
   const { data: columns, isLoading: isColumnsLoading } = api.table.getTableColumns.useQuery({ tableId })
 
   if (isColumnsLoading || !columns) {
-    return <div className="p-4 text-gray-500">Loading table columns...</div>
+    return <TableSkeleton/>
   }
 
   if (!data) return <div>Loading Table data...</div>;

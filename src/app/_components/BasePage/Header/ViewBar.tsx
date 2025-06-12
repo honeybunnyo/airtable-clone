@@ -4,6 +4,7 @@ import FormatIcon from '../../Ui/FormatIcon'
 import { Button } from '~/components/ui/button'
 import AddManyRowsButton from './AddManyRowsButton'
 import Add100kRowsButton from './Add100kRowsButton'
+import SearchBar from './SearchBar/SearchBar'
 
 type PageProps = {
   sideBarOpen: boolean;
@@ -54,7 +55,7 @@ const ViewBar = ({ sideBarOpen, setSideBarOpen }: PageProps) => {
         <AddManyRowsButton/>
         <Add100kRowsButton/>
       </div>
-      <Search className="h-4 w-4" strokeWidth={1}/>
+      <SearchBar/>
     </div>
   )
 }
