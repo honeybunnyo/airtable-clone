@@ -59,7 +59,7 @@
 2. Updated prisma schema since JSON wont scale well
  - old: Row with data as JSON
 
-## Day 6
+### Day 6
 New:
 - Add 100 rows button
 - View sidebar and viewbar added
@@ -70,3 +70,9 @@ Fixes:
 - column sorting was broken because order wasnt being set properly when creating columns
 - updated view sidebar to be fixed, and the table to be scrollable
 
+### Day 7
+Fixes:
+- Fetch paginated rows only when scrolled to the bottom of table instead of automatically
+- Redid a bit of the table formatting (borders, update add row & button UI)
+New:
+- Sticky table header

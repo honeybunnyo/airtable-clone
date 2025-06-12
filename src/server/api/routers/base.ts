@@ -9,7 +9,7 @@ import {
 export const baseRouter = createTRPCRouter({
   create: protectedProcedure
    .mutation(async ({ ctx }) => {
-     const base = await ctx.db.base.create({
+    const base = await ctx.db.base.create({
       data: {
         name: 'Untitled',
         user: { connect: { id: ctx.session.user.id } },

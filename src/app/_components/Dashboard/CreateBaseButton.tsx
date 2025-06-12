@@ -9,11 +9,13 @@ const CreateBaseButton = () => {
   const createTable = api.table.create.useMutation();
 
   const handleCreate = async () => {
+    router.push("/base/loading");
+
     try {
       const { baseId } = await createBase.mutateAsync();
       const { tableId } = await createTable.mutateAsync({ baseId, name: "Table 1" });
-
-      router.push(`/base/${baseId}/${tableId}`);
+      router.replace(`/base/${baseId}/${tableId}`);
+      
     } catch (err: unknown) {
       console.error("Error creating base", err);
     }

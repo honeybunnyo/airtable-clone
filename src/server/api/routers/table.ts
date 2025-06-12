@@ -19,8 +19,8 @@ export const tableRouter = createTRPCRouter({
           base: { connect: { id: input.baseId } },
           columns: {
             create: [
-              { name: 'name', type: 'TEXT' },
-              { name: 'email', type: 'TEXT' },
+              { name: 'name', type: 'TEXT', order: 0 },
+              { name: 'email', type: 'TEXT', order: 1 },
             ],
           },
         },
@@ -29,8 +29,8 @@ export const tableRouter = createTRPCRouter({
 
       const initialRows = [
         { name: 'Alice', email: 'alice@example.com', order: 0 },
-        { name: 'Bob', email: 'bob@example.com' },
-        { name: 'Charlie', email: 'charlie@example.com', order: 1 },
+        { name: 'Bob', email: 'bob@example.com', order: 1},
+        { name: 'Charlie', email: 'charlie@example.com', order: 2 },
       ];
 
       for (const [index, row] of initialRows.entries()) {
@@ -189,7 +189,6 @@ export const tableRouter = createTRPCRouter({
   )
   .query(async ({ input, ctx }) => {
     const { tableId, limit, cursor } = input
-    
     const rows = await ctx.db.row.findMany({
       where: { 
         tableId,
@@ -197,17 +196,13 @@ export const tableRouter = createTRPCRouter({
       },
       orderBy: { order: 'asc' },
       include: {
-      cells: {
-        orderBy: {
-          column: {
-            order: 'asc',
+        cells: {
+          orderBy: {
+            column: { order: 'asc' },
           },
-        },
-        include: {
-          column: true,
+          include: { column: true },
         },
       },
-    },
       take: limit,
     })
     const lastRow = rows[rows.length - 1]
