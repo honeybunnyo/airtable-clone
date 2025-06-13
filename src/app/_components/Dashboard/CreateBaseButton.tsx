@@ -5,8 +5,14 @@ import { api } from '~/trpc/react';
 
 const CreateBaseButton = () => {
   const router = useRouter();
+  const utils = api.useUtils()
+  
   const createBase = api.base.create.useMutation();
-  const createTable = api.table.create.useMutation();
+  const createTable = api.table.create.useMutation({
+    onSuccess: async () => {
+      await utils.base.getAllBases.invalidate()
+    }
+  })
 
   const handleCreate = async () => {
     router.push("/base/loading");

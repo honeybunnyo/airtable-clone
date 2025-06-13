@@ -58,24 +58,6 @@ export const tableRouter = createTRPCRouter({
       }
       return { tableId: table.id }
     }),
-  getTableById: publicProcedure
-    .input(z.object({ tableId: z.string() }))
-    .query(async ({ input, ctx }) => {
-      return ctx.db.table.findUnique({
-        where: { id: input.tableId },
-        include: {
-          columns: true,
-          rows: {
-            orderBy: {
-              order: 'asc',
-            },
-            include: {
-              cells: true,
-            },
-          },
-        },
-      });
-    }),
   addRow: protectedProcedure
     .input(z.object({
       tableId: z.string(),

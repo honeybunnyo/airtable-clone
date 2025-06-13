@@ -101,7 +101,7 @@ model Cell {
   id        String   @id @default(cuid())
   rowId     String
   columnId  String
-  value     Json
+  value     String
   row       Row      @relation(fields: [rowId], references: [id], onDelete: Cascade)
   column    Column  @relation(fields: [columnId], references: [id], onDelete: Cascade)
 }
