@@ -1,4 +1,4 @@
-import { ArrowDownUp, ChevronDown, EyeOff, List, ListFilter, Menu, PaintBucket, Search, Sparkle, TableCellsSplit } from 'lucide-react'
+import { ArrowDownUp, ChevronDown, EyeOff, List, ListFilter, Menu, PaintBucket, Sparkle, TableCellsSplit } from 'lucide-react'
 import React, { useState } from 'react'
 import FormatIcon from '../../Ui/FormatIcon'
 import { Button } from '~/components/ui/button'

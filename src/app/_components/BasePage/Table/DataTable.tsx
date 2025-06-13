@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { api } from '~/trpc/react';
 import AddColumnDialog from './AddColumnDialog';
 import { Plus } from 'lucide-react';
@@ -10,6 +10,16 @@ import DataTableHeader from './DataTableHeader';
 import TableSkeleton from '../Skeletons/TableSkeleton';
 
 type DataTableProps = { tableId: string }
+
+const findScrollParent = (element: HTMLElement): HTMLElement => {
+  if (!element) return document.documentElement;
+  const { overflow, overflowY } = window.getComputedStyle(element);
+  if (overflow === 'auto' || overflow === 'scroll' || overflowY === 'auto' || overflowY === 'scroll') {
+    return element;
+  }
+  
+  return findScrollParent(element.parentElement!);
+};
 
 const DataTable = ({ tableId }: DataTableProps ) => {
  const {
@@ -26,13 +36,34 @@ const DataTable = ({ tableId }: DataTableProps ) => {
   );
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  const { ref, inView } = useInView();
+  const { ref, inView } = useInView({
+    threshold: 0.1,
+    rootMargin: '200px',
+  });
 
-  useEffect(() => {
-    if (inView && hasNextPage) {
+  const tableRef = useRef<HTMLTableElement>(null);
+
+  const checkScrollPosition = useCallback(() => {
+    if (!tableRef.current) return;
+    
+    const scrollParent = findScrollParent(tableRef.current);
+    const scrollTop = scrollParent.scrollTop;
+    const containerHeight = scrollParent.clientHeight;
+    const scrollHeight = scrollParent.scrollHeight;
+    const scrollPercentage = (scrollTop + containerHeight) / scrollHeight;
+    
+    if (scrollPercentage > 0.4 && hasNextPage && !isFetchingNextPage) {
       void fetchNextPage();
     }
-  }, [fetchNextPage, inView, hasNextPage]);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  useEffect(() => {
+    if (!tableRef.current) return;
+    const scrollParent = findScrollParent(tableRef.current);
+    scrollParent.addEventListener('scroll', checkScrollPosition);
+    
+    return () => scrollParent.removeEventListener('scroll', checkScrollPosition);
+  }, [checkScrollPosition]);
 
   const utils = api.useUtils()
   const addRow = api.table.addRow.useMutation({
@@ -43,12 +74,17 @@ const DataTable = ({ tableId }: DataTableProps ) => {
 
   const handleAddRow = () => addRow.mutate({ tableId })
   const { data: columns, isLoading: isColumnsLoading } = api.table.getTableColumns.useQuery({ tableId })
+  const columnTypeMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    columns?.forEach((col) => {
+      map[col.id] = col.type ?? 'TEXT';
+    });
+    return map;
+  }, [columns]);
 
-  if (isColumnsLoading || !columns) {
+  if (isColumnsLoading || !columns || !data) {
     return <TableSkeleton/>
   }
-
-  if (!data) return <div>Loading Table data...</div>;
 
   const allRows = data.pages.flatMap((page, pageIndex) => 
     page.rows.map((row, rowIndex) => ({
@@ -58,40 +94,51 @@ const DataTable = ({ tableId }: DataTableProps ) => {
         .reduce((acc, prevPage) => acc + prevPage.rows.length, 0) + rowIndex + 1
     }))
   );
+  // Calculate halfway point of the current page instead of all rows
+  const currentPageRows = data.pages[data.pages.length - 1]?.rows.length ?? 0;
+  const halfwayIndex = allRows.length - Math.floor(currentPageRows / 2);
 
   return  (
     <div className="flex flex-row w-auto">
-      <table className="table-auto border-collapse">
+      <table ref={tableRef} className="table-auto border-collapse">
         <DataTableHeader columns={columns}/>
         {/* Table content */}
         <tbody>
-          {allRows.map((row) => (
-            <tr key={row.id} className="h-[32px]">
-              {/* row number cell */}
-              <td className="w-[50px] border border-gray-200 font-light text-sm">
-                <div className="flex items-center justify-center h-full">
-                  {row.globalIndex}
-                </div>
-              </td>
-              {/* rest of cells */}
-              {row.cells.map((cell) => (
-                <td key={cell.id} className="border border-gray-200 w-[180px]">
-                  <DataTableCell
-                    initialValue={cell.value == null ? ' ' :
-                      typeof cell.value === 'object' ? JSON.stringify(cell.value) : String(cell.value)}
-                    cellId={cell.id}
-                    columnType={cell.column.type ?? 'TEXT'}
-                  />
+          {allRows.map((row, index) => (
+            <React.Fragment key={row.id}>
+              <tr className="h-[32px]">
+                {/* row number cell */}
+                <td className="w-[50px] border border-gray-200 font-light text-sm">
+                  <div className="flex items-center justify-center h-full">
+                    {row.globalIndex}
+                  </div>
                 </td>
-              ))}
-            </tr>
+                {/* rest of cells */}
+                {row.cells.map((cell) => (
+                  <td key={cell.id} className="border border-gray-200 w-[180px]">
+                    <DataTableCell
+                      initialValue={cell.value == null ? ' ' :
+                        typeof cell.value === 'object' ? JSON.stringify(cell.value) : String(cell.value)}
+                      cellId={cell.id}
+                      columnType={columnTypeMap[cell.columnId] as 'TEXT' | 'NUMBER' ?? 'TEXT'}
+                    />
+                  </td>
+                ))}
+              </tr>
+              {/* Invisible trigger row at halfway point */}
+              {index === halfwayIndex && (
+                <tr ref={ref} className="h-0">
+                  <td colSpan={columns.length + 1} className="h-0 p-0 border-0"></td>
+                </tr>
+              )}
+            </React.Fragment>
           ))}
           <tr className="h-[32px] w-full cursor-pointer hover:bg-gray-100 border border-gray-200" onClick={handleAddRow}>
             <td colSpan={columns.length + 1} className="text-left text-gray-400 text-xl px-2">
               <Plus/>
             </td>
           </tr>
-          <tr ref={ref}>
+          <tr>
             <td colSpan={columns.length + 1} className="text-center p-2">
               {isFetchingNextPage && <LoadingSpinner/>}
             </td>

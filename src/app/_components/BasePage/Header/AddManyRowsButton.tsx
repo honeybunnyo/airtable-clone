@@ -5,6 +5,7 @@ import { Button } from '~/components/ui/button'
 import { api } from '~/trpc/react'
 import { faker } from '@faker-js/faker'
 import { useParams } from 'next/navigation';
+import { withGlobalSaving } from '~/lib/utils'
 
 const AddManyRowsButton = () => {
   const params = useParams()
@@ -18,17 +19,18 @@ const AddManyRowsButton = () => {
 
   if (!tableId) return
   
-  const handleImportRows = () => {
+  const handleImportRows = async () => {
     const rows = Array.from({ length: 100 }, () => ({
       data: {
         name: faker.person.fullName(),
         email: faker.internet.email(),
       }
     }))
-    addManyRows.mutate({
+    await withGlobalSaving(async() => addManyRows.mutate({
       tableId,
       rows,
     })
+    );
   }
 
   return (

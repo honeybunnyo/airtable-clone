@@ -142,43 +142,49 @@ export const tableRouter = createTRPCRouter({
         data: z.record(z.string(), z.union([z.string(), z.number()])),
       })),
     }))
-      .mutation(async ({ ctx, input }) => {
-      const columns = await ctx.db.column.findMany({
+  .mutation(async ({ ctx, input }) => {
+    return await ctx.db.$transaction(async (tx) => {
+      const columns = await tx.column.findMany({
         where: { tableId: input.tableId },
       });
 
-      const maxOrderRow = await ctx.db.row.findFirst({
+      const maxOrderRow = await tx.row.findFirst({
         where: { tableId: input.tableId },
         orderBy: { order: 'desc' },
         select: { order: true },
       });
 
-      let nextOrder = (maxOrderRow?.order ?? -1) + 1;
+      const startOrder = (maxOrderRow?.order ?? -1) + 1;
 
-      for (const row of input.rows) {
-        const newRow = await ctx.db.row.create({
-          data: {
-            tableId: input.tableId,
-            order: nextOrder++,
-          },
-        });
+      const rowsToCreate = input.rows.map((_, index) => ({
+        tableId: input.tableId,
+        order: startOrder + index,
+      }));
 
-        const cellsToCreate = columns.map((col) => {
-          const value = row.data[col.name] ?? "";
-          return {
-            rowId: newRow.id,
+      const createdRows = await tx.row.createManyAndReturn({
+        data: rowsToCreate,
+      });
+
+      const cellsToCreate: { rowId: string; columnId: string; value: string; }[] = [];
+      
+      createdRows.forEach((createdRow, rowIndex) => {
+        columns.forEach((col) => {
+          const value = input.rows[rowIndex]?.data[col.name] ?? "";
+          cellsToCreate.push({
+            rowId: createdRow.id,
             columnId: col.id,
             value: typeof value === 'string' ? value : String(value),
-          };
+          });
         });
+      });
 
-        await ctx.db.cell.createMany({
-          data: cellsToCreate,
-        });
-      }
+      await tx.cell.createMany({
+        data: cellsToCreate,
+      });
 
-      return { success: true };
-    }),
+      return { success: true, rowsCreated: createdRows.length };
+    });
+  }),
   getPaginatedRows: publicProcedure
   .input(
     z.object({
@@ -197,9 +203,7 @@ export const tableRouter = createTRPCRouter({
       orderBy: { order: 'asc' },
       include: {
         cells: {
-          orderBy: {
-            column: { order: 'asc' },
-          },
+          orderBy: { column: { order: 'asc' } },
           include: { column: true },
         },
       },
@@ -225,4 +229,14 @@ export const tableRouter = createTRPCRouter({
 
     return columns
   }),
+  getRowCount: publicProcedure
+    .input(z.object({ tableId: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const count = await ctx.db.row.count({
+        where: {
+          tableId: input.tableId,
+        },
+      })
+      return { count }
+    }),
 });

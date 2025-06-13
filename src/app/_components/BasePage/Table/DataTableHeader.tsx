@@ -4,11 +4,9 @@ import { ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 
 type Column = {
-  tableId: string;
+  id: string;
   type: string;
   name: string;
-  id: string;
-  order: number;
 }
 
 type DataTableHeaderProps = {

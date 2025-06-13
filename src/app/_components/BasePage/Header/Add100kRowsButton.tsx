@@ -18,22 +18,32 @@ const Add100kRowsButton = () => {
 
   if (!tableId) return
   
-  const handleImportRows = () => {
-    const rows = Array.from({ length: 1000 }, () => ({
-      data: {
-        name: faker.person.fullName(),
-        email: faker.internet.email(),
-      }
-    }))
-    addManyRows.mutate({
-      tableId,
-      rows,
-    })
+  const handleImportRows = async () => {
+    const total = 100000
+    const batchSize = 1000
+    const numBatches = total / batchSize
+
+    for (let i = 0; i < numBatches; i++) {
+      const rows = Array.from({ length: batchSize }, () => ({
+        data: {
+          name: faker.person.fullName(),
+          email: faker.internet.email(),
+        }
+      }))
+
+      await addManyRows.mutateAsync({
+        tableId,
+        rows,
+      })
+
+      console.log(`Batch ${i + 1} of ${numBatches} done`)
+    }
+    await utils.table.getPaginatedRows.invalidate({ tableId })
   }
 
   return (
     <Button variant="ghost" className="w-30" onClick={handleImportRows}>
-      add 1000 rows
+      add 100k rows
     </Button>
   )
 }
