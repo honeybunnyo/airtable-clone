@@ -14,8 +14,13 @@ import VerticalSeparator from '../../Ui/VerticalSeparator';
 type PageProps = {
   sideBarOpen: boolean;
   setSideBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  searchBarOpen: boolean;
+  setSearchBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  searchValue: string;
+  setSearchValue: React.Dispatch<React.SetStateAction<string>>;
 }
-const Page = ({ sideBarOpen, setSideBarOpen }: PageProps) => {
+
+const Page = ({ sideBarOpen, setSideBarOpen, searchBarOpen, setSearchBarOpen, searchValue, setSearchValue}: PageProps) => {
   const params = useParams()
 
   const baseId = typeof params?.baseId === 'string' ? params.baseId : undefined
@@ -68,7 +73,14 @@ const Page = ({ sideBarOpen, setSideBarOpen }: PageProps) => {
           </button>
         </div>
       </div>
-      <ViewBar sideBarOpen={sideBarOpen} setSideBarOpen={setSideBarOpen}/>
+      <ViewBar
+      sideBarOpen={sideBarOpen} 
+      setSideBarOpen={setSideBarOpen}
+      searchBarOpen={searchBarOpen}
+      setSearchBarOpen={setSearchBarOpen}
+      searchValue={searchValue}
+      setSearchValue={setSearchValue}
+      />
     </div>
   )
 }

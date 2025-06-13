@@ -9,9 +9,13 @@ import SearchBar from './SearchBar/SearchBar'
 type PageProps = {
   sideBarOpen: boolean;
   setSideBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  searchBarOpen: boolean;
+  setSearchBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  searchValue: string;
+  setSearchValue: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const ViewBar = ({ sideBarOpen, setSideBarOpen }: PageProps) => {
+const ViewBar = ({ sideBarOpen, setSideBarOpen, searchBarOpen, setSearchBarOpen, searchValue, setSearchValue }: PageProps) => {
   const [ wasManuallyOpened, setWasManuallyOpened ] = useState(false)
   const iconButtons = [
     { icon: EyeOff },
@@ -55,7 +59,12 @@ const ViewBar = ({ sideBarOpen, setSideBarOpen }: PageProps) => {
         <AddManyRowsButton/>
         <Add100kRowsButton/>
       </div>
-      <SearchBar/>
+      <SearchBar
+        searchBarOpen={searchBarOpen}
+        setSearchBarOpen={setSearchBarOpen}
+        searchValue={searchValue}
+        setSearchValue={setSearchValue}
+      />
     </div>
   )
 }

@@ -9,24 +9,41 @@ import ViewSideBar from '~/app/_components/BasePage/ViewSidebar';
 import BaseLoadingPage from './../../loading/page';
 
 const BasePage = () => {
-  const { baseId, tableId } = useParams();
+  const { baseId, tableId: rawTableId } = useParams();
+  const tableId = Array.isArray(rawTableId) ? rawTableId[0] : rawTableId ?? "";
+
   const [ sideBarOpen, setSideBarOpen ] = useState(false);
+  const [ searchBarOpen, setSearchBarOpen ] = useState(false);
+  const [ searchValue, setSearchValue ] = useState("");
+  const enabled = !!searchValue && !!tableId && searchBarOpen;
   const { data: base, isLoading, isError } = api.base.getBaseById.useQuery(
     { id: baseId as string },
     { enabled: !!baseId }
   )
+  
+  const { data: matchingCells } = api.filter.search.useQuery(
+    { tableId: tableId ?? "", searchValue },
+    { enabled }
+  );
 
   if (isLoading) return <BaseLoadingPage/>
   if (isError || !base) return <div>Error loading base data.</div>
 
   return (
     <div className="flex flex-col h-dvh">
-      <Header sideBarOpen={sideBarOpen} setSideBarOpen={setSideBarOpen} />
+      <Header 
+      sideBarOpen={sideBarOpen} 
+      setSideBarOpen={setSideBarOpen}
+      searchBarOpen={searchBarOpen}
+      setSearchBarOpen={setSearchBarOpen}
+      searchValue={searchValue}
+      setSearchValue={setSearchValue}
+      />
       <div className="flex flex-1 overflow-hidden">
         {sideBarOpen && <ViewSideBar sideBarOpen={sideBarOpen} />}
         <div className="flex-1 overflow-hidden">
           <div className="h-full overflow-auto">
-            <DataTable tableId={tableId as string} />
+            <DataTable tableId={tableId!} matchingCells={matchingCells ?? []}/>
           </div>
         </div>
       </div>

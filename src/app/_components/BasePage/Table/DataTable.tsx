@@ -8,7 +8,10 @@ import DataTableHeader from './DataTableHeader';
 import TableSkeleton from '../Skeletons/TableSkeleton';
 import AddRowButton from './AddRowButton';
 
-type DataTableProps = { tableId: string }
+type DataTableProps = { tableId: string,  matchingCells: MatchingCell[]}
+type MatchingCell = {
+  id: string
+};
 
 const findScrollParent = (element: HTMLElement): HTMLElement => {
   if (!element) return document.documentElement;
@@ -20,7 +23,7 @@ const findScrollParent = (element: HTMLElement): HTMLElement => {
   return findScrollParent(element.parentElement!);
 };
 
-const DataTable = ({ tableId }: DataTableProps ) => {
+const DataTable = ({ tableId, matchingCells }: DataTableProps ) => {
  const {
     data,
     fetchNextPage,
@@ -109,6 +112,7 @@ const DataTable = ({ tableId }: DataTableProps ) => {
                 {row.cells.map((cell) => (
                   <td key={cell.id} className="border border-gray-200 w-[180px]">
                     <DataTableCell
+                      matchingCells={matchingCells}
                       initialValue={cell.value == null ? ' ' :
                         typeof cell.value === 'object' ? JSON.stringify(cell.value) : String(cell.value)}
                       cellId={cell.id}

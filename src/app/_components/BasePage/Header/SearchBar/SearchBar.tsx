@@ -1,36 +1,20 @@
 import { Search, X } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
-import { api } from '~/trpc/react'
-import { useParams } from 'next/navigation'
+import React from 'react'
 
-const SearchBar = () => {
-  const [searchValue, setSearchValue] = useState("");
-  const [open, setOpen] = useState(false);
+type PageProps = {
+  searchBarOpen: boolean;
+  setSearchBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  searchValue: string;
+  setSearchValue: React.Dispatch<React.SetStateAction<string>>;
+}
 
-  const params = useParams();
-  const tableId = typeof params?.tableId === "string" ? params.tableId : undefined;
-
-  if (!tableId) return <div>Waiting for tableId...</div>;
-
-  const enabled = !!searchValue && !!tableId && open;
-
-  const { data: matchingCells, isLoading, isSuccess } = api.filter.search.useQuery(
-    { tableId, searchValue },
-    { enabled }
-  );
-
-  useEffect(() => {
-    if (isSuccess && matchingCells) {
-      console.log("Matching cells:", matchingCells);
-    }
-  }, [isSuccess, matchingCells]);
-
+const SearchBar = ({ searchBarOpen, setSearchBarOpen, searchValue, setSearchValue }: PageProps) => {
   return (
     <div>
-      <button onClick={()=> setOpen(prev => !prev)}>
+      <button onClick={()=> setSearchBarOpen(prev => !prev)}>
         <Search className="h-4 w-4 mr-4" strokeWidth={1}/>
       </button>
-      {open &&
+      {searchBarOpen &&
         <div className="z-20 w-76 rounded-xs p-0 absolute top-34 right-10 outline-2 outline-gray-100">
           {/* Top half */}
           <div className="bg-white px-2 py-1 h-10 flex flex-row justify-between items-center">
@@ -40,7 +24,7 @@ const SearchBar = () => {
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             />
-            <button onClick={()=> setOpen(false)}>
+            <button onClick={()=> setSearchBarOpen(false)}>
               <X strokeWidth={1} className="text-gray-500 h-5 w-5" />
             </button>
           </div>
