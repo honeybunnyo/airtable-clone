@@ -201,10 +201,16 @@ export const tableRouter = createTRPCRouter({
         ...(cursor !== undefined ? { order: { gt: cursor } } : {})
       },
       orderBy: { order: 'asc' },
-      include: {
+      select: {
+        id: true,
+        order: true,
         cells: {
           orderBy: { column: { order: 'asc' } },
-          include: { column: true },
+          select: {
+            id: true,
+            value: true,
+            columnId: true,
+          },
         },
       },
       take: limit,
@@ -221,10 +227,14 @@ export const tableRouter = createTRPCRouter({
   .input(z.object({ tableId: z.string() }))
   .query(async ({ input, ctx }) => {
     const { tableId } = input
-
     const columns = await ctx.db.column.findMany({
       where: { tableId },
       orderBy: { order: 'asc' },
+      select: {
+        id: true,
+        name: true,
+        type: true
+      }
     })
 
     return columns

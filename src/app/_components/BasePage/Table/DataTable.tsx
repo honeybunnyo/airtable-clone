@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import { api } from '~/trpc/react';
 import AddColumnDialog from './AddColumnDialog';
 import { Plus } from 'lucide-react';
@@ -36,7 +36,7 @@ const DataTable = ({ tableId }: DataTableProps ) => {
   );
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  const { ref, inView } = useInView({
+  const { ref } = useInView({
     threshold: 0.1,
     rootMargin: '200px',
   });
