@@ -32,7 +32,10 @@ export const baseRouter = createTRPCRouter({
   getAllBases: protectedProcedure
     .query(async({ ctx }) => {
       return ctx.db.base.findMany({
-        where: { userId: ctx.session.user.id },
+        where: {
+          userId: ctx.session.user.id,
+          deleted: false,
+        },
         include: {
           tables: { select: { id: true } },
         },
@@ -47,37 +50,21 @@ export const baseRouter = createTRPCRouter({
       });
     }),
   delete: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(async ({ input, ctx }) => {
-      const base = await ctx.db.base.findUnique({
-        where: { id: input.id },
-        include: {
-          tables: {
-            include: {
-              columns: true,
-              rows: {
-                include: {
-                  cells: true,
-                },
-              },
-            },
-          },
-        },
-      });
+  .input(z.object({ id: z.string() }))
+  .mutation(async ({ input, ctx }) => {
+    const base = await ctx.db.base.findUnique({
+      where: { id: input.id },
+    });
 
-      if (!base || base.userId !== ctx.session.user.id) {
-        throw new Error("Unauthorized or base not found");
-      }
+    if (!base || base.userId !== ctx.session.user.id) {
+      throw new Error("Base not found");
+    }
 
-      for (const table of base.tables) {
-        const rowIds = table.rows.map(r => r.id);
-        await ctx.db.cell.deleteMany({ where: { rowId: { in: rowIds }, } });
-        await ctx.db.column.deleteMany({ where: { tableId: table.id } });
-        await ctx.db.row.deleteMany({ where: { tableId: table.id } });
-      }
+    await ctx.db.base.update({
+      where: { id: input.id },
+      data: { deleted: true },
+    });
 
-      await ctx.db.table.deleteMany({ where: { baseId: base.id } });
-      await ctx.db.base.delete({ where: { id: base.id } });
-      return { success: true };
-    }),
+    return { success: true };
+  }),
 });

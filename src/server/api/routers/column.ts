@@ -31,16 +31,17 @@ export const columnRouter = createTRPCRouter({
         select: { id: true },
       });
 
-      if (rows.length > 0) {
-        await ctx.db.cell.createMany({
-          data: rows.map(row => ({
-            rowId: row.id,
-            columnId: newColumn.id,
-            value: ""
-          })),
-        });
+      const BATCH_SIZE = 5000;
+      for (let i = 0; i < rows.length; i += BATCH_SIZE) {
+        const batch = rows.slice(i, i + BATCH_SIZE).map(row => ({
+          rowId: row.id,
+          columnId: newColumn.id,
+          value: "",
+        }));
+
+        await ctx.db.cell.createMany({ data: batch });
       }
-      return newColumn;
+      return;
     }),
   delete: protectedProcedure
     .input(z.object({ columnId: z.string() }))
@@ -51,12 +52,10 @@ export const columnRouter = createTRPCRouter({
       
       if (!column) throw new Error('Column not found');
 
-      await ctx.db.cell.deleteMany({
-        where: { columnId: input.columnId },
-      });
-
-      return ctx.db.column.delete({
+      await ctx.db.column.delete({
         where: { id: input.columnId },
       });
+
+      return;
     }),
 });

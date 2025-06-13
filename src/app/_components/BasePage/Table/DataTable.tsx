@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import { api } from '~/trpc/react';
 import AddColumnDialog from './AddColumnDialog';
-import { Plus } from 'lucide-react';
 import DataTableCell from './DataTableCell';
 import LoadingSpinner from '../Header/LoadingSpinner';
 import { useInView } from 'react-intersection-observer';
 import DataTableHeader from './DataTableHeader';
 import TableSkeleton from '../Skeletons/TableSkeleton';
+import AddRowButton from './AddRowButton';
 
 type DataTableProps = { tableId: string }
 
@@ -35,7 +34,6 @@ const DataTable = ({ tableId }: DataTableProps ) => {
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const { ref } = useInView({
     threshold: 0.1,
     rootMargin: '200px',
@@ -57,6 +55,7 @@ const DataTable = ({ tableId }: DataTableProps ) => {
     }
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
+  // Set up scroll tracking
   useEffect(() => {
     if (!tableRef.current) return;
     const scrollParent = findScrollParent(tableRef.current);
@@ -65,14 +64,7 @@ const DataTable = ({ tableId }: DataTableProps ) => {
     return () => scrollParent.removeEventListener('scroll', checkScrollPosition);
   }, [checkScrollPosition]);
 
-  const utils = api.useUtils()
-  const addRow = api.table.addRow.useMutation({
-    onSuccess: async () => {
-      await utils.table.getPaginatedRows.invalidate({ tableId })
-    }
-  })
 
-  const handleAddRow = () => addRow.mutate({ tableId })
   const { data: columns, isLoading: isColumnsLoading } = api.table.getTableColumns.useQuery({ tableId })
   const columnTypeMap = useMemo(() => {
     const map: Record<string, string> = {};
@@ -133,11 +125,7 @@ const DataTable = ({ tableId }: DataTableProps ) => {
               )}
             </React.Fragment>
           ))}
-          <tr className="h-[32px] w-full cursor-pointer hover:bg-gray-100 border border-gray-200" onClick={handleAddRow}>
-            <td colSpan={columns.length + 1} className="text-left text-gray-400 text-xl px-2">
-              <Plus/>
-            </td>
-          </tr>
+          <AddRowButton length={columns.length + 1} tableId={tableId}/>
           <tr>
             <td colSpan={columns.length + 1} className="text-center p-2">
               {isFetchingNextPage && <LoadingSpinner/>}

@@ -20,7 +20,7 @@ const Add100kRowsButton = () => {
   
   const handleImportRows = async () => {
     const total = 100000
-    const batchSize = 1000
+    const batchSize = 10000
     const numBatches = total / batchSize
 
     for (let i = 0; i < numBatches; i++) {
