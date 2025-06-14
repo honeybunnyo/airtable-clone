@@ -15,9 +15,7 @@ export const filterRouter = createTRPCRouter({
       const [matchingCells, matchingColumns] = await Promise.all([
         ctx.db.cell.findMany({
           where: {
-            row: {
-              tableId: input.tableId,
-            },
+            row: { tableId: input.tableId },
             value: {
               contains: input.searchValue,
               mode: 'insensitive',
@@ -25,7 +23,13 @@ export const filterRouter = createTRPCRouter({
           },
           select: {
             id: true,
+            row: { select: { order: true } },
+            column: { select: { order: true } },
           },
+          orderBy: [
+            { row: { order: 'asc' } },
+            { column: { order: 'asc' } },
+          ],
         }),
         ctx.db.column.findMany({
           where: {
@@ -35,12 +39,12 @@ export const filterRouter = createTRPCRouter({
               mode: 'insensitive',
             },
           },
-          select: {
-            id: true,
-          },
+          select: { id: true },
         }),
       ]);
-
       return { matchingCells, matchingColumns };
     }),
 });
+
+
+      

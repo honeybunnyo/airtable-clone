@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../../../../components/ui/dropdown-menu'
+} from '~/components/ui/dropdown-menu'
 import { BookOpen, Plus, Sparkle, StickyNote } from 'lucide-react';
 import { CreateTableDialog } from './CreateTableDialog';
 

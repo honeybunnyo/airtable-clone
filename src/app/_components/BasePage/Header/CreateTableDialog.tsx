@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogClose } from '../../../../components/ui/dialog'
-import { Button } from '../../../../components/ui/button'
-import { Input } from '../../../../components/ui/input'
-import { Label } from '../../../../components/ui/label'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogClose } from '~/components/ui/dialog'
+import { Button } from '~/components/ui/button'
+import { Input } from '~/components/ui/input'
+import { Label } from '~/components/ui/label'
 import { api } from '~/trpc/react'
 import { withGlobalSaving } from '~/lib/utils'
 

@@ -35,6 +35,7 @@ const SearchBar = ({
     setCurrentIndex(1);
   }, [searchValue])
 
+  // Navigate to index i, and highlight focused element
   useEffect(() => {
     matchingCells.forEach((cell) => {
       const el = document.getElementById(cell.id);

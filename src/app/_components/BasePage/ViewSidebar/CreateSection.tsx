@@ -14,7 +14,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '../../../../components/ui/collapsible'
+} from '~/components/ui/collapsible'
 import { Button } from '~/components/ui/button'
 
 const CreateSection = () => {

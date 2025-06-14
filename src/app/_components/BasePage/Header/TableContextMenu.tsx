@@ -7,7 +7,7 @@ import {
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuTrigger,
-} from "../../../../components/ui/context-menu"
+} from "~/components/ui/context-menu"
 import { api } from '~/trpc/react'
 import { useParams } from 'next/navigation'
 

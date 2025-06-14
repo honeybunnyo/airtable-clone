@@ -3,8 +3,8 @@
 import React, { useState } from 'react'
 import { useParams } from 'next/navigation'
 import { api } from '~/trpc/react';
-import Header from '../../../_components/BasePage/Header';
-import DataTable from '../../../_components/BasePage/Table/DataTable';
+import Header from '~/app/_components/BasePage/Header';
+import DataTable from '~/app/_components/BasePage/Table/DataTable';
 import ViewSideBar from '~/app/_components/BasePage/ViewSidebar';
 import BaseLoadingPage from './../../loading/page';
 
@@ -31,7 +31,6 @@ const BasePage = () => {
 
   if (isLoading) return <BaseLoadingPage/>
   if (isError || !base) return <div>Error loading base data.</div>
-  console.log(matchingCells)
 
   return (
     <div className="flex flex-col h-dvh">

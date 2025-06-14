@@ -1,6 +1,4 @@
 import React from 'react'
-
-import { Skeleton } from "~/components/ui/skeleton"
 import BigSpinner from '../../Ui/BigSpinner'
 
 export function TableSkeleton() {
