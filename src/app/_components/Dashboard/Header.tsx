@@ -19,7 +19,7 @@ const Header = ({ menuSidebarOpen, setMenuSidebarOpen }: SideBarProps) => {
         <div className="hidden md:block">
           <Menu className="w-5 h-5 cursor-pointer text-gray-400 hover:text-gray-800" onClick={() => setMenuSidebarOpen(!menuSidebarOpen)} />
         </div>
-        <Image src="/airtable-logo.png" alt="Airtable" width={100} height={32} style={{ height: 'auto', width: '100%' }} priority/>
+        <Image src="/airtable-logo.png" alt="Airtable" width={96} height={30} style={{ height: 'auto', width: '100%' }} priority/>
       </div>
 
       {/* Center */}

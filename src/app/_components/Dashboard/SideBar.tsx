@@ -24,44 +24,59 @@ const SideBar = ({ menuSidebarOpen }: SideBarProps) => {
   }
 
   return (
-    <aside
+    <div
       onMouseEnter={() => trySetSidebarOpen(true)}
       onMouseLeave={() => trySetSidebarOpen(false)}
-      className={`transition-all duration-100 bg-white overflow-hidden border-r border-slate-200 h-full z-0 ${sidebarOpen ? 'w-[300px]' : 'w-[50px]'} flex flex-col justify-between`}
+      className="h-full"
     >
-      {/* Top */}
-      <nav className="flex flex-col gap-1 p-2">
-        <Link href="/" className="flex items-center gap-2 p-2 hover:bg-slate-100 rounded text-sm">
-          
-          {sidebarOpen ? noWrapText("Home") : <House className="w-5 h-5" />}
-        </Link>
-        <Link href="/" className="flex items-center gap-2 p-2 hover:bg-slate-100 rounded text-sm">
-          
-          {sidebarOpen ? noWrapText("All workspaces") : 
-          <Image
-            src="/users-three.svg"
-            alt="Users icon"
-            width={30}
-            height={20}
-            className="cursor-pointer"
-          />}
-        </Link>
-      </nav>
-      {/* Bottom */}
-        <div className={`${!sidebarOpen ? "items-center" : "p-3"} flex flex-col justify-center`}>
-          {bottomNav(BookOpen, "Templates and apps", sidebarOpen)}
-          {bottomNav(ShoppingBag, "Marketplace", sidebarOpen)}
-          {bottomNav(Upload, "Import", sidebarOpen)}
+      <aside
+        className={`transition-all duration-200 bg-white overflow-hidden border-r border-slate-200 h-full z-0 ${
+          sidebarOpen ? 'w-[300px]' : 'w-[50px]'
+        } flex flex-col justify-between`}
+      >
+        {/* Top */}
+        <nav className="flex flex-col gap-1 p-2">
+          <Link
+            href="/"
+            className="flex items-center gap-2 p-2 hover:bg-slate-100 rounded text-sm"
+          >
+            {sidebarOpen ? noWrapText('Home') : <House className="w-5 h-5" />}
+          </Link>
+          <Link
+            href="/"
+            className="flex items-center gap-2 p-2 hover:bg-slate-100 rounded text-sm"
+          >
+            {sidebarOpen ? (
+              noWrapText('All workspaces')
+            ) : (
+              <Image
+                src="/users-three.svg"
+                alt="Users icon"
+                width={20}
+                height={20}
+                className="cursor-pointer"
+              />
+            )}
+          </Link>
+          {!sidebarOpen && <div className='h-[1px] w-auto px-1 bg-gray-200'/>}
+        </nav>
 
-        {/* Create button */}
-        <div className="mt-4">
-        { sidebarOpen ? <CreateBaseButton/>
-        :
-          <SquarePlus className="w-7 h-7 text-gray-400 mb-4" strokeWidth={1} />
-        }
+        {/* Bottom */}
+        <div
+          className={`${
+            !sidebarOpen ? 'items-center' : 'p-3'
+          } flex flex-col justify-center`}
+        >
+          {bottomNav(BookOpen, 'Templates and apps', sidebarOpen)}
+          {bottomNav(ShoppingBag, 'Marketplace', sidebarOpen)}
+          {bottomNav(Upload, 'Import', sidebarOpen)}
+          <div className="mt-4">
+            {sidebarOpen ? <CreateBaseButton />
+            : <SquarePlus className="w-7 h-7 text-gray-400 mb-4" strokeWidth={1} />}
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </div>
   )
 }
 
