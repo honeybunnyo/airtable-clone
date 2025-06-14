@@ -5,17 +5,9 @@ import { Button } from '~/components/ui/button'
 import AddManyRowsButton from './AddManyRowsButton'
 import Add100kRowsButton from './Add100kRowsButton'
 import SearchBar from './SearchBar/SearchBar'
+import type { PageProps } from '~/app/types/props'
 
-type PageProps = {
-  sideBarOpen: boolean;
-  setSideBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  searchBarOpen: boolean;
-  setSearchBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  searchValue: string;
-  setSearchValue: React.Dispatch<React.SetStateAction<string>>;
-}
-
-const ViewBar = ({ sideBarOpen, setSideBarOpen, searchBarOpen, setSearchBarOpen, searchValue, setSearchValue }: PageProps) => {
+const ViewBar = ({ sideBarOpen, setSideBarOpen, searchBarOpen, setSearchBarOpen, searchValue, setSearchValue, matchingCells }: PageProps) => {
   const [ wasManuallyOpened, setWasManuallyOpened ] = useState(false)
   const iconButtons = [
     { icon: EyeOff },
@@ -64,6 +56,7 @@ const ViewBar = ({ sideBarOpen, setSideBarOpen, searchBarOpen, setSearchBarOpen,
         setSearchBarOpen={setSearchBarOpen}
         searchValue={searchValue}
         setSearchValue={setSearchValue}
+        matchingCells={matchingCells}
       />
     </div>
   )

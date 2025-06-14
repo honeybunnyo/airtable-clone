@@ -43,7 +43,7 @@ export const tableRouter = createTRPCRouter({
 
         const cellData = Object.entries(row);
         for (const [columnName, value] of cellData) {
-          if (typeof value !== "string" && typeof value !== "number") continue;
+          if (typeof value !== "string") continue;
           const column = table.columns.find((c) => c.name === columnName);
           if (column) {
             await ctx.db.cell.create({
@@ -94,7 +94,7 @@ export const tableRouter = createTRPCRouter({
   updateCell: protectedProcedure
     .input(z.object({
       cellId: z.string(),
-      value: z.union([z.string(), z.number()]),
+      value: z.string(),
     }))
     .mutation(async ({ input, ctx }) => {
       return ctx.db.cell.update({

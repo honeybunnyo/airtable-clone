@@ -10,17 +10,9 @@ import CreateTableButton from './CreateTableButton';
 import TableContextMenu from './TableContextMenu';
 import ViewBar from './ViewBar';
 import VerticalSeparator from '../../Ui/VerticalSeparator';
+import type { PageProps } from '~/app/types/props';
 
-type PageProps = {
-  sideBarOpen: boolean;
-  setSideBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  searchBarOpen: boolean;
-  setSearchBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  searchValue: string;
-  setSearchValue: React.Dispatch<React.SetStateAction<string>>;
-}
-
-const Page = ({ sideBarOpen, setSideBarOpen, searchBarOpen, setSearchBarOpen, searchValue, setSearchValue}: PageProps) => {
+const Page = ({ sideBarOpen, setSideBarOpen, searchBarOpen, setSearchBarOpen, searchValue, setSearchValue, matchingCells}: PageProps) => {
   const params = useParams()
 
   const baseId = typeof params?.baseId === 'string' ? params.baseId : undefined
@@ -74,12 +66,13 @@ const Page = ({ sideBarOpen, setSideBarOpen, searchBarOpen, setSearchBarOpen, se
         </div>
       </div>
       <ViewBar
-      sideBarOpen={sideBarOpen} 
-      setSideBarOpen={setSideBarOpen}
-      searchBarOpen={searchBarOpen}
-      setSearchBarOpen={setSearchBarOpen}
-      searchValue={searchValue}
-      setSearchValue={setSearchValue}
+        sideBarOpen={sideBarOpen} 
+        setSideBarOpen={setSideBarOpen}
+        searchBarOpen={searchBarOpen}
+        setSearchBarOpen={setSearchBarOpen}
+        searchValue={searchValue}
+        setSearchValue={setSearchValue}
+        matchingCells={matchingCells}
       />
     </div>
   )

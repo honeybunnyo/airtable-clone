@@ -8,6 +8,7 @@ import {
 } from '../../../../components/ui/context-menu'
 import { api } from '~/trpc/react'
 import { useParams } from 'next/navigation'
+import { withGlobalSaving } from '~/lib/utils';
 
 type ColumnContextMenuProps = {
   children: React.ReactNode
@@ -26,8 +27,8 @@ const ColumnContextMenu: React.FC<ColumnContextMenuProps> = ({ children, columnI
     }
   })
   
-  const handleDelete = () => {
-    deleteTable.mutate({ columnId })
+  const handleDelete = async () => {
+    await withGlobalSaving(() => deleteTable.mutateAsync({ columnId }))
   }
 
   return (

@@ -28,6 +28,7 @@ const BasePage = () => {
 
   if (isLoading) return <BaseLoadingPage/>
   if (isError || !base) return <div>Error loading base data.</div>
+  console.log(matchingCells)
 
   return (
     <div className="flex flex-col h-dvh">
@@ -38,6 +39,7 @@ const BasePage = () => {
       setSearchBarOpen={setSearchBarOpen}
       searchValue={searchValue}
       setSearchValue={setSearchValue}
+      matchingCells={matchingCells ?? []}
       />
       <div className="flex flex-1 overflow-hidden">
         {sideBarOpen && <ViewSideBar sideBarOpen={sideBarOpen} />}

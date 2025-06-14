@@ -1,26 +1,18 @@
 import React, { useState } from 'react'
 import { api } from '~/trpc/react';
 import { withGlobalSaving } from '~/lib/utils';
-
-type MatchingCell = {
-  id: string
-};
+import type { DataTableCellProps } from '~/app/types/props';
 
 const DataTableCell = ({
   initialValue,
   cellId,
   columnType,
   matchingCells = []
-}: {
-  initialValue: string;
-  cellId: string;
-  columnType: 'TEXT' | 'NUMBER';
-  matchingCells: MatchingCell[];
-}) => {
+}: DataTableCellProps) => {
   const [value, setValue] = useState(initialValue);
   const updateCellMutation = api.table.updateCell.useMutation();
 
-  const updateCell = async (value: string | number) => {
+  const updateCell = async (value: string) => {
     await withGlobalSaving(() => updateCellMutation.mutateAsync({
         cellId,
         value,
@@ -43,7 +35,6 @@ const DataTableCell = ({
     }
   };
   const isHighlighted = matchingCells.some((mc) => mc.id === cellId);
-
   return (
     <input
       type="text"
@@ -51,7 +42,7 @@ const DataTableCell = ({
       onChange={handleChange}
       onBlur={() => {
         if (value !== initialValue) {
-          void updateCell(value);
+          void updateCell(String(value));
         }
       }}
       onKeyDown={(e) => {

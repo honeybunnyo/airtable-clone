@@ -5,6 +5,7 @@ import { Button } from '~/components/ui/button'
 import { api } from '~/trpc/react'
 import { faker } from '@faker-js/faker'
 import { useParams } from 'next/navigation';
+import { withGlobalSaving } from '~/lib/utils';
 
 const Add100kRowsButton = () => {
   const params = useParams()
@@ -20,7 +21,7 @@ const Add100kRowsButton = () => {
   
   const handleImportRows = async () => {
     const total = 100000
-    const batchSize = 10000
+    const batchSize = 5000
     const numBatches = total / batchSize
 
     for (let i = 0; i < numBatches; i++) {
@@ -30,11 +31,12 @@ const Add100kRowsButton = () => {
           email: faker.internet.email(),
         }
       }))
-
-      await addManyRows.mutateAsync({
+      
+    await withGlobalSaving(() => addManyRows.mutateAsync({
         tableId,
         rows,
       })
+    )
 
       console.log(`Batch ${i + 1} of ${numBatches} done`)
     }

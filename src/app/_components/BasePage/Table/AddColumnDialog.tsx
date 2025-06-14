@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from '../../../../components/ui/select'
 import WithToolTip from '../../Ui/WithToolTip';
+import { withGlobalSaving } from '~/lib/utils';
 
 type AddColumnDialogProps = {
   tableId: string;
@@ -47,11 +48,13 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
     }
     
     setAddingColumn(true)
-    await createColumn.mutateAsync({
+
+    await withGlobalSaving(() => createColumn.mutateAsync({
       tableId,
       name: newColumnName,
       type: newColumnType,
-    })
+    }))
+
     setAddingColumn(false)
     setNewColumnName("")
     setNewColumnType("TEXT")

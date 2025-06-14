@@ -2,16 +2,7 @@ import React from 'react'
 import ColumnContextMenu from './ColumnContextMenu';
 import { ChevronDown } from 'lucide-react';
 import Image from 'next/image';
-
-type Column = {
-  id: string;
-  type: string;
-  name: string;
-}
-
-type DataTableHeaderProps = {
-  columns: Column[];
-}
+import type { DataTableHeaderProps } from '~/app/types/props';
 
 const DataTableHeader = ({ columns }: DataTableHeaderProps) => {
   return (

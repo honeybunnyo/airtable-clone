@@ -7,11 +7,7 @@ import { useInView } from 'react-intersection-observer';
 import DataTableHeader from './DataTableHeader';
 import TableSkeleton from '../Skeletons/TableSkeleton';
 import AddRowButton from './AddRowButton';
-
-type DataTableProps = { tableId: string,  matchingCells: MatchingCell[]}
-type MatchingCell = {
-  id: string
-};
+import type { DataTableProps } from '~/app/types/props';
 
 const findScrollParent = (element: HTMLElement): HTMLElement => {
   if (!element) return document.documentElement;
