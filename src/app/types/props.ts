@@ -13,6 +13,7 @@ export type PageProps = {
   searchValue: string;
   setSearchValue: React.Dispatch<React.SetStateAction<string>>;
   matchingCells: MatchingCell[];
+  isMatchingLoading: boolean;
 };
 
 export type SearchBarProps = {
@@ -21,6 +22,7 @@ export type SearchBarProps = {
   searchValue: string;
   setSearchValue: React.Dispatch<React.SetStateAction<string>>;
   matchingCells: MatchingCell[];
+  isMatchingLoading: boolean;
 }
 
 export type ViewSideBarProps = {

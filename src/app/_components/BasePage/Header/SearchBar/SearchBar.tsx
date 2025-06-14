@@ -1,11 +1,52 @@
 import { ChevronDown, ChevronUp, Search, X } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import type { SearchBarProps } from '~/app/types/props'
+import LoadingSpinner from '../LoadingSpinner'
 
-const SearchBar = ({ searchBarOpen, setSearchBarOpen, searchValue, setSearchValue, matchingCells }: SearchBarProps) => {
+const SearchBar = ({ searchBarOpen, setSearchBarOpen, searchValue, setSearchValue, matchingCells, isMatchingLoading }: SearchBarProps) => {
   const [currentIndex, setCurrentIndex] = useState(1)
-  const totalMatches = matchingCells ? matchingCells.length : 0
-  
+  const totalMatches = matchingCells ? matchingCells.length : 1
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => Math.min(prev + 1, totalMatches));
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => Math.max(prev - 1, 1));
+  };
+
+  useEffect(() => {
+    setCurrentIndex(1);
+  }, [searchValue])
+
+  useEffect(() => {
+    matchingCells.forEach((cell) => {
+      const el = document.getElementById(cell.id);
+      if (el) {
+        el.classList.remove("current-highlight");
+      }
+    });
+
+    // Highlight only the currently focused one
+    const currentCellId = matchingCells[currentIndex - 1]?.id;
+    if (!currentCellId) return;
+
+    const el = document.getElementById(currentCellId);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.classList.add("current-highlight");
+    }
+  }, [currentIndex, matchingCells]);
+
+  useEffect(() => {
+    if (searchBarOpen) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    }
+  }, [searchBarOpen]);
+
   return (
     <div>
       <button onClick={()=> setSearchBarOpen(prev => !prev)}>
@@ -16,21 +57,33 @@ const SearchBar = ({ searchBarOpen, setSearchBarOpen, searchValue, setSearchValu
           {/* Top half*/}
           <div className="bg-white px-2 py-1 h-10 flex flex-row justify-between items-center">
             {/* left*/}
-            <input 
+            <input
+            ref={inputRef}
             placeholder="Find in view" 
             className="text-sm font-bold focus:outline-none w-30"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            />
+            onKeyDown={(e) => {if (e.key === 'Enter') handleNext()}}/>
             {/* right*/}
             <div className="flex flex-row text-gray-400 text-xs justify-between items-center gap-2">
-              <span className="flex flex-row text-gray-400 text-xs whitespace-nowrap">
-                {currentIndex} of {totalMatches}
-              </span>
-              <div className="flex flex-row rounded-sm justify-between items-center">
-                <ChevronDown className="h-5 w-5 text-gray-700 bg-gray-200"/>
-                <ChevronUp className="h-5 w-5 text-gray-700 bg-gray-200"/>
-              </div>
+              {isMatchingLoading && <LoadingSpinner/>}
+              {!isMatchingLoading && searchValue &&
+                <>
+                  <span className="flex flex-row text-gray-400 text-xs whitespace-nowrap">
+                    {totalMatches === 0 ? '0' : currentIndex} of {totalMatches}
+                  </span>
+                  <div className="flex flex-row rounded-sm justify-between items-center">
+                    <button disabled={currentIndex == totalMatches} onClick={handleNext} className="bg-gray-200">
+                      <ChevronDown
+                        className={`h-5 w-5 ${currentIndex === totalMatches ? "text-gray-300" : "text-gray-600 hover:text-gray-600"}`}/>               
+                    </button>
+                    <button disabled={currentIndex == 1} onClick={handlePrev} className="bg-gray-200">
+                      <ChevronUp
+                        className={`h-5 w-5 ${currentIndex === 1 ? "text-gray-300" : "text-gray-600 hover:text-gray-600"}`}/>               
+                    </button>
+                  </div>
+                </>
+              }
               <button onClick={()=> setSearchBarOpen(false)}>
                 <X strokeWidth={1} className="text-gray-500 h-5 w-5" />
               </button>

@@ -29,6 +29,10 @@
   color: #396f42;
 }
 
+.current-highlight {
+  background-color: #ffd56f !important;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

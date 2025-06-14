@@ -21,7 +21,7 @@ const BasePage = () => {
     { enabled: !!baseId }
   )
   
-  const { data: matchingCells } = api.filter.search.useQuery(
+  const { data: matchingCells, isLoading: isMatchingLoading } = api.filter.search.useQuery(
     { tableId: tableId ?? "", searchValue },
     { enabled }
   );
@@ -40,6 +40,7 @@ const BasePage = () => {
       searchValue={searchValue}
       setSearchValue={setSearchValue}
       matchingCells={matchingCells ?? []}
+      isMatchingLoading={isMatchingLoading}
       />
       <div className="flex flex-1 overflow-hidden">
         {sideBarOpen && <ViewSideBar sideBarOpen={sideBarOpen} />}

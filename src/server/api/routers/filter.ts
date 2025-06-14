@@ -15,8 +15,8 @@ export const filterRouter = createTRPCRouter({
       return await ctx.db.cell.findMany({
         where: {
           row: {
-              tableId: input.tableId,
-            },
+            tableId: input.tableId,
+          },
           value: {
             contains: input.searchValue,
             mode: 'insensitive',
@@ -24,7 +24,21 @@ export const filterRouter = createTRPCRouter({
         },
         select: {
           id: true,
+          row: {
+            select: {
+              order: true,
+            },
+          },
+          column: {
+            select: {
+              order: true,
+            },
+          },
         },
+        orderBy: [
+          { row: { order: 'asc' } },
+          { column: { order: 'asc' } },
+        ],
       });
     }),
 });

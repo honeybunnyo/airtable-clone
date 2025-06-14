@@ -37,6 +37,7 @@ const DataTableCell = ({
   const isHighlighted = matchingCells.some((mc) => mc.id === cellId);
   return (
     <input
+      id={cellId}
       type="text"
       value={value}
       onChange={handleChange}
@@ -57,11 +58,13 @@ const DataTableCell = ({
           next?.focus();
         }
       }}
-        className={`w-full h-full bg-transparent focus:outline-blue-500 p-1 ${
-        isHighlighted ? 'bg-yellow-200' : ''
+        className={`w-full h-full focus:outline-blue-500 p-1 ${
+        isHighlighted ? 'bg-[#fff3d2]' : 'bg-white'
       }`}
       />
   )
 }
 
 export default DataTableCell
+// #fff3d2
+// #ffd56f
