@@ -1,7 +1,11 @@
 
 
 
-export type MatchingCell = {
+type MatchingCell = {
+  id: string;
+};
+
+type MatchingColumn = {
   id: string;
 };
 
@@ -13,6 +17,7 @@ export type PageProps = {
   searchValue: string;
   setSearchValue: React.Dispatch<React.SetStateAction<string>>;
   matchingCells: MatchingCell[];
+  matchingColumns: MatchingColumn[];
   isMatchingLoading: boolean;
 };
 
@@ -22,6 +27,7 @@ export type SearchBarProps = {
   searchValue: string;
   setSearchValue: React.Dispatch<React.SetStateAction<string>>;
   matchingCells: MatchingCell[];
+  matchingColumns: MatchingColumn[];
   isMatchingLoading: boolean;
 }
 
@@ -32,10 +38,12 @@ export type ViewSideBarProps = {
 export type DataTableProps = {
   tableId: string;
   matchingCells: MatchingCell[];
+  matchingColumns: MatchingColumn[];
 };
 
 export type DataTableHeaderProps = {
   columns: Column[];
+  matchingColumns: MatchingColumn[];
 };
 
 export type Column = {

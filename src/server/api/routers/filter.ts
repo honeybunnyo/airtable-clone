@@ -12,33 +12,35 @@ export const filterRouter = createTRPCRouter({
       searchValue: z.string().min(1),
     }))
     .query(async ({ ctx, input }) => {
-      return await ctx.db.cell.findMany({
-        where: {
-          row: {
+      const [matchingCells, matchingColumns] = await Promise.all([
+        ctx.db.cell.findMany({
+          where: {
+            row: {
+              tableId: input.tableId,
+            },
+            value: {
+              contains: input.searchValue,
+              mode: 'insensitive',
+            },
+          },
+          select: {
+            id: true,
+          },
+        }),
+        ctx.db.column.findMany({
+          where: {
             tableId: input.tableId,
-          },
-          value: {
-            contains: input.searchValue,
-            mode: 'insensitive',
-          },
-        },
-        select: {
-          id: true,
-          row: {
-            select: {
-              order: true,
+            name: {
+              contains: input.searchValue,
+              mode: 'insensitive',
             },
           },
-          column: {
-            select: {
-              order: true,
-            },
+          select: {
+            id: true,
           },
-        },
-        orderBy: [
-          { row: { order: 'asc' } },
-          { column: { order: 'asc' } },
-        ],
-      });
+        }),
+      ]);
+
+      return { matchingCells, matchingColumns };
     }),
 });

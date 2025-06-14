@@ -19,7 +19,7 @@ const findScrollParent = (element: HTMLElement): HTMLElement => {
   return findScrollParent(element.parentElement!);
 };
 
-const DataTable = ({ tableId, matchingCells }: DataTableProps ) => {
+const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps ) => {
  const {
     data,
     fetchNextPage,
@@ -92,7 +92,7 @@ const DataTable = ({ tableId, matchingCells }: DataTableProps ) => {
   return  (
     <div className="flex flex-row w-auto">
       <table ref={tableRef} className="table-auto border-collapse">
-        <DataTableHeader columns={columns}/>
+        <DataTableHeader columns={columns} matchingColumns={matchingColumns}/>
         {/* Table content */}
         <tbody>
           {allRows.map((row, index) => (

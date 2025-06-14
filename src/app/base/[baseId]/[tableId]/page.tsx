@@ -21,10 +21,13 @@ const BasePage = () => {
     { enabled: !!baseId }
   )
   
-  const { data: matchingCells, isLoading: isMatchingLoading } = api.filter.search.useQuery(
+  const { data: matches, isLoading: isMatchingLoading } = api.filter.search.useQuery(
     { tableId: tableId ?? "", searchValue },
     { enabled }
   );
+
+  const matchingCells = matches?.matchingCells ?? [];
+  const matchingColumns = matches?.matchingColumns ?? [];
 
   if (isLoading) return <BaseLoadingPage/>
   if (isError || !base) return <div>Error loading base data.</div>
@@ -39,14 +42,15 @@ const BasePage = () => {
       setSearchBarOpen={setSearchBarOpen}
       searchValue={searchValue}
       setSearchValue={setSearchValue}
-      matchingCells={matchingCells ?? []}
+      matchingCells={matchingCells}
+      matchingColumns={matchingColumns}
       isMatchingLoading={isMatchingLoading}
       />
       <div className="flex flex-1 overflow-hidden">
         {sideBarOpen && <ViewSideBar sideBarOpen={sideBarOpen} />}
         <div className="flex-1 overflow-hidden">
           <div className="h-full overflow-auto">
-            <DataTable tableId={tableId!} matchingCells={matchingCells ?? []}/>
+            <DataTable tableId={tableId!} matchingCells={matchingCells} matchingColumns={matchingColumns}/>
           </div>
         </div>
       </div>

@@ -12,7 +12,17 @@ import ViewBar from './ViewBar';
 import VerticalSeparator from '../../Ui/VerticalSeparator';
 import type { PageProps } from '~/app/types/props';
 
-const Page = ({ sideBarOpen, setSideBarOpen, searchBarOpen, setSearchBarOpen, searchValue, setSearchValue, matchingCells, isMatchingLoading}: PageProps) => {
+const Page = ({
+  sideBarOpen,
+  setSideBarOpen,
+  searchBarOpen,
+  setSearchBarOpen,
+  searchValue, 
+  setSearchValue, 
+  matchingCells,
+  isMatchingLoading,
+  matchingColumns,
+}: PageProps) => {
   const params = useParams()
 
   const baseId = typeof params?.baseId === 'string' ? params.baseId : undefined
@@ -74,6 +84,7 @@ const Page = ({ sideBarOpen, setSideBarOpen, searchBarOpen, setSearchBarOpen, se
         setSearchValue={setSearchValue}
         matchingCells={matchingCells}
         isMatchingLoading={isMatchingLoading}
+        matchingColumns={matchingColumns}
       />
     </div>
   )

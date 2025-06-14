@@ -7,7 +7,17 @@ import Add100kRowsButton from './Add100kRowsButton'
 import SearchBar from './SearchBar/SearchBar'
 import type { PageProps } from '~/app/types/props'
 
-const ViewBar = ({ sideBarOpen, setSideBarOpen, searchBarOpen, setSearchBarOpen, searchValue, setSearchValue, matchingCells, isMatchingLoading }: PageProps) => {
+const ViewBar = ({
+  sideBarOpen,
+  setSideBarOpen,
+  searchBarOpen,
+  setSearchBarOpen,
+  searchValue, 
+  setSearchValue, 
+  matchingCells,
+  isMatchingLoading,
+  matchingColumns,
+}: PageProps) => {
   const [ wasManuallyOpened, setWasManuallyOpened ] = useState(false)
   const iconButtons = [
     { icon: EyeOff },
@@ -58,6 +68,7 @@ const ViewBar = ({ sideBarOpen, setSideBarOpen, searchBarOpen, setSearchBarOpen,
         setSearchValue={setSearchValue}
         matchingCells={matchingCells}
         isMatchingLoading={isMatchingLoading}
+        matchingColumns={matchingColumns}
       />
     </div>
   )

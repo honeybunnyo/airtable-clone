@@ -1,11 +1,26 @@
 import { ChevronDown, ChevronUp, Search, X } from 'lucide-react'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import type { SearchBarProps } from '~/app/types/props'
 import LoadingSpinner from '../LoadingSpinner'
 
-const SearchBar = ({ searchBarOpen, setSearchBarOpen, searchValue, setSearchValue, matchingCells, isMatchingLoading }: SearchBarProps) => {
+const SearchBar = ({
+  searchBarOpen,
+  setSearchBarOpen,
+  searchValue, 
+  setSearchValue, 
+  matchingCells,
+  isMatchingLoading,
+  matchingColumns,
+}: SearchBarProps) => {
   const [currentIndex, setCurrentIndex] = useState(1)
-  const totalMatches = matchingCells ? matchingCells.length : 1
+  const allMatches = useMemo(() => {
+    return [
+    ...matchingColumns.map((col) => ({ id: col.id })),
+    ...matchingCells.map((cell) => ({ id: cell.id })),
+  ]
+  }, [matchingColumns, matchingCells])
+
+  const totalMatches = allMatches.length;
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleNext = () => {
@@ -27,17 +42,23 @@ const SearchBar = ({ searchBarOpen, setSearchBarOpen, searchValue, setSearchValu
         el.classList.remove("current-highlight");
       }
     });
+    matchingColumns.forEach((col) => {
+      const el = document.getElementById(col.id);
+      if (el) {
+        el.classList.remove("current-highlight");
+      }
+    });
 
     // Highlight only the currently focused one
-    const currentCellId = matchingCells[currentIndex - 1]?.id;
-    if (!currentCellId) return;
+    const currentMatch = allMatches[currentIndex - 1];
+    if (!currentMatch) return;
 
-    const el = document.getElementById(currentCellId);
+    const el = document.getElementById(currentMatch.id);
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "center" });
       el.classList.add("current-highlight");
     }
-  }, [currentIndex, matchingCells]);
+  }, [currentIndex, matchingCells, matchingColumns, allMatches]);
 
   useEffect(() => {
     if (searchBarOpen) {
@@ -46,6 +67,22 @@ const SearchBar = ({ searchBarOpen, setSearchBarOpen, searchValue, setSearchValu
       }, 0);
     }
   }, [searchBarOpen]);
+
+  const BottomHalf = () => {
+    return  (
+      <div className="px-2 py-1 h-9 flex flex-row items-center bg-gray-100">
+        <span className="text-xs text-gray-700">
+          {matchingColumns.length === 0 && matchingCells.length === 0 ? 
+            <span>Use advanced search options</span>
+            :
+            <span>
+              Found {matchingColumns.length === 0? 'no':<b>{matchingColumns.length}</b>} field{matchingColumns.length === 1 ?'':'s'} and {matchingCells.length === 0? 'no':<b>{matchingCells.length}</b>} cell{matchingCells.length === 1 ?'':'s'}
+            </span>
+          }
+        </span>
+      </div>
+    )     
+  }
 
   return (
     <div>
@@ -60,7 +97,7 @@ const SearchBar = ({ searchBarOpen, setSearchBarOpen, searchValue, setSearchValu
             <input
             ref={inputRef}
             placeholder="Find in view" 
-            className="text-sm font-bold focus:outline-none w-30"
+            className="text-sm font-medium focus:outline-none w-30"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             onKeyDown={(e) => {if (e.key === 'Enter') handleNext()}}/>
@@ -90,9 +127,7 @@ const SearchBar = ({ searchBarOpen, setSearchBarOpen, searchValue, setSearchValu
             </div>
           </div>
           {/* bottom half */}
-          <div className="px-2 py-1 h-9 flex flex-row items-center bg-gray-100">
-            <span className="text-xs text-gray-700">Use advanced search options</span>
-          </div>
+          <BottomHalf/>
         </div>
       }
     </div>

@@ -4,7 +4,8 @@ import { ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import type { DataTableHeaderProps } from '~/app/types/props';
 
-const DataTableHeader = ({ columns }: DataTableHeaderProps) => {
+const DataTableHeader = ({ columns, matchingColumns }: DataTableHeaderProps) => {
+
   return (
     <thead className="sticky -top-px border">
       <tr className="h-[32px]">
@@ -17,21 +18,27 @@ const DataTableHeader = ({ columns }: DataTableHeaderProps) => {
             />
           </div>
         </th>
-        {columns?.map((col) => (
-          <th
+        {columns?.map((col) =>{
+
+          const isHighlighted = matchingColumns.some((mc) => mc.id === col.id);
+         return (
+            <th
+            id={col.id}
             key={`col-${col.id}`}
-            className="border border-gray-200 w-[180px] font-light bg-[#f4f4f4] text-sm"
-          >
+            className={`border border-gray-200 w-[180px] font-light text-sm ${
+              isHighlighted ? 'bg-[#fff3d2]' : 'bg-[#f4f4f4]'
+            }`}
+            >
             <ColumnContextMenu columnId={col.id}>
               <div className="flex flex-row justify-between items-center px-2 cursor-context-menu w-full">
                 <div className="flex flex-row items-center">
                   {col.type === 'NUMBER' ? (
                     <Image
-                      src="/straight-hash.svg"
-                      alt="Number icon"
-                      width={18}
-                      height={18}
-                      className="mr-1"
+                    src="/straight-hash.svg"
+                    alt="Number icon"
+                    width={18}
+                    height={18}
+                    className="mr-1"
                     />
                   ) : (
                     <p className="px-2 font-light text-gray-600">A</p>
@@ -42,7 +49,7 @@ const DataTableHeader = ({ columns }: DataTableHeaderProps) => {
               </div>
             </ColumnContextMenu>
           </th>
-        ))}
+        )})}
       </tr>
     </thead>
   )
