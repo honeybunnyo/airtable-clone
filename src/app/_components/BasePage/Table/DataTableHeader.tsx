@@ -4,7 +4,7 @@ import { ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import type { DataTableHeaderProps } from '~/app/types/props';
 
-const DataTableHeader = ({ columns, matchingColumns }: DataTableHeaderProps) => {
+const DataTableHeader = ({ columns, matchingColumns, colToDelete, setColDelete }: DataTableHeaderProps) => {
 
   return (
     <thead className="sticky -top-px border">
@@ -19,9 +19,11 @@ const DataTableHeader = ({ columns, matchingColumns }: DataTableHeaderProps) => 
           </div>
         </th>
         {columns?.map((col) =>{
-
+          if (col.id == colToDelete) {
+            return
+          }
           const isHighlighted = matchingColumns.some((mc) => mc.id === col.id);
-         return (
+          return (
             <th
             id={col.id}
             key={`col-${col.id}`}
@@ -29,7 +31,7 @@ const DataTableHeader = ({ columns, matchingColumns }: DataTableHeaderProps) => 
               isHighlighted ? 'bg-[#fff3d2]' : 'bg-[#f4f4f4]'
             }`}
             >
-            <ColumnContextMenu columnId={col.id}>
+            <ColumnContextMenu columnId={col.id} setColDelete={setColDelete}>
               <div className="flex flex-row justify-between items-center px-2 cursor-context-menu w-full">
                 <div className="flex flex-row items-center">
                   {col.type === 'NUMBER' ? (

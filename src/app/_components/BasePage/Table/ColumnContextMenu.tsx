@@ -9,13 +9,9 @@ import {
 import { api } from '~/trpc/react'
 import { useParams } from 'next/navigation'
 import { withGlobalSaving } from '~/lib/utils';
+import type { ColumnContextMenuProps } from '~/app/types/props';
 
-type ColumnContextMenuProps = {
-  children: React.ReactNode
-  columnId: string
-}
-
-const ColumnContextMenu: React.FC<ColumnContextMenuProps> = ({ children, columnId }) => {
+const ColumnContextMenu: React.FC<ColumnContextMenuProps> = ({ children, columnId, setColDelete }) => {
   const utils = api.useUtils()
   const params = useParams()
   const tableId = typeof params?.tableId === 'string' ? params.tableId : undefined
@@ -28,6 +24,7 @@ const ColumnContextMenu: React.FC<ColumnContextMenuProps> = ({ children, columnI
   })
   
   const handleDelete = async () => {
+    setColDelete(columnId)
     await withGlobalSaving(() => deleteTable.mutateAsync({ columnId }))
   }
 

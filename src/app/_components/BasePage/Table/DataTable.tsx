@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { api } from '~/trpc/react';
 import AddColumnDialog from './AddColumnDialog';
 import DataTableCell from './DataTableCell';
@@ -32,6 +32,7 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
     },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
+  const [colToDelete, setColDelete] = useState("");
 
   const { ref } = useInView({
     threshold: 0.1,
@@ -63,7 +64,6 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
     return () => scrollParent.removeEventListener('scroll', checkScrollPosition);
   }, [checkScrollPosition]);
 
-
   const { data: columns, isLoading: isColumnsLoading } = api.table.getTableColumns.useQuery({ tableId })
   const columnTypeMap = useMemo(() => {
     const map: Record<string, string> = {};
@@ -92,7 +92,7 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
   return  (
     <div className="flex flex-row w-auto">
       <table ref={tableRef} className="table-auto border-collapse">
-        <DataTableHeader columns={columns} matchingColumns={matchingColumns}/>
+        <DataTableHeader columns={columns} matchingColumns={matchingColumns} colToDelete={colToDelete} setColDelete={setColDelete}/>
         {/* Table content */}
         <tbody>
           {allRows.map((row, index) => (
@@ -105,17 +105,21 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
                   </div>
                 </td>
                 {/* rest of cells */}
-                {row.cells.map((cell) => (
-                  <td key={cell.id} className="border border-gray-200 w-[180px]">
-                    <DataTableCell
-                      matchingCells={matchingCells}
-                      initialValue={cell.value == null ? ' ' :
-                        typeof cell.value === 'object' ? JSON.stringify(cell.value) : String(cell.value)}
-                      cellId={cell.id}
-                      columnType={columnTypeMap[cell.columnId] as 'TEXT' | 'NUMBER' ?? 'TEXT'}
-                    />
-                  </td>
-                ))}
+                {row.cells.map((cell) => {
+                  if (cell.columnId == colToDelete) return
+                
+                  return(
+                    <td key={cell.id} className="border border-gray-200 w-[180px]">
+                      <DataTableCell
+                        matchingCells={matchingCells}
+                        initialValue={cell.value == null ? ' ' :
+                          typeof cell.value === 'object' ? JSON.stringify(cell.value) : String(cell.value)}
+                        cellId={cell.id}
+                        columnType={columnTypeMap[cell.columnId] as 'TEXT' | 'NUMBER' ?? 'TEXT'}
+                      />
+                    </td>
+                  )
+                })}
               </tr>
               {/* Invisible trigger row at halfway point */}
               {index === halfwayIndex && (

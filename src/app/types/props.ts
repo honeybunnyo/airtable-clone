@@ -44,6 +44,8 @@ export type DataTableProps = {
 export type DataTableHeaderProps = {
   columns: Column[];
   matchingColumns: MatchingColumn[];
+  colToDelete: string;
+  setColDelete: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export type Column = {
@@ -55,6 +57,7 @@ export type Column = {
 export type ColumnContextMenuProps = {
   children: React.ReactNode;
   columnId: string;
+  setColDelete: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export type DataTableCellProps = {

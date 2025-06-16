@@ -46,7 +46,7 @@ const BasePage = () => {
       isMatchingLoading={isMatchingLoading}
       />
       <div className="flex flex-1 overflow-hidden">
-        {sideBarOpen && <ViewSideBar sideBarOpen={sideBarOpen} />}
+        <ViewSideBar sideBarOpen={sideBarOpen} />
         <div className="flex-1 overflow-hidden">
           <div className="h-full overflow-auto">
             <DataTable tableId={tableId!} matchingCells={matchingCells} matchingColumns={matchingColumns}/>
