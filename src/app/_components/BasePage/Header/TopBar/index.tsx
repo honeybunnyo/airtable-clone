@@ -7,11 +7,11 @@ import { useParams } from 'next/navigation'
 import { api } from '~/trpc/react'
 import { useRouter } from 'next/navigation';
 import { useGlobalSaving } from '~/lib/stores/useGlobalSaving';
-import LoadingSpinner from './LoadingSpinner';
-import WithToolTip from '../../Ui/WithToolTip';
+import LoadingSpinner from '../../../Common/LoadingSpinner';
+import WithToolTip from '../../../Common/WithToolTip';
 import { useSession } from 'next-auth/react'
-import UserMenu from '../../Dashboard/UserMenu';
-import VerticalSeparator from '../../Ui/VerticalSeparator';
+import UserMenu from '../../../Dashboard/UserMenu';
+import VerticalSeparator from '../../../Common/VerticalSeparator';
 
 const TopBar = () => {
   const { data: session } = useSession()

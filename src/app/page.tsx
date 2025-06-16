@@ -1,7 +1,7 @@
 import { auth } from '~/server/auth';
 import { HydrateClient } from '~/trpc/server';
 import Dashboard from './_components/Dashboard/Dashboard';
-import SignInButton from './_components/Ui/SignInButton';
+import SignInButton from './_components/Common/SignInButton';
 export default async function Home() {
   const session = await auth();
 

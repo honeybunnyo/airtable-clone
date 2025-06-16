@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { useParams } from 'next/navigation'
 import { api } from '~/trpc/react';
 import Header from '~/app/_components/BasePage/Header';
-import DataTable from '~/app/_components/BasePage/Table/DataTable';
+import DataTable from '~/app/_components/BasePage/Table';
 import ViewSideBar from '~/app/_components/BasePage/ViewSidebar';
 import BaseLoadingPage from './../../loading/page';
 

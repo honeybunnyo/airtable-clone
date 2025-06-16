@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '~/components/ui/select'
-import WithToolTip from '../../Ui/WithToolTip';
+import WithToolTip from '../../Common/WithToolTip';
 import { withGlobalSaving } from '~/lib/utils';
 
 type AddColumnDialogProps = {

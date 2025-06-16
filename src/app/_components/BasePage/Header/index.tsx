@@ -6,10 +6,10 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { api } from '~/trpc/react'
 import TopBar from './TopBar';
-import CreateTableButton from './CreateTableButton';
-import TableContextMenu from './TableContextMenu';
+import CreateTableButton from './CreateTable/CreateTableButton';
+import TableContextMenu from './CreateTable/TableContextMenu';
 import ViewBar from './ViewBar';
-import VerticalSeparator from '../../Ui/VerticalSeparator';
+import VerticalSeparator from '../../Common/VerticalSeparator';
 import type { PageProps } from '~/app/types/props';
 
 const Page = ({

@@ -79,7 +79,21 @@ New:
 
 
 ### Day 8
+New:
+- Search functionality
+- Highlighting matching cells
 
-plan;
-- tRPC method for search; return cell.id
-- highlight matching ids
+### Day 9
+Fixes: 
+- Made sidebar open/close transition smoother
+
+Updates:
+- Instantly remove deleted columns on FE side
+
+New:
+- Update scrollbar UI
+- Searchbar:
+    - Highlighting matching fields
+    - Navigate to prev/next match
+- Views:
+    - Updated model

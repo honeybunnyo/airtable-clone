@@ -1,10 +1,10 @@
 import { ArrowDownUp, ChevronDown, EyeOff, List, ListFilter, Menu, PaintBucket, Sparkle, TableCellsSplit } from 'lucide-react'
 import React, { useState } from 'react'
-import FormatIcon from '../../Ui/FormatIcon'
+import FormatIcon from '../../../Common/FormatIcon'
 import { Button } from '~/components/ui/button'
-import AddManyRowsButton from './AddManyRowsButton'
-import Add100kRowsButton from './Add100kRowsButton'
-import SearchBar from './SearchBar/SearchBar'
+import AddManyRowsButton from './../AddRows/AddManyRowsButton'
+import Add100kRowsButton from './../AddRows/Add100kRowsButton'
+import SearchBar from '../SearchBar'
 import type { PageProps } from '~/app/types/props'
 
 const ViewBar = ({

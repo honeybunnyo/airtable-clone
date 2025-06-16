@@ -1,5 +1,5 @@
 import React from 'react'
-import BigSpinner from '../../Ui/BigSpinner'
+import BigSpinner from '../../Common/BigSpinner'
 
 export function TableSkeleton() {
   return (

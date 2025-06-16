@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { api } from '~/trpc/react';
 import AddColumnDialog from './AddColumnDialog';
 import DataTableCell from './DataTableCell';
-import LoadingSpinner from '../Header/LoadingSpinner';
+import LoadingSpinner from '../../Common/LoadingSpinner';
 import { useInView } from 'react-intersection-observer';
 import DataTableHeader from './DataTableHeader';
 import TableSkeleton from '../Skeletons/TableSkeleton';

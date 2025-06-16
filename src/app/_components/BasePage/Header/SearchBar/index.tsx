@@ -1,7 +1,7 @@
 import { ChevronDown, ChevronUp, Search, X } from 'lucide-react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import type { SearchBarProps } from '~/app/types/props'
-import LoadingSpinner from '../LoadingSpinner'
+import LoadingSpinner from '../../../Common/LoadingSpinner'
 
 const SearchBar = ({
   searchBarOpen,
