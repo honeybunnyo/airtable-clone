@@ -1,3 +1,4 @@
+import type { JsonValue } from "@prisma/client/runtime/library";
 
 
 
@@ -55,8 +56,7 @@ export type Column = {
 };
 
 export type ColumnContextMenuProps = {
-  children: React.ReactNode;
-  columnId: string;
+  column: Column;
   setColDelete: React.Dispatch<React.SetStateAction<string>>;
 };
 
@@ -66,5 +66,17 @@ export type DataTableCellProps = {
   columnType: ColumnType;
   matchingCells: MatchingCell[];
 };
+
+type Table = {
+  baseId: string;
+  name: string;
+  id: string;
+  sortConfig: JsonValue | null;
+}
+
+export type TableContextMenuProps = {
+  table: Table;
+  tableId: string;
+}
 
 export type ColumnType = 'TEXT' | 'NUMBER';

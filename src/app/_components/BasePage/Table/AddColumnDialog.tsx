@@ -21,6 +21,7 @@ import {
 } from '~/components/ui/select'
 import WithToolTip from '../../Common/WithToolTip';
 import { withGlobalSaving } from '~/lib/utils';
+import { toast } from 'sonner';
 
 type AddColumnDialogProps = {
   tableId: string;
@@ -29,8 +30,6 @@ type AddColumnDialogProps = {
 const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
   const [newColumnName, setNewColumnName] = useState("")
   const [newColumnType, setNewColumnType] = useState<"TEXT" | "NUMBER">("TEXT")
-  const [addingColumn, setAddingColumn] = useState(false)
-
   const utils = api.useUtils()
   const createColumn = api.column.create.useMutation({
     onSuccess: async () => {
@@ -46,19 +45,17 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
     if (!newColumnName) {
       return
     }
-    
-    setAddingColumn(true)
+    setOpen(false);
+    toast(`Adding field ${newColumnName}...`)
 
     await withGlobalSaving(() => createColumn.mutateAsync({
       tableId,
       name: newColumnName,
       type: newColumnType,
     }))
-
-    setAddingColumn(false)
+    toast(`Successfully added field ${newColumnName}!`)
     setNewColumnName("")
     setNewColumnType("TEXT")
-    setOpen(false);
   }
   
   return (
@@ -100,11 +97,7 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            {addingColumn ?
-            <Button disabled>Adding... </Button>
-            :
             <Button type="submit">Add Column</Button>
-          }
           </DialogFooter>
         </form>
       </DialogContent>

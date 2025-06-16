@@ -5,6 +5,7 @@ import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { api } from '~/trpc/react'
 import { withGlobalSaving } from '~/lib/utils'
+import { toast } from 'sonner'
 
 interface CreateTableDialogProps {
   open: boolean
@@ -14,8 +15,6 @@ interface CreateTableDialogProps {
 
 export const CreateTableDialog = ({ open, setOpen, baseId }: CreateTableDialogProps) => {
   const [tableName, setTableName] = useState("Table X")
-  const [addingTable, setAddingTable] = useState(false)
-
   const utils = api.useUtils()
   const createTable = api.table.create.useMutation({
     onSuccess: async () => {
@@ -27,15 +26,16 @@ export const CreateTableDialog = ({ open, setOpen, baseId }: CreateTableDialogPr
     e.preventDefault()
     if (!tableName) return
 
-    setAddingTable(true)
+    toast(`Creating table ${tableName}...`)
+    setOpen(false)
+    
     await withGlobalSaving(() =>
       createTable.mutateAsync({
         baseId,
         name: tableName,
       })
     )
-    setOpen(false)
-    setAddingTable(false)
+    toast(`Successfully created table ${tableName}!`)
   }
 
   return (
@@ -61,7 +61,7 @@ export const CreateTableDialog = ({ open, setOpen, baseId }: CreateTableDialogPr
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            {addingTable ? <Button disabled>Adding...</Button> : <Button type="submit">Create Table</Button>}
+            <Button type="submit">Create Table</Button>
           </DialogFooter>
         </form>
       </DialogContent>

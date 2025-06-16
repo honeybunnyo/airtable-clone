@@ -10,13 +10,16 @@ import { api } from '~/trpc/react'
 import { useParams } from 'next/navigation'
 import { withGlobalSaving } from '~/lib/utils';
 import type { ColumnContextMenuProps } from '~/app/types/props';
+import { toast } from 'sonner';
+import Image from 'next/image';
+import { ChevronDown } from 'lucide-react';
 
-const ColumnContextMenu: React.FC<ColumnContextMenuProps> = ({ children, columnId, setColDelete }) => {
+const ColumnContextMenu: React.FC<ColumnContextMenuProps> = ({ column, setColDelete }) => {
   const utils = api.useUtils()
   const params = useParams()
   const tableId = typeof params?.tableId === 'string' ? params.tableId : undefined
 
-  const deleteTable = api.column.delete.useMutation({
+  const deleteColumn = api.column.delete.useMutation({
     onSuccess: async () => {
       await utils.table.getPaginatedRows.invalidate({ tableId })
       await utils.table.getTableColumns.invalidate({ tableId })
@@ -24,14 +27,32 @@ const ColumnContextMenu: React.FC<ColumnContextMenuProps> = ({ children, columnI
   })
   
   const handleDelete = async () => {
-    setColDelete(columnId)
-    await withGlobalSaving(() => deleteTable.mutateAsync({ columnId }))
+    setColDelete(column.id)
+    toast(`Deleting field ${column.name}...`)
+    await withGlobalSaving(() => deleteColumn.mutateAsync({ columnId: column.id }))
+    toast(`Successfully deleted field ${column.name}`)
   }
 
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>
-        {children}
+         <div className="flex flex-row justify-between items-center px-2 cursor-context-menu w-full">
+          <div className="flex flex-row items-center">
+            {column.type === 'NUMBER' ? (
+              <Image
+              src="/straight-hash.svg"
+              alt="Number icon"
+              width={18}
+              height={18}
+              className="mr-1"
+              />
+            ) : (
+              <p className="px-2 font-light text-gray-600">A</p>
+            )}
+            {column.name}
+          </div>
+          <ChevronDown className="w-4 h-4 text-gray-400 hover:text-gray-600" />
+        </div>
       </ContextMenuTrigger>
       <ContextMenuContent className="w-52">
         <ContextMenuItem inset>

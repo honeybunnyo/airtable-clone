@@ -2,7 +2,6 @@
 
 import React  from 'react'
 import { ChevronDown } from 'lucide-react'
-import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { api } from '~/trpc/react'
 import TopBar from './TopBar';
@@ -34,6 +33,7 @@ const Page = ({
   )
 
   if (!baseId || typeof baseId !== 'string') return null;
+  if (!tableId) return null;
   if (isLoading) return <div>Loading Header...</div>
 
   const openExtensionOptions = () => { console.log('Opening Extension options') }
@@ -47,13 +47,7 @@ const Page = ({
         {/* First panel */}
         <div className="flex flex-row items-center bg-greentheme-dark h-full w-full rounded-tr-sm content-center pl-3">
             {base && base.tables.map((table) => (
-              <TableContextMenu key={`context-menu-${baseId}-${table.id}`} tableId={table.id}>
-                <Link key={`${baseId}-${table.id}`} href={`/base/${baseId}/${table.id}`}>
-                  <div key={table.id} className={`w-full text-left px-4 py-2 h-full text-sm rounded-t-xs text-overflow ${
-                    table.id === tableId ? "font-semibold bg-white text-black" : "font-light text-white"
-                  }`}>{table.name}</div>
-                </Link>
-              </TableContextMenu>
+              <TableContextMenu key={`context-menu-${baseId}-${table.id}`} table={table} tableId={tableId}/>
             ))}
             <div className="flex flex-row justify-center items-center text-gray-300 gap-2">
               <VerticalSeparator/>
