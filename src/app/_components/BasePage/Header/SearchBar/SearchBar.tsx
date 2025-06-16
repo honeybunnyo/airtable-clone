@@ -88,7 +88,7 @@ const SearchBar = ({
   return (
     <div>
       <button onClick={()=> setSearchBarOpen(prev => !prev)}>
-        <Search className="h-4 w-4 mr-4" strokeWidth={1}/>
+        <Search className="h-5 w-5 mr-4 mt-2 text-gray-700 hover:text-black" strokeWidth={1}/>
       </button>
       {searchBarOpen &&
         <div className="z-20 w-76 rounded-xs p-0 absolute top-34 right-10 outline-2 outline-gray-200">
