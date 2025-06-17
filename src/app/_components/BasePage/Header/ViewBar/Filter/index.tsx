@@ -32,6 +32,22 @@ const Filter = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [columns]);
 
+  const { data: filterResult } = api.filter.filter.useQuery({
+    tableId,
+    filter: {
+      conjunction,
+      conditions: filters.map((filter) => ({
+        field: filter.field,
+        operator: filter.operator,
+        value: filter.value,
+      })),
+    },
+  });
+
+  useEffect(() => {
+    console.log('filters updated', filters);
+    console.log('filter result', filterResult);
+  }, [filters, filterResult]);
 	// Update filter configuration
 	const updateFilter = (index: number, updated: Partial<FilterCondition>) => {
     setFilters((prev) => {
@@ -39,7 +55,6 @@ const Filter = () => {
       next[index] = { ...next[index], ...updated } as FilterCondition;
       return next;
     });
-    console.log('filters', filters)
   }
 
   if (!tableId || !columns?.[0]) return null;
