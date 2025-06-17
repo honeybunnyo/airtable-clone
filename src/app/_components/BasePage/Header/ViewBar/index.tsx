@@ -1,11 +1,13 @@
 import { ArrowDownUp, ChevronDown, EyeOff, List, ListFilter, Menu, PaintBucket, Sparkle, TableCellsSplit } from 'lucide-react'
 import React, { useState } from 'react'
-import FormatIcon from '../../../Common/FormatIcon'
+import FormatIcon from './Common/FormatIcon'
 import { Button } from '~/components/ui/button'
-import AddManyRowsButton from './../AddRows/AddManyRowsButton'
-import Add100kRowsButton from './../AddRows/Add100kRowsButton'
+import AddManyRowsButton from './AddRows/AddManyRowsButton'
+import Add100kRowsButton from './AddRows/Add100kRowsButton'
 import SearchBar from '../SearchBar'
 import type { PageProps } from '~/app/types/props'
+import ButtonFormat from './Common/ButtonFormat'
+// import Filter from './Filter'
 
 const ViewBar = ({
   sideBarOpen,
@@ -51,6 +53,8 @@ const ViewBar = ({
           <FormatIcon icon={ChevronDown} />
         </ButtonFormat>
 
+        {/* <Filter/> */}
+
         {iconButtons.map(({ icon, label }, i) => (
           <ButtonFormat key={i}>
             <FormatIcon icon={icon} />
@@ -73,11 +77,5 @@ const ViewBar = ({
     </div>
   )
 }
-
-const ButtonFormat = ({ children }: { children: React.ReactNode }) => (
-  <Button variant="ghost" className="flex items-center justify-center gap-1 flex-row h-6 p-0 rounded-xs">
-    {children}
-  </Button>
-)
 
 export default ViewBar
