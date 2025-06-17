@@ -95,5 +95,4 @@ New:
 - Searchbar:
     - Highlighting matching fields
     - Navigate to prev/next match
-- Views:
-    - Updated model
+- Toast for creating/deleting tables, cols, rows etc

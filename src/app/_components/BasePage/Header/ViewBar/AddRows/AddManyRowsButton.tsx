@@ -5,9 +5,9 @@ import { Button } from '~/components/ui/button'
 import { api } from '~/trpc/react'
 import { faker } from '@faker-js/faker'
 import { useParams } from 'next/navigation';
-import { withGlobalSaving } from '~/lib/utils';
+import { withGlobalSaving } from '~/lib/utils'
 
-const Add100kRowsButton = () => {
+const AddManyRowsButton = () => {
   const params = useParams()
   const tableId = typeof params?.tableId === 'string' ? params.tableId : undefined
   const utils = api.useUtils()
@@ -20,34 +20,24 @@ const Add100kRowsButton = () => {
   if (!tableId) return
   
   const handleImportRows = async () => {
-    const total = 100000
-    const batchSize = 5000
-    const numBatches = total / batchSize
-
-    for (let i = 0; i < numBatches; i++) {
-      const rows = Array.from({ length: batchSize }, () => ({
-        data: {
-          name: faker.person.fullName(),
-          email: faker.internet.email(),
-        }
-      }))
-      
-    await withGlobalSaving(() => addManyRows.mutateAsync({
-        tableId,
-        rows,
-      })
-    )
-
-      console.log(`Batch ${i + 1} of ${numBatches} done`)
-    }
-    await utils.table.getPaginatedRows.invalidate({ tableId })
+    const rows = Array.from({ length: 100 }, () => ({
+      data: {
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+      }
+    }))
+    await withGlobalSaving(async() => addManyRows.mutate({
+      tableId,
+      rows,
+    })
+    );
   }
 
   return (
     <Button variant="ghost" className="w-30" onClick={handleImportRows}>
-      add 100k rows
+      + 100 rows
     </Button>
   )
 }
 
-export default Add100kRowsButton
+export default AddManyRowsButton
