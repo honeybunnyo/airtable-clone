@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import FormatIcon from '../Common/FormatIcon'
 import { ListFilter } from 'lucide-react'
 import { Button } from "~/components/ui/button"
@@ -9,16 +9,28 @@ import {
 } from "~/components/ui/popover"
 import { FilterBox, FirstFilterBox } from './FilterBox'
 import type { Conjunction, FilterCondition } from './type'
+import { useParams } from 'next/navigation'
+import { api } from '~/trpc/react'
 
 const Filter = () => {
 	const [conjunction, setConjunction] = useState<Conjunction>('and');
+  const params = useParams();
+  const tableId = typeof params?.tableId === 'string' ? params.tableId : '';
 
 	// TODO: trpc: get first field from columns
 	// TODO: Remove intial default filters & only add when
 	// Add condition button is clicked
-	const [filters, setFilters] = useState<FilterCondition[]>([
-    { field: 'Name', operator: 'contains', value: '' },
-  ]);
+
+  const { data: columns } = api.table.getTableColumns.useQuery({ tableId });
+  const [filters, setFilters] = useState<FilterCondition[]>([]);
+  // Early returns must come after hooks
+
+  useEffect(() => {
+    if (columns?.[0] && filters.length === 0) {
+      setFilters([{ field: columns[0].name, operator: 'contains', value: '' }]);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [columns]);
 
 	// Update filter configuration
 	const updateFilter = (index: number, updated: Partial<FilterCondition>) => {
@@ -30,9 +42,16 @@ const Filter = () => {
     console.log('filters', filters)
   }
 
-	// TODO: REPLACE 'NAME' TO BE FIRST FIELD
-	const addFilter = () => {
-    setFilters((prev) => [...prev, { field: 'Name', operator: 'contains', value: ''}]);
+  if (!tableId || !columns?.[0]) return null;
+
+  const addFilter = () => {
+    if (!columns[0]) return;
+    const firstColumn = columns[0];
+    if (!firstColumn) return;
+    setFilters((prev) => [
+      ...prev,
+      { field: firstColumn.name, operator: 'contains', value: '' }
+    ]);
   }
 
   const deleteFilter = (index: number) => {
@@ -51,9 +70,9 @@ const Filter = () => {
           <p className="text-muted-foreground text-sm">In this view, show records</p>
           {filters.map((filter, index) =>
             index === 0 ? (
-              <FirstFilterBox key={index} index={index} filter={filter} updateFilter={updateFilter} deleteFilter={deleteFilter}/>
+              <FirstFilterBox key={index} index={index} filter={filter} columns={columns} updateFilter={updateFilter} deleteFilter={deleteFilter}/>
             ) : (
-              <FilterBox key={index} index={index} filter={filter} updateFilter={updateFilter} deleteFilter={deleteFilter} conjunction={conjunction} setConjunction={setConjunction}/>
+              <FilterBox key={index} index={index} filter={filter} columns={columns} updateFilter={updateFilter} deleteFilter={deleteFilter} conjunction={conjunction} setConjunction={setConjunction}/>
             )
           )}
           <Button variant="ghost" className="w-30" onClick={addFilter}>+ Add condition</Button>

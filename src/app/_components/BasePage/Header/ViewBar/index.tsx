@@ -7,7 +7,7 @@ import Add100kRowsButton from './AddRows/Add100kRowsButton'
 import SearchBar from '../SearchBar'
 import type { PageProps } from '~/app/types/props'
 import ButtonFormat from './Common/ButtonFormat'
-// import Filter from './Filter'
+import Filter from './Filter'
 
 const ViewBar = ({
   sideBarOpen,
@@ -53,7 +53,7 @@ const ViewBar = ({
           <FormatIcon icon={ChevronDown} />
         </ButtonFormat>
 
-        {/* <Filter/> */}
+        <Filter/>
 
         {iconButtons.map(({ icon, label }, i) => (
           <ButtonFormat key={i}>
