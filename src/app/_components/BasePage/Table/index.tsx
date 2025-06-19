@@ -85,7 +85,7 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [isSaving]);
 
-  if (!isColumnsLoading || !columns || !data) {
+  if (isColumnsLoading || !columns || !data) {
     return <TableSkeleton/>
   }
 
