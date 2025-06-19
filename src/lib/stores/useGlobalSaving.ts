@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-interface GlobalSavingState {
+type GlobalSavingState = {
   isSaving: boolean;
   setSaving: (val: boolean) => void;
 }

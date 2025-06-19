@@ -22,6 +22,7 @@ import {
 import WithToolTip from '../../Common/WithToolTip';
 import { withGlobalSaving } from '~/lib/utils';
 import { toast } from 'sonner';
+import { useTableMutations } from '~/app/hooks/useTableMutations';
 
 type AddColumnDialogProps = {
   tableId: string;
@@ -30,13 +31,7 @@ type AddColumnDialogProps = {
 const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
   const [newColumnName, setNewColumnName] = useState("")
   const [newColumnType, setNewColumnType] = useState<"TEXT" | "NUMBER">("TEXT")
-  const utils = api.useUtils()
-  const createColumn = api.column.create.useMutation({
-    onSuccess: async () => {
-      await utils.table.getPaginatedRows.invalidate({ tableId })
-      await utils.table.getTableColumns.invalidate({ tableId })
-    }
-  })
+  const { createColumn } = useTableMutations(tableId);
 
   const [open, setOpen] = useState(false);
 
@@ -46,14 +41,12 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
       return
     }
     setOpen(false);
-    toast(`Adding field ${newColumnName}...`)
 
     await withGlobalSaving(() => createColumn.mutateAsync({
       tableId,
       name: newColumnName,
       type: newColumnType,
     }))
-    toast(`Successfully added field ${newColumnName}!`)
     setNewColumnName("")
     setNewColumnType("TEXT")
   }

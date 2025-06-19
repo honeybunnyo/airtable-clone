@@ -6,7 +6,7 @@ const DataTableHeader = ({ columns, matchingColumns, colToDelete, setColDelete }
   return (
     <thead className="sticky -top-px z-30">
       <tr className="h-[32px]">
-        <th className="w-[50px] font-light bg-[#f4f4f4] text-sm border border-gray-300">
+        <th className="min-w-[50px] font-light bg-[#f4f4f4] text-sm border border-gray-300">
           <div className="flex justify-center items-center">
             <input type="checkbox" value=""
               className="w-3 h-3 text-blue-600 bg-gray-100 rounded-sm"
@@ -20,7 +20,7 @@ const DataTableHeader = ({ columns, matchingColumns, colToDelete, setColDelete }
           const isHighlighted = matchingColumns.some((mc) => mc.id === col.id);
           return (
             <th id={col.id} key={`col-${col.id}`}
-              className={`border border-gray-300 w-[180px] font-light text-sm ${
+              className={`border border-gray-300 min-w-[180px] font-light text-sm ${
                 isHighlighted ? 'bg-[#fff3d2]' : 'bg-[#f4f4f4]'
               }`}>
               <ColumnContextMenu column={col} setColDelete={setColDelete}/>

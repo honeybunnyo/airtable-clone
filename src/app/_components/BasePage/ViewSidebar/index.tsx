@@ -11,7 +11,7 @@ type ViewSideBarProps = {
 
 const ViewSideBar = ({ sideBarOpen }: ViewSideBarProps) => {
   return (
-    <aside className={`${sideBarOpen ? "w-[200px] p-3" : "w-[0px] p-0"} transform transition-all overflow-hidden duration-300 h-full flex flex-col justify-between shrink-0 border-gray-300 bg-white border-t`}>
+    <aside className={`${sideBarOpen ? "w-[200px] p-3" : "w-[0px] p-0"} transform transition-all overflow-hidden duration-300 h-full flex flex-col justify-between shrink-0 border border-gray-200 bg-white border-t`}>
       <div className={`${sideBarOpen ? "block" : "hidden"}`}>
         <div className="flex flex-row justify-center align-center gap-2 px-2 focus-within:border-blue-500 border-b">
           <Search className="h-6 w-6 text-gray-600" strokeWidth={1.25}/>

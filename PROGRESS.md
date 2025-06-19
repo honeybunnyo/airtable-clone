@@ -96,3 +96,16 @@ New:
     - Highlighting matching fields
     - Navigate to prev/next match
 - Toast for creating/deleting tables, cols, rows etc
+
+### Day 10
+New:
+- Filters UI
+- Started BE filter functionality (for contains)
+
+### Day 11
+Fixes:
+- Fix table virtualisation + updated to load 2000 rows at a time
+- Made add col button sticky, moved add row button to view bar
+
+New
+- 

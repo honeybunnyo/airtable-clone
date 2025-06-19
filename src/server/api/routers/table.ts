@@ -97,8 +97,14 @@ export const tableRouter = createTRPCRouter({
       value: z.string(),
     }))
     .mutation(async ({ input, ctx }) => {
+      const [rowId, columnId] = input.cellId.split('-', 2);
+      if (!rowId || !columnId) {
+        throw new Error("Invalid cellId format. Expected 'rowId-columnId'.");
+      }
       return ctx.db.cell.update({
-        where: { id: input.cellId },
+        where: {
+          rowId_columnId: { rowId, columnId },
+        },
         data: { value: input.value },
       });
     }),
@@ -190,9 +196,9 @@ export const tableRouter = createTRPCRouter({
         cells: {
           orderBy: { column: { order: 'asc' } },
           select: {
-            id: true,
             value: true,
             columnId: true,
+            rowId: true,
           },
         },
       },

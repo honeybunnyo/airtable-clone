@@ -41,7 +41,7 @@ export const columnRouter = createTRPCRouter({
 
         await ctx.db.cell.createMany({ data: batch });
       }
-      return {success: true};
+      return {id: newColumn.id};
     }),
   delete: protectedProcedure
     .input(z.object({ columnId: z.string() }))

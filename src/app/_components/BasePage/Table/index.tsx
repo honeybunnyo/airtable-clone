@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { api } from '~/trpc/react';
 import AddColumnDialog from './AddColumnDialog';
 import DataTableCell from './DataTableCell';
 import LoadingSpinner from '../../Common/LoadingSpinner';
 import DataTableHeader from './DataTableHeader';
 import TableSkeleton from '../Skeletons/TableSkeleton';
-import type { Cell, DataTableProps } from '~/app/types/props';
+import type { DataTableProps } from '~/app/types/props';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
 const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps ) => {
@@ -102,7 +102,7 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
                   </div>
                 </td>
                 {columns.map((col) => {
-                  const cell = row.cells?.find((c: Cell) => c.columnId === col.id) ?? {
+                  const cell = row.cells?.find((c) => c.columnId === col.id) ?? {
                     value: '',
                     id: `${row.id}-${col.id}`,
                     columnId: col.id,
@@ -122,7 +122,7 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
                             ? JSON.stringify(cell.value)
                             : String(cell.value)
                         }
-                        cellId={cell.id}
+                        cellId={`${row.id}-${col.id}`}
                         columnType={columnTypeMap[cell.columnId] as 'TEXT' | 'NUMBER' ?? 'TEXT'}
                       />
                     </td>
@@ -131,6 +131,7 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
               </tr>
             );
           })}
+          {/* Loading spinner for next page */}
           {isFetchingNextPage && (
             <tr
               style={{
@@ -142,10 +143,7 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
               }}
               className="flex w-full"
             >
-              <td
-                colSpan={columns.length + 1}
-                className="text-center p-2 text-sm text-gray-500"
-              >
+              <td colSpan={columns.length + 1} className="text-center p-2 text-sm text-gray-500">
                 <LoadingSpinner />
               </td>
             </tr>
