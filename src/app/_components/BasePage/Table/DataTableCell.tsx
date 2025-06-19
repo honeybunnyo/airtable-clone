@@ -30,7 +30,6 @@ const DataTableCell = ({
     clearEditedCell(cellId);
   };
 
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
 

@@ -1,13 +1,24 @@
 import { api } from '~/trpc/react';
 import { toast } from 'sonner';
 import { useEditedCellsStore } from '~/lib/stores/useEditedStore';
+import { useCancelledColumns } from '~/lib/stores/cancelledColumnsStore';
 
 
 export const useTableMutations = (tableId: string) => {
   const { transferColumnData } = useEditedCellsStore();
+  const { isCancelled } = useCancelledColumns();
   const utils = api.useUtils();
   const { editedCells, clearEditedCell } = useEditedCellsStore.getState();
   const updateCellMutation = api.table.updateCell.useMutation();
+
+  // Clear any temp cells related to this column
+  const clearTempCells = (name: string) => {
+    Object.keys(editedCells).forEach((key) => {
+      if (key.endsWith(`-temp-${name}`)) {
+        clearEditedCell(key);
+      }
+    });
+  }
 
   const createColumn = api.column.create.useMutation({
     onMutate: async (variables) => {
@@ -31,8 +42,16 @@ export const useTableMutations = (tableId: string) => {
     onError: (_, variables, context) => {
       utils.table.getTableColumns.setData({ tableId }, context?.previousColumns);
       toast.error(`Failed to add column "${variables.name}"`);
+      clearTempCells(variables.name)
     },
-    onSuccess: async (realColumn, variables) => {
+    onSuccess: async (realColumn, variables, context) => {
+      if (isCancelled(variables.name)) {
+        console.log(`Column "${variables.name}" was cancelled. Skipping update.`);
+        await deleteColumn.mutateAsync({ columnId: realColumn.id })   
+        utils.table.getTableColumns.setData({ tableId }, context?.previousColumns);
+        clearTempCells(variables.name)
+        return;
+      }
       const updated = transferColumnData(`temp-${variables.name}`, realColumn.id);
 
       for (const [cellId, value] of Object.entries(updated)) {
@@ -40,6 +59,7 @@ export const useTableMutations = (tableId: string) => {
         await updateCellMutation.mutateAsync({ cellId, value });
       }
 
+      clearTempCells(variables.name)
       await utils.table.getTableColumns.invalidate({ tableId });
       toast.success(`Added column "${variables.name}"`);
     },
@@ -56,10 +76,8 @@ export const useTableMutations = (tableId: string) => {
   });
 
   const deleteColumn = api.column.delete.useMutation({
-
     onMutate: async (variables) => {
       toast(`Deleting column...`);
-      // Optimistically update column
       await utils.table.getTableColumns.cancel({ tableId });
       await utils.table.getPaginatedRows.cancel({ tableId, limit: 2000 });
 
@@ -71,23 +89,6 @@ export const useTableMutations = (tableId: string) => {
         old?.filter((col) => col.id !== variables.columnId)
       );
 
-      // Remove associated cells in cache (optional)
-      // utils.table.getPaginatedRows.setData({ tableId, limit: 2000 }, (oldPages) => {
-      //   if (!oldPages) return oldPages;
-
-      //   return {
-      //     ...oldPages,
-      //     pages: oldPages.pages.map((page) => ({
-      //       ...page,
-      //       rows: page.rows.map((row) => ({
-      //         ...row,
-      //         cells: row.cells.filter((cell) => cell.columnId !== variables.columnId),
-      //       })),
-      //     })),
-      //   };
-      // });
-
-      // Clean up any edited cells for this column
       Object.keys(editedCells).forEach((key) => {
         if (key.endsWith(`-${variables.columnId}`)) {
           clearEditedCell(key);
@@ -104,7 +105,6 @@ export const useTableMutations = (tableId: string) => {
     onError: (_err, _variables, context) => {
       toast.error("Failed to delete column.");
 
-      // Roll back to previous state
       utils.table.getTableColumns.setData({ tableId }, context?.previousColumns);
       utils.table.getPaginatedRows.setData({ tableId, limit: 2000 }, context?.previousRows);
     },

@@ -6,33 +6,31 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from '~/components/ui/context-menu'
-import { api } from '~/trpc/react'
 import { useParams } from 'next/navigation'
 import { withGlobalSaving } from '~/lib/utils';
 import type { ColumnContextMenuProps } from '~/app/types/props';
-import { toast } from 'sonner';
 import Image from 'next/image';
 import { ChevronDown } from 'lucide-react';
+import { useTableMutations } from '~/app/hooks/useTableMutations';
+import { useCancelledColumns } from '~/lib/stores/cancelledColumnsStore';
 
 const ColumnContextMenu: React.FC<ColumnContextMenuProps> = ({ column, setColDelete }) => {
-  const utils = api.useUtils()
   const params = useParams()
-  const tableId = typeof params?.tableId === 'string' ? params.tableId : undefined
-
-  const deleteColumn = api.column.delete.useMutation({
-    onSuccess: async () => {
-      await utils.table.getPaginatedRows.invalidate({ tableId })
-      await utils.table.getTableColumns.invalidate({ tableId })
-    }
-  })
+  const tableId = typeof params?.tableId === 'string' ? params.tableId : ""
+  
+  const { deleteColumn } = useTableMutations(tableId);
+  const { cancelColumn } = useCancelledColumns();
+  
   
   const handleDelete = async () => {
     setColDelete(column.id)
-    toast(`Deleting field ${column.name}...`)
+    if (column.id.startsWith("temp-")) {
+      cancelColumn(column.name);
+      return
+    }
     await withGlobalSaving(() => deleteColumn.mutateAsync({ columnId: column.id }))
-    toast(`Successfully deleted field ${column.name}`)
   }
-
+  
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>

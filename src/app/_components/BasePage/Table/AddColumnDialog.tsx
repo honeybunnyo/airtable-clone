@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import { api } from '~/trpc/react';
+import React, { useEffect, useState } from 'react'
 import { Button } from "~/components/ui/button"
 import {
   Dialog,
@@ -21,8 +20,8 @@ import {
 } from '~/components/ui/select'
 import WithToolTip from '../../Common/WithToolTip';
 import { withGlobalSaving } from '~/lib/utils';
-import { toast } from 'sonner';
 import { useTableMutations } from '~/app/hooks/useTableMutations';
+import { api } from '~/trpc/react'
 
 type AddColumnDialogProps = {
   tableId: string;
@@ -32,14 +31,24 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
   const [newColumnName, setNewColumnName] = useState("")
   const [newColumnType, setNewColumnType] = useState<"TEXT" | "NUMBER">("TEXT")
   const { createColumn } = useTableMutations(tableId);
-
+  const [alreadyExists, setAlreadyExists] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const { data: columns } = api.table.getTableColumns.useQuery({ tableId });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!newColumnName) {
-      return
+    if (!newColumnName.trim()) return;
+    const nameExists = columns?.some(
+      (col) => col.name.trim().toLowerCase() === newColumnName.trim().toLowerCase()
+    );
+
+    if (nameExists) {
+      setAlreadyExists(true);
+      return;
     }
+
+    setAlreadyExists(false);
     setOpen(false);
 
     await withGlobalSaving(() => createColumn.mutateAsync({
@@ -50,6 +59,10 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
     setNewColumnName("")
     setNewColumnType("TEXT")
   }
+
+  useEffect(() => {
+    if (open) setAlreadyExists(false);  
+  }, [open]);
   
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -62,7 +75,7 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
           </button>
         </WithToolTip>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] h-76">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Add column</DialogTitle>
@@ -73,7 +86,13 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
               <Input 
                 id="column-name-1" name="name" defaultValue="" autoComplete="off"
                 onChange={(e) => setNewColumnName(e.target.value)}
+                className={`${alreadyExists ? 'bg-red-100 border-red-300' : ''}`}
               />
+              {alreadyExists && (
+                <p className="text-xs text-red-500">
+                  Column name already exists
+                </p>
+              )}
             </div>
               <Label htmlFor="type-1">Select Type</Label>
             <Select value={newColumnType} onValueChange={(val) => setNewColumnType(val as "TEXT" | "NUMBER")}>

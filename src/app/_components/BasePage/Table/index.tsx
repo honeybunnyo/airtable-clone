@@ -7,6 +7,7 @@ import DataTableHeader from './DataTableHeader';
 import TableSkeleton from '../Skeletons/TableSkeleton';
 import type { DataTableProps } from '~/app/types/props';
 import { useVirtualizer } from '@tanstack/react-virtual';
+import { useGlobalSaving } from '~/lib/stores/useGlobalSaving';
 
 const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps ) => {
   const {
@@ -17,7 +18,7 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
   } = api.table.getPaginatedRows.useInfiniteQuery(
     {
       tableId,
-      limit: 2000,
+      limit: 1000,
     },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
@@ -60,16 +61,31 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.pages.length, hasNextPage, isFetchingNextPage]);
 
+  
   useEffect(() => {
     const lastItem = virtualizer.getVirtualItems().at(-1);
     if (!lastItem) return;
-    if (lastItem.index >= allRows.length - 1 - 3800 && hasNextPage && !isFetchingNextPage) {
+    if (lastItem.index >= allRows.length - 1 - 2800 && hasNextPage && !isFetchingNextPage) {
       void fetchNextPage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virtualizer.getVirtualItems(), hasNextPage, isFetchingNextPage, fetchNextPage, allRows.length]);
 
-  if (isColumnsLoading || !columns || !data) {
+  // Warn user on there may be unsaved changes
+  const { isSaving } = useGlobalSaving();
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isSaving) {
+        e.preventDefault();
+        e.returnValue = 'Changes you made may not be saved.';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isSaving]);
+
+  if (!isColumnsLoading || !columns || !data) {
     return <TableSkeleton/>
   }
 
@@ -107,6 +123,9 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
                     id: `${row.id}-${col.id}`,
                     columnId: col.id,
                   };
+                  if (colToDelete === col.id) {
+                    return null
+                  }
                   return (
                     <td
                       key={col.id}
