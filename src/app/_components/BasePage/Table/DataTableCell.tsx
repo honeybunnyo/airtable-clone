@@ -58,7 +58,7 @@ const DataTableCell = ({
           next?.focus();
         }
       }}
-        className={`w-full h-full focus:outline-blue-500 p-1 ${
+        className={`w-full h-full focus:outline-blue-500 p-1 text-sm truncate ${
         isHighlighted ? 'bg-[#fff3d2]' : 'bg-white'
       }`}
       />

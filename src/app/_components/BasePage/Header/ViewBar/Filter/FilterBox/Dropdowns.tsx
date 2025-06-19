@@ -9,7 +9,7 @@ import {
 } from '~/components/ui/dropdown-menu'
 import type { Conjunction, DeleteProps, DropdownProps, Operator } from '../type';
 import type { Column } from '~/app/types/props';
-import api from '~/trpc/react';
+
 export const ConjunctionDropdown: React.FC<DropdownProps<Conjunction>> = ({ value, onChange }) => {
   const conjunctions: Conjunction[] = ['and', 'or']
   

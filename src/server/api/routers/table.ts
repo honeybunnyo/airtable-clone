@@ -183,6 +183,7 @@ export const tableRouter = createTRPCRouter({
         ...(cursor !== undefined ? { order: { gt: cursor } } : {})
       },
       orderBy: { order: 'asc' },
+      take: limit,
       select: {
         id: true,
         order: true,
@@ -195,7 +196,6 @@ export const tableRouter = createTRPCRouter({
           },
         },
       },
-      take: limit,
     })
     const lastRow = rows[rows.length - 1]
 

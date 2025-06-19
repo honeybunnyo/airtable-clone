@@ -63,7 +63,7 @@ const AddColumnDialog: React.FC<AddColumnDialogProps> = ({ tableId }) => {
       <DialogTrigger asChild>
         <WithToolTip content='Add field'>
           <button onClick={() => setOpen(true)}
-            className="h-[33px] min-w-30 text-gray-600 border border-gray-200 bg-gray-100 hover:bg-gray-200 text-lg"
+            className="sticky -top-px h-[33px] min-w-30 text-gray-600 border-r border-y border-gray-200 bg-gray-100 hover:bg-gray-200 text-lg"
             >
             ＋
           </button>

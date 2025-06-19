@@ -79,4 +79,9 @@ export type TableContextMenuProps = {
   tableId: string;
 }
 
+export type Cell = {
+  id: string
+  columnId: string
+  value: string
+}
 export type ColumnType = 'TEXT' | 'NUMBER';

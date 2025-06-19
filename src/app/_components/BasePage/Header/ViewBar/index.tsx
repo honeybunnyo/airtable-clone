@@ -2,12 +2,13 @@ import { ArrowDownUp, ChevronDown, EyeOff, List, ListFilter, Menu, PaintBucket, 
 import React, { useState } from 'react'
 import FormatIcon from './Common/FormatIcon'
 import { Button } from '~/components/ui/button'
-import AddManyRowsButton from './AddRows/AddManyRowsButton'
 import Add100kRowsButton from './AddRows/Add100kRowsButton'
 import SearchBar from '../SearchBar'
 import type { PageProps } from '~/app/types/props'
 import ButtonFormat from './Common/ButtonFormat'
 import Filter from './Filter'
+import AddRowButton from '../../Table/AddRowButton'
+import { useParams } from 'next/navigation'
 
 const ViewBar = ({
   sideBarOpen,
@@ -21,15 +22,18 @@ const ViewBar = ({
   matchingColumns,
 }: PageProps) => {
   const [ wasManuallyOpened, setWasManuallyOpened ] = useState(false)
+  const params = useParams()
+  const tableId = typeof params?.tableId === 'string' ? params.tableId : undefined
   const iconButtons = [
     { icon: EyeOff },
     { icon: ListFilter },
     { icon: List },
     { icon: ArrowDownUp },
-    { icon: PaintBucket },
-    { icon: Sparkle, label: 'Create AI Fields' },
+    { icon: PaintBucket }
   ];
 
+  if (!tableId) return
+  
   return (
     <div className="h-[44px] text-black z-10 flex flex-row justify-between items-center px-3 outline-1">
       <div className="flex flex-row items-center font-medium text-sm gap-2">
@@ -55,14 +59,12 @@ const ViewBar = ({
 
         <Filter/>
 
-        {iconButtons.map(({ icon, label }, i) => (
+        {iconButtons.map(({ icon }, i) => (
           <ButtonFormat key={i}>
             <FormatIcon icon={icon} />
-            {label && <span className="font-light">{label}</span>}
           </ButtonFormat>
         ))}
-
-        <AddManyRowsButton/>
+        <AddRowButton tableId={tableId}/>
         <Add100kRowsButton/>
       </div>
       <SearchBar
