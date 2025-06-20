@@ -11,17 +11,27 @@ const SearchBar = ({
   matchingCells,
   isMatchingLoading,
   matchingColumns,
+  scrollToRow
 }: SearchBarProps) => {
   const [currentIndex, setCurrentIndex] = useState(1)
   const allMatches = useMemo(() => {
     return [
-    ...matchingColumns.map((col) => ({ id: col.id })),
-    ...matchingCells.map((cell) => ({ id: cell.id })),
-  ]
-  }, [matchingColumns, matchingCells])
+      ...matchingColumns.map((col) => ({
+        id: col.id,
+        type: 'column' as const,
+      })),
+      ...matchingCells.map((cell) => ({
+        rowId: cell.rowId,
+        columnId: cell.columnId,
+        type: 'cell' as const,
+      })),
+    ];
+  }, [matchingColumns, matchingCells]);
+
 
   const totalMatches = allMatches.length;
   const inputRef = useRef<HTMLInputElement>(null);
+    const currentMatch = allMatches[currentIndex - 1];
 
   const handleNext = () => {
     setCurrentIndex((prev) => Math.min(prev + 1, totalMatches));
@@ -35,10 +45,11 @@ const SearchBar = ({
     setCurrentIndex(1);
   }, [searchValue])
 
+  
   // Navigate to index i, and highlight focused element
   useEffect(() => {
     matchingCells.forEach((cell) => {
-      const el = document.getElementById(cell.id);
+      const el = document.getElementById(`${cell.rowId}-${cell.columnId}`);
       if (el) {
         el.classList.remove("current-highlight");
       }
@@ -50,16 +61,29 @@ const SearchBar = ({
       }
     });
 
-    // Highlight only the currently focused one
-    const currentMatch = allMatches[currentIndex - 1];
     if (!currentMatch) return;
 
-    const el = document.getElementById(currentMatch.id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
-      el.classList.add("current-highlight");
+    // If match is a cell, scroll to row first
+    if (currentMatch.type === "cell") {
+      scrollToRow(currentMatch.rowId);
+      // Give time for scroll
+      setTimeout(() => {
+        const el = document.getElementById(`${currentMatch.rowId}-${currentMatch.columnId}`);
+        if (el) {
+          el.classList.add("current-highlight");
+          el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      }, 30);
+    } else {
+      const el = document.getElementById(currentMatch.id);
+      if (el) {
+        el.classList.add("current-highlight");
+        el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex, matchingCells, matchingColumns, allMatches]);
+
 
   useEffect(() => {
     if (searchBarOpen) {
@@ -91,7 +115,7 @@ const SearchBar = ({
         <Search className="h-5 w-5 mr-4 mt-2 text-gray-700 hover:text-black" strokeWidth={1}/>
       </button>
       {searchBarOpen &&
-        <div className="z-20 w-76 rounded-xs p-0 absolute top-34 right-10 outline-2 outline-gray-200">
+        <div className="z-50 w-76 rounded-xs p-0 absolute top-34 right-10 outline-2 outline-gray-200">
           {/* Top half*/}
           <div className="bg-white px-2 py-1 h-10 flex flex-row justify-between items-center">
             {/* left*/}

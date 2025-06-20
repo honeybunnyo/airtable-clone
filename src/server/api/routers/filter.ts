@@ -1,4 +1,3 @@
-import { fi } from "@faker-js/faker";
 import { z } from "zod";
 
 import {
@@ -23,7 +22,8 @@ export const filterRouter = createTRPCRouter({
             },
           },
           select: {
-            id: true,
+            rowId: true,
+            columnId: true,
             row: { select: { order: true } },
             column: { select: { order: true } },
           },

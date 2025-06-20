@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { api } from '~/trpc/react';
 import AddColumnDialog from './AddColumnDialog';
 import DataTableCell from './DataTableCell';
@@ -9,7 +9,7 @@ import type { DataTableProps } from '~/app/types/props';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useGlobalSaving } from '~/lib/stores/useGlobalSaving';
 
-const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps ) => {
+const DataTable = ({ tableId, matchingCells, matchingColumns, setRowIdToIndex, scrollRef }: DataTableProps ) => {
   const {
     data,
     fetchNextPage,
@@ -22,10 +22,9 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
     },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
-  const scrollRef = useRef<HTMLDivElement>(null);
-    const [colToDelete, setColDelete] = useState("");
-  
+  const [colToDelete, setColDelete] = useState("");
   const { data: columns, isLoading: isColumnsLoading } = api.table.getTableColumns.useQuery({ tableId })
+
   const columnTypeMap = useMemo(() => {
     const map: Record<string, string> = {};
     columns?.forEach((col) => {
@@ -33,7 +32,6 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
     });
     return map;
   }, [columns]);
-
 
   const allRows = data && columns && !isColumnsLoading
     ? data.pages.flatMap((page, pageIndex) => 
@@ -45,11 +43,19 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
         }))
       )
     : [];
+  
+  // re-maps when new set of data changes
+  useEffect(() => {
+    const map = new Map<string, number>();
+    allRows.forEach((row, index) => map.set(row.id, index));
+    setRowIdToIndex(map);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   const virtualizer = useVirtualizer({
     count: allRows.length,
-    estimateSize: () => 36,
-    getScrollElement: () => scrollRef.current,
+    estimateSize: () => 32,
+    getScrollElement: () => (scrollRef && 'current' in scrollRef ? scrollRef.current : null),
     overscan: 10,
   });
 
@@ -95,7 +101,7 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
       <table className="border-collapse table-fixed">
         <DataTableHeader columns={columns} matchingColumns={matchingColumns} colToDelete={colToDelete} setColDelete={setColDelete}/>
 
-        <tbody style={{ position: 'relative', display: 'block', height: `${virtualizer.getTotalSize()}px` }}>
+        <tbody className="gap-0" style={{ position: 'relative', display: 'block', height: `${virtualizer.getTotalSize()}px` }}>
           {virtualItems.map((vItem) => {
             const row = allRows[vItem.index];
             if (!row) return null;
@@ -109,10 +115,10 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
                   width: '100%',
                   transform: `translateY(${vItem.start}px)`
                 }}
-                className="flex w-full"
+                className="flex w-full "
               >
               {/* row number cell */}
-                <td className="min-w-[50px] border-b border-r border-gray-200 font-light text-sm">
+                <td className="min-w-[50px] h-[32px] border-b border-r border-gray-200 font-light text-sm">
                   <div className="flex items-center justify-center h-full">
                     {row.globalIndex}
                   </div>
@@ -129,7 +135,7 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
                   return (
                     <td
                       key={col.id}
-                      className="border-r border-b border-gray-200 px-2 py-1 truncate w-[180px]"
+                      className="h-[32px] border-b border-r border-gray-200 truncate w-[180px]"
                       style={{ minWidth: 180 }}
                     >
                       <DataTableCell
@@ -162,7 +168,7 @@ const DataTable = ({ tableId, matchingCells, matchingColumns }: DataTableProps )
               }}
               className="flex w-full"
             >
-              <td colSpan={columns.length + 1} className="text-center p-2 text-sm text-gray-500">
+              <td colSpan={columns.length + 1} className="h-[32px] text-center p-2 text-sm text-gray-500">
                 <LoadingSpinner />
               </td>
             </tr>

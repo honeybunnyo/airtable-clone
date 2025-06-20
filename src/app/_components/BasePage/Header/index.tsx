@@ -21,6 +21,7 @@ const Page = ({
   matchingCells,
   isMatchingLoading,
   matchingColumns,
+  scrollToRow,
 }: PageProps) => {
   const params = useParams()
 
@@ -79,6 +80,7 @@ const Page = ({
         matchingCells={matchingCells}
         isMatchingLoading={isMatchingLoading}
         matchingColumns={matchingColumns}
+        scrollToRow={scrollToRow}
       />
     </div>
   )

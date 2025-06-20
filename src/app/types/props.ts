@@ -21,6 +21,7 @@ export type PageProps = {
   matchingCells: MatchingCell[];
   matchingColumns: MatchingColumn[];
   isMatchingLoading: boolean;
+  scrollToRow: (rowId: string) => void;
 };
 
 export type SearchBarProps = {
@@ -31,6 +32,7 @@ export type SearchBarProps = {
   matchingCells: MatchingCell[];
   matchingColumns: MatchingColumn[];
   isMatchingLoading: boolean;
+  scrollToRow: (rowId: string) => void;
 }
 
 export type ViewSideBarProps = {
@@ -41,6 +43,8 @@ export type DataTableProps = {
   tableId: string;
   matchingCells: MatchingCell[];
   matchingColumns: MatchingColumn[];
+  setRowIdToIndex: React.Dispatch<React.SetStateAction<Map<string, number>>>;
+  scrollRef: React.RefObject<HTMLDivElement> | null;
 };
 
 export type DataTableHeaderProps = {

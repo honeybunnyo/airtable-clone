@@ -46,7 +46,7 @@ const DataTableCell = ({
       setEditedCell(cellId, inputValue);
     }
   };
-  const isHighlighted = matchingCells.some((mc) => mc.id === cellId);
+  const isHighlighted = matchingCells.some((mc) => `${mc.rowId}-${mc.columnId}` === cellId);
   return (
     <input
       id={cellId}
@@ -70,9 +70,9 @@ const DataTableCell = ({
           next?.focus();
         }
       }}
-        className={`w-full h-full focus:outline-blue-500 p-1 text-sm truncate ${
-        isHighlighted ? 'bg-[#fff3d2]' : 'bg-white'
-      }`}
+        className={`w-full h-full block focus:outline-blue-500 p-1 text-sm truncate ${
+          isHighlighted ? 'bg-[#fff3d2]' : 'bg-white'
+        }`}
       />
   )
 }

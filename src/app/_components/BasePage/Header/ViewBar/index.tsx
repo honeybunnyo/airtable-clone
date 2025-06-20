@@ -20,6 +20,7 @@ const ViewBar = ({
   matchingCells,
   isMatchingLoading,
   matchingColumns,
+  scrollToRow
 }: PageProps) => {
   const [ wasManuallyOpened, setWasManuallyOpened ] = useState(false)
   const params = useParams()
@@ -43,7 +44,7 @@ const ViewBar = ({
             if (!wasManuallyOpened) setSideBarOpen(true);          
           }}
           onMouseLeave={() => {
-            if (!wasManuallyOpened)  setSideBarOpen(false);
+            if (!wasManuallyOpened) setSideBarOpen(false);
           }}
           variant="ghost" 
           className={`${sideBarOpen ? "bg-gray-100 hover:outline-solid outline-2 outline-gray-300" :"bg-white"} flex items-center justify-center gap-1 flex-row h-6 p-0 rounded-xs`}>
@@ -75,6 +76,7 @@ const ViewBar = ({
         matchingCells={matchingCells}
         isMatchingLoading={isMatchingLoading}
         matchingColumns={matchingColumns}
+        scrollToRow={scrollToRow}
       />
     </div>
   )
