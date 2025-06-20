@@ -242,18 +242,4 @@ export const tableRouter = createTRPCRouter({
       })
       return { count }
     }), 
-  getTableViews: protectedProcedure
-    .input(z.object({ tableId: z.string() }))
-    .query(async ({ input, ctx }) => {
-      const views = await ctx.db.table.findUnique({
-        where: { id: input.tableId },
-        select: {
-          views: true,
-        },
-      });
-      if (!views) {
-        throw new Error("views not found");
-      }
-      return views;
-    }),
 });
