@@ -44,7 +44,7 @@ const Add100kRowsButton = () => {
   }
 
   return (
-    <Button variant="ghost" className="w-30" onClick={handleImportRows}>
+    <Button variant="ghost" className="w-24" onClick={handleImportRows}>
       + 100k rows
     </Button>
   )

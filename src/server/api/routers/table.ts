@@ -23,6 +23,11 @@ export const tableRouter = createTRPCRouter({
               { name: 'email', type: 'TEXT', order: 1 },
             ],
           },
+          views: {
+            create: [
+              { name: 'Grid view' }
+            ]
+          }
         },
         include: { columns: true }
       });
@@ -97,8 +102,14 @@ export const tableRouter = createTRPCRouter({
       value: z.string(),
     }))
     .mutation(async ({ input, ctx }) => {
+      const [rowId, columnId] = input.cellId.split('-', 2);
+      if (!rowId || !columnId) {
+        throw new Error("Invalid cellId format. Expected 'rowId-columnId'.");
+      }
       return ctx.db.cell.update({
-        where: { id: input.cellId },
+        where: {
+          rowId_columnId: { rowId, columnId },
+        },
         data: { value: input.value },
       });
     }),
@@ -183,19 +194,19 @@ export const tableRouter = createTRPCRouter({
         ...(cursor !== undefined ? { order: { gt: cursor } } : {})
       },
       orderBy: { order: 'asc' },
+      take: limit,
       select: {
         id: true,
         order: true,
         cells: {
           orderBy: { column: { order: 'asc' } },
           select: {
-            id: true,
             value: true,
             columnId: true,
+            rowId: true,
           },
         },
       },
-      take: limit,
     })
     const lastRow = rows[rows.length - 1]
 
@@ -230,5 +241,5 @@ export const tableRouter = createTRPCRouter({
         },
       })
       return { count }
-    }),
+    }), 
 });

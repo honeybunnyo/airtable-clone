@@ -8,34 +8,11 @@ import {
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
 import type { Conjunction, DeleteProps, DropdownProps, Operator } from '../type';
-
-export const Delete: React.FC<DeleteProps> = ({ onClick }) => {
-  return (
-    <div className="outline outline-gray-200">
-      <Button onClick={onClick} variant="ghost" className=" rounded-none flex justify-center items-center p-2 h-7">
-        <Trash2 className="h-4 w-4"/>
-      </Button>
-    </div>
-  )
-}
-
-export const ValueInput: React.FC<DropdownProps<string>> = ({ value, onChange }) => {
-  const handleValueUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value)
-    // TODO
-    console.log('Query value', e.target.value)
-  }
-  return (
-    <input placeholder="Enter a value" className="p-2 h-7 w-32 text-sm outline outline-gray-200"
-    onChange={(e) => handleValueUpdate(e)}
-    >
-    </input>
-  )
-}
+import type { Column } from '~/app/types/props';
 
 export const ConjunctionDropdown: React.FC<DropdownProps<Conjunction>> = ({ value, onChange }) => {
   const conjunctions: Conjunction[] = ['and', 'or']
-
+  
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -57,7 +34,9 @@ export const ConjunctionDropdown: React.FC<DropdownProps<Conjunction>> = ({ valu
   )
 }
 
-export const FieldDropdown: React.FC<DropdownProps<string>> = ({ value, onChange }) => (
+// Select column dropdown
+export const FieldDropdown: React.FC<DropdownProps<string>> = ({ value, onChange, columns }) => {
+  return (
   <DropdownMenu>
     <DropdownMenuTrigger>
       <div className="w-32 outline outline-gray-200 flex flex-row justify-between items-center p-1 px-2 rounded-xs">
@@ -67,15 +46,17 @@ export const FieldDropdown: React.FC<DropdownProps<string>> = ({ value, onChange
     </DropdownMenuTrigger>
     <DropdownMenuContent className="min-w-32 rounded-xs">
       {/* TODO: use actual fields */}
-      {['Name', 'Email'].map((field) => (
-        <DropdownMenuItem key={field} onClick={() => onChange(field)}>
-          {field}
+      {columns?.map((column: Column) => (
+        <DropdownMenuItem key={column.name} onClick={() => onChange(column.name)}>
+          {column.name}
         </DropdownMenuItem>
       ))}
+    
     </DropdownMenuContent>
   </DropdownMenu>
-);
+);}
 
+// TODO: update operators to be based on type (num/text)
 export const OperatorDropdown: React.FC<DropdownProps<Operator>> = ({ value, onChange }) => {
   const operators: Operator[] = [
     'contains',
@@ -104,4 +85,29 @@ export const OperatorDropdown: React.FC<DropdownProps<Operator>> = ({ value, onC
   )
 }
 
+// Delete filter button
+export const Delete: React.FC<DeleteProps> = ({ onClick }) => {
+  return (
+    <div className="outline outline-gray-200">
+      <Button onClick={onClick} variant="ghost" className=" rounded-none flex justify-center items-center p-2 h-7">
+        <Trash2 className="h-4 w-4"/>
+      </Button>
+    </div>
+  )
+}
+
+// Query value input
+export const ValueInput: React.FC<DropdownProps<string>> = ({ value, onChange }) => {
+  const handleValueUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value)
+    // TODO
+    console.log('Query value', e.target.value)
+  }
+  return (
+    <input placeholder="Enter a value" className="p-2 h-7 w-32 text-sm outline outline-gray-200"
+    onChange={(e) => handleValueUpdate(e)}
+    >
+    </input>
+  )
+}
 export default OperatorDropdown

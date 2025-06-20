@@ -1,13 +1,14 @@
-import { ArrowDownUp, ChevronDown, EyeOff, List, ListFilter, Menu, PaintBucket, Sparkle, TableCellsSplit } from 'lucide-react'
+import { ArrowDownUp, ChevronDown, EyeOff, List, ListFilter, Menu, PaintBucket, TableCellsSplit } from 'lucide-react'
 import React, { useState } from 'react'
 import FormatIcon from './Common/FormatIcon'
 import { Button } from '~/components/ui/button'
-import AddManyRowsButton from './AddRows/AddManyRowsButton'
 import Add100kRowsButton from './AddRows/Add100kRowsButton'
 import SearchBar from '../SearchBar'
 import type { PageProps } from '~/app/types/props'
 import ButtonFormat from './Common/ButtonFormat'
-// import Filter from './Filter'
+import Filter from './Filter'
+import AddRowButton from '../../Table/AddRowButton'
+import { useParams } from 'next/navigation'
 
 const ViewBar = ({
   sideBarOpen,
@@ -19,17 +20,21 @@ const ViewBar = ({
   matchingCells,
   isMatchingLoading,
   matchingColumns,
+  scrollToRow
 }: PageProps) => {
   const [ wasManuallyOpened, setWasManuallyOpened ] = useState(false)
+  const params = useParams()
+  const tableId = typeof params?.tableId === 'string' ? params.tableId : undefined
   const iconButtons = [
     { icon: EyeOff },
     { icon: ListFilter },
     { icon: List },
     { icon: ArrowDownUp },
-    { icon: PaintBucket },
-    { icon: Sparkle, label: 'Create AI Fields' },
+    { icon: PaintBucket }
   ];
 
+  if (!tableId) return
+  
   return (
     <div className="h-[44px] text-black z-10 flex flex-row justify-between items-center px-3 outline-1">
       <div className="flex flex-row items-center font-medium text-sm gap-2">
@@ -39,7 +44,7 @@ const ViewBar = ({
             if (!wasManuallyOpened) setSideBarOpen(true);          
           }}
           onMouseLeave={() => {
-            if (!wasManuallyOpened)  setSideBarOpen(false);
+            if (!wasManuallyOpened) setSideBarOpen(false);
           }}
           variant="ghost" 
           className={`${sideBarOpen ? "bg-gray-100 hover:outline-solid outline-2 outline-gray-300" :"bg-white"} flex items-center justify-center gap-1 flex-row h-6 p-0 rounded-xs`}>
@@ -53,16 +58,14 @@ const ViewBar = ({
           <FormatIcon icon={ChevronDown} />
         </ButtonFormat>
 
-        {/* <Filter/> */}
+        <Filter/>
 
-        {iconButtons.map(({ icon, label }, i) => (
+        {iconButtons.map(({ icon }, i) => (
           <ButtonFormat key={i}>
             <FormatIcon icon={icon} />
-            {label && <span className="font-light">{label}</span>}
           </ButtonFormat>
         ))}
-
-        <AddManyRowsButton/>
+        <AddRowButton tableId={tableId}/>
         <Add100kRowsButton/>
       </div>
       <SearchBar
@@ -73,6 +76,7 @@ const ViewBar = ({
         matchingCells={matchingCells}
         isMatchingLoading={isMatchingLoading}
         matchingColumns={matchingColumns}
+        scrollToRow={scrollToRow}
       />
     </div>
   )

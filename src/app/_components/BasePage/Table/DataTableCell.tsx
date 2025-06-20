@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { api } from '~/trpc/react';
 import { withGlobalSaving } from '~/lib/utils';
 import type { DataTableCellProps } from '~/app/types/props';
+import { useEditedCellsStore } from '~/lib/stores/useEditedStore';
 
 const DataTableCell = ({
   initialValue,
@@ -9,16 +10,25 @@ const DataTableCell = ({
   columnType,
   matchingCells = []
 }: DataTableCellProps) => {
-  const [value, setValue] = useState(initialValue);
-  const updateCellMutation = api.table.updateCell.useMutation();
+  const { setEditedCell, getEditedValue, clearEditedCell } = useEditedCellsStore();
 
+  const storeValue = getEditedValue(cellId);
+  const [value, setValue] = useState(storeValue ?? initialValue);
+  const updateCellMutation = api.table.updateCell.useMutation();
+  const isTempColumnId = (columnId: string) => columnId.includes('temp-');
+
+  // If temp cell, add to editCells store
   const updateCell = async (value: string) => {
-    await withGlobalSaving(() => updateCellMutation.mutateAsync({
-        cellId,
-        value,
-      })
+    if (isTempColumnId(cellId)) {
+      setEditedCell(cellId, value);
+      return;
+    }
+
+    await withGlobalSaving(() =>
+      updateCellMutation.mutateAsync({ cellId, value })
     );
-  }
+    clearEditedCell(cellId);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
@@ -29,12 +39,14 @@ const DataTableCell = ({
         /^-?\d*\.?\d*$/.test(inputValue)
       ) {
         setValue(inputValue);
+        setEditedCell(cellId, inputValue);
       }
     } else {
       setValue(inputValue);
+      setEditedCell(cellId, inputValue);
     }
   };
-  const isHighlighted = matchingCells.some((mc) => mc.id === cellId);
+  const isHighlighted = matchingCells.some((mc) => `${mc.rowId}-${mc.columnId}` === cellId);
   return (
     <input
       id={cellId}
@@ -58,9 +70,9 @@ const DataTableCell = ({
           next?.focus();
         }
       }}
-        className={`w-full h-full focus:outline-blue-500 p-1 ${
-        isHighlighted ? 'bg-[#fff3d2]' : 'bg-white'
-      }`}
+        className={`w-full h-full block focus:outline-blue-500 p-1 text-sm truncate ${
+          isHighlighted ? 'bg-[#fff3d2]' : 'bg-white'
+        }`}
       />
   )
 }

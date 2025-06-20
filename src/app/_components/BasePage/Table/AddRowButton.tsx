@@ -1,14 +1,13 @@
-import { Plus } from 'lucide-react'
 import React from 'react'
+import { Button } from '~/components/ui/button'
 import { api } from '~/trpc/react'
 
 
 type AddRowButtonProps = { 
   tableId: string, 
-  length: number 
 }
 
-const AddRowButton = ({ tableId, length}: AddRowButtonProps) => {
+const AddRowButton = ({ tableId }: AddRowButtonProps) => {
   const utils = api.useUtils()
 
   const addRow = api.table.addRow.useMutation({
@@ -20,11 +19,9 @@ const AddRowButton = ({ tableId, length}: AddRowButtonProps) => {
   const handleAddRow = () => addRow.mutate({ tableId })
 
   return (
-    <tr className="h-[32px] w-full cursor-pointer hover:bg-gray-100 border border-gray-200" onClick={handleAddRow}>
-      <td colSpan={length} className="text-left text-gray-400 text-xl px-2">
-        <Plus/>
-      </td>
-    </tr>
+    <Button variant="ghost" className="w-24" onClick={handleAddRow}>
+      + Add row
+    </Button>
   )
 }
 
