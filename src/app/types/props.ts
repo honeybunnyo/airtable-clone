@@ -44,7 +44,7 @@ export type DataTableProps = {
   matchingCells: MatchingCell[];
   matchingColumns: MatchingColumn[];
   setRowIdToIndex: React.Dispatch<React.SetStateAction<Map<string, number>>>;
-  scrollRef: React.RefObject<HTMLDivElement> | null;
+  scrollRef: React.RefObject<HTMLDivElement | null>;
 };
 
 export type DataTableHeaderProps = {
