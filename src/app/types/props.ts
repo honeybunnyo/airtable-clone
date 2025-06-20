@@ -3,7 +3,8 @@ import type { JsonValue } from "@prisma/client/runtime/library";
 
 
 type MatchingCell = {
-  id: string;
+  rowId: string;
+  columnId: string;
 };
 
 type MatchingColumn = {
